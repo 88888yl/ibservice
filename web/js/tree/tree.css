@@ -1,0 +1,38 @@
+	A {
+	TEXT-DECORATION:none
+        COLOR: #000066
+}
+
+A:link {
+	COLOR: #000066;
+        FONT-FAMILY:Geneva;
+        TEXT-DECORATION: none
+}
+A:visited {
+	COLOR: #000066;
+        FONT-FAMILY:Geneva;
+        TEXT-DECORATION: none
+}
+A:active {
+	FONT-FAMILY:Geneva;
+        TEXT-DECORATION: none
+}
+A:hover {
+	BORDER-TOP-WIDTH: 1px;
+        BORDER-LEFT-WIDTH: 1px;
+	COLOR: #ff6600;
+        BORDER-RIGHT-WIDTH: 1px;
+        TEXT-DECORATION: none
+}
+
+BODY {
+	FONT-SIZE: 12px;
+	color:#041726;
+	FONT-FAMILY:Geneva;
+	margin-left: 0px;
+	margin-top: 0px;
+	margin-right: 0px;
+	margin-bottom:0px;
+	padding-top:10px;
+	padding-left:10px;
+}

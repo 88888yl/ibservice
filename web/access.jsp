@@ -8,7 +8,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
-    <title>Access Statistics</title>
+    <title>Access statistics</title>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
 
     <script type="text/javascript" src="js/jquery-1.11.1.min.js"></script>
