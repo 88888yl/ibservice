@@ -1,0 +1,8 @@
+.x-tree-checked .x-grid-cell-inner {
+    font-style: italic;
+    font-weight: bold;
+}
+
+.x-grid-row-selected .x-grid-cell {
+    background-color: #cecece !important;
+}

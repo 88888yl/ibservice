@@ -1,0 +1,9 @@
+.fixed {
+    position: fixed;
+    box-shadow:  10px 10px 10px grey;
+    left: 90%;
+    bottom: 40px;
+    z-index: 999;
+    _position: absolute;
+    _top: expression(eval(document.documentElement.scrollTop+160));
+}
