@@ -51,6 +51,9 @@
 
 <div id="div1" class="container-fluid panel" style="background-image: url('image/background1.jpg'); margin-bottom: 6px; box-shadow: 0 3px 6px black">
     <div class="container pull-left" style="margin-top: 10px">
+        <div style="margin: 5px 10px 5px 0; float: left" class="input-group" onclick="hidePopovers()">
+            <input type="button" id="confirm" value="Refresh Chart" class="btn btn-warning" onclick="chooseItems()">
+        </div>
         <div class="btn-group" style="margin: 5px 0 5px 0; float: left">
             <button type="button" class="btn btn-primary" id="addNew">
                 <span class="glyphicon glyphicon-plus"></span> new
@@ -103,14 +106,13 @@
 <script type="text/javascript">
     function getCSOReport() {
         bind_menu();
-//        $.ajax({
-//            type: 'post',
-//            dataType: 'text',
-//            async: true,
-//            url: 'csotree.action'
-//        });
         window.frames["resultPage"].location.href = "/cso_report_table.jsp";
         window.frames["treePage"].location.href = "/cso_tree.jsp";
+    }
+
+    function chooseItems() {
+        var items = window.frames["treePage"].getCheckedInfo();
+        console.log(items);
     }
 
     $("#addNew").popover({

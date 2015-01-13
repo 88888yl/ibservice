@@ -75,6 +75,7 @@
 
             var tree = Ext.create('Ext.tree.Panel', {
                 store: store,
+                id: 'cso_tree',
                 rootVisible: false,
                 useArrows: true,
                 frame: true,
@@ -93,6 +94,16 @@
         }
     });
 
+    function getCheckedInfo() {
+        var items = Ext.getCmp('cso_tree').getView().getChecked();
+        var values = [];
+        for (var i = 0; i < items.length; i++) {
+            if (items[i].isLeaf()) {
+                values[i] = items[i].getData().text;
+            }
+        }
+        return values;
+    }
 </script>
 </body>
 </html>
