@@ -927,9 +927,9 @@
 
         Ext.create('Ext.Window', {
             x: winWidth * 0.02,
-            y: winHeight * 0.35,
+            y: winHeight * 0.38,
             width: '96%',
-            height: '65%',
+            height: '62%',
             hidden: false,
             maximizable: true,
             title: 'Trend',
