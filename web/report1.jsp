@@ -52,7 +52,7 @@
 <div id="div1" class="container-fluid panel" style="background-image: url('image/background1.jpg'); margin-bottom: 6px; box-shadow: 0 3px 6px black">
     <div class="container pull-left" style="margin-top: 10px">
         <div style="margin: 5px 10px 5px 0; float: left" class="input-group" onclick="hidePopovers()">
-            <input type="button" id="confirm" value="Refresh Chart" class="btn btn-warning" onclick="chooseItems()">
+            <input type="button" id="refresh" value="Refresh Chart" class="btn btn-warning" onclick="chooseItems()">
         </div>
         <div class="btn-group" style="margin: 5px 0 5px 0; float: left">
             <button type="button" class="btn btn-primary" id="addNew">
@@ -113,6 +113,30 @@
     function chooseItems() {
         var items = window.frames["treePage"].getCheckedInfo();
         console.log(items);
+        var itemStr = '@';
+        for (var i = 0; i < items.length; i++) {
+            itemStr += items[i] + '@';
+        }
+        var itemString = itemStr.substring(1, itemStr.length - 1);
+        var id = "cso_report";
+        $("#refresh").attr("disabled", "disabled");
+        $.ajax({
+            type: 'post',
+            dataType: 'text',
+            async: true,
+            url: 'refresh.action',
+            data: {
+                items: itemString,
+                id: id
+            },
+            success: function () {
+                window.frames["resultPage"].location.href = "/cso_report_table.jsp?&id=" + id;
+                $("#refresh").removeAttr("disabled");
+            },
+            error: function () {
+                $("#refresh").removeAttr("disabled");
+            }
+        });
     }
 
     $("#addNew").popover({

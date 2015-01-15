@@ -19,16 +19,35 @@ public class CSOReportServlet extends HttpServlet {
     List<List<Integer>> reportList;
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        String id = request.getParameter("id");
+
         CSOReportToDB csoReportToDB = new CSOReportToDB(
                 GlobalVariables.oracleUrl, GlobalVariables.oracleUserName, GlobalVariables.oraclePassword);
         csoReportToDB.getConnect();
 
-        if ((reportList = csoReportToDB.getReport()) != null) {
-            JSONArray jsonArray = JSONArray.fromObject(reportList);
-            response.getWriter().write(jsonArray.toString());
-        } else {
-            response.getWriter().write("fail");
+        if (id != null) {
+            if (id.equals("total")) {
+                if ((reportList = csoReportToDB.getReport("cso_report")) != null) {
+                    JSONArray jsonArray = JSONArray.fromObject(reportList);
+                    response.getWriter().write(jsonArray.toString());
+                } else {
+                    response.getWriter().write("fail");
+                }
+            }
+            if (id.equals("cso_report")) {
+                if ((reportList = csoReportToDB.getReport("cso_report_tmp")) != null) {
+                    JSONArray jsonArray = JSONArray.fromObject(reportList);
+                    response.getWriter().write(jsonArray.toString());
+                } else {
+                    response.getWriter().write("fail");
+                }
+            }
+            if (id.equals("sco_service")) {
+
+            }
         }
+
+
     }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

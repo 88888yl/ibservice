@@ -18,15 +18,32 @@ public class SCRReportServlet extends HttpServlet {
     List<List<Integer>> reportList;
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        String id = request.getParameter("id");
+
         SCRReportToDB scrReportToDB = new SCRReportToDB(
                 GlobalVariables.oracleUrl, GlobalVariables.oracleUserName, GlobalVariables.oraclePassword);
         scrReportToDB.getConnect();
 
-        if ((reportList = scrReportToDB.getReport()) != null) {
-            JSONArray jsonArray = JSONArray.fromObject(reportList);
-            response.getWriter().write(jsonArray.toString());
-        } else {
-            response.getWriter().write("fail");
+        if (id != null) {
+            if (id.equals("total")) {
+                if ((reportList = scrReportToDB.getReport("scr_report")) != null) {
+                    JSONArray jsonArray = JSONArray.fromObject(reportList);
+                    response.getWriter().write(jsonArray.toString());
+                } else {
+                    response.getWriter().write("fail");
+                }
+            }
+            if (id.equals("scr_report")) {
+                if ((reportList = scrReportToDB.getReport("scr_report_tmp")) != null) {
+                    JSONArray jsonArray = JSONArray.fromObject(reportList);
+                    response.getWriter().write(jsonArray.toString());
+                } else {
+                    response.getWriter().write("fail");
+                }
+            }
+            if (id.equals("scr_service")) {
+
+            }
         }
     }
 

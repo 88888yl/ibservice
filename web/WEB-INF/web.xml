@@ -104,7 +104,15 @@
         <servlet-name>SCRTreeServlet</servlet-name>
         <servlet-class>scr.servlet.SCRTreeServlet</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>RefreshChartServlet</servlet-name>
+        <servlet-class>report.servlet.RefreshChartServlet</servlet-class>
+    </servlet>
 
+    <servlet-mapping>
+        <servlet-name>RefreshChartServlet</servlet-name>
+        <url-pattern>/refresh.action</url-pattern>
+    </servlet-mapping>
     <servlet-mapping>
         <servlet-name>CSOReportServlet</servlet-name>
         <url-pattern>/csoreport.action</url-pattern>

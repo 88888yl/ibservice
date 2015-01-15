@@ -24,8 +24,8 @@ public class SCRReportToDB {
         this.PWD = PWD;
     }
 
-    public void createSCRReportTable() {
-        String sql = "create table scr_report (" +
+    public void createSCRReportTable(String reportTableName) {
+        String sql = "create table " + reportTableName + " (" +
                 "\"Year\" NUMBER," +
                 "\"FW\" NUMBER," +
                 "\"Total Open SCR\" NUMBER," +
@@ -47,15 +47,13 @@ public class SCRReportToDB {
             stmt = con.createStatement();
             stmt.executeUpdate(sql);
             stmt.close();
-            System.out.println();
-            System.out.println("SCR Report --- Create Success!");
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
 
     @SuppressWarnings("ConstantConditions")
-    public void insertSCRReportData(String tableName) {
+    public void insertSCRReportData(String tableName, String reportTableName) {
 
         /** these maps are used for loading scr information by every year and every fw. */
         Map<String, List<String>> open_scr = new HashMap<String, List<String>>();
@@ -184,20 +182,20 @@ public class SCRReportToDB {
                 p95_open_scr = p95_open_scr_percentile.getResult();
                 p50_open_scr = p50_open_scr_percentile.getResult();
 
-                String insert_sql = String.format("insert into scr_report (" +
-                        "\"Year\"," +
-                        "\"FW\"," +
-                        "\"New Open This Week\"," +
-                        "\"New Closed This Week\"," +
-                        "\"Total Open SCR\"," +
-                        "\"Total Closed SCR\"," +
-                        "\"SCR Over 60 Days\"," +
-                        "\"P95 All Open SCR\"," +
-                        "\"P50 SCR\"," +
-                        "\"Sum SCR\"," +
-                        "\"Oldest SCR\"" +
-                        ") values (" +
-                        "'%s','%s','%s','%d','%d','%d','%s','%s','%s','%d','%d')",
+                String insert_sql = String.format("insert into " + reportTableName + " (" +
+                                "\"Year\"," +
+                                "\"FW\"," +
+                                "\"New Open This Week\"," +
+                                "\"New Closed This Week\"," +
+                                "\"Total Open SCR\"," +
+                                "\"Total Closed SCR\"," +
+                                "\"SCR Over 60 Days\"," +
+                                "\"P95 All Open SCR\"," +
+                                "\"P50 SCR\"," +
+                                "\"Sum SCR\"," +
+                                "\"Oldest SCR\"" +
+                                ") values (" +
+                                "'%s','%s','%s','%d','%d','%d','%s','%s','%s','%d','%d')",
                         scr_year, scr_fw, new_open_scr, close, open_sum, all_close, open_cso_age_60, p95_open_scr, p50_open_scr, all_cso, Collections.max(all_opend_age));
                 Statement s = con.createStatement();
                 s.executeQuery(insert_sql);
@@ -210,10 +208,10 @@ public class SCRReportToDB {
         }
     }
 
-    public List<List<Integer>> getReport() {
+    public List<List<Integer>> getReport(String reportTableName) {
         List<List<Integer>> reportList = new ArrayList<List<Integer>>();
 
-        String sql = "select * from scr_report order by \"Year\",\"FW\"";
+        String sql = "select * from " + reportTableName + " order by \"Year\",\"FW\"";
         try {
             stmt = con.createStatement();
             rs = stmt.executeQuery(sql);
@@ -299,9 +297,9 @@ public class SCRReportToDB {
         return con;
     }
 
-    public void deleteSCRReportTable() {
+    public void deleteSCRReportTable(String reportTableName) {
         String sql;
-        sql = "drop table scr_report";
+        sql = "drop table " + reportTableName;
         try {
             stmt = con.createStatement();
             stmt.executeUpdate(sql);
@@ -337,9 +335,9 @@ public class SCRReportToDB {
         SCRReportToDB scrReportToDB = new SCRReportToDB(
                 GlobalVariables.oracleUrl, GlobalVariables.oracleUserName, GlobalVariables.oraclePassword);
         scrReportToDB.getConnect();
-        scrReportToDB.deleteSCRReportTable();
-        scrReportToDB.createSCRReportTable();
-        scrReportToDB.insertSCRReportData("total_scr");
+        scrReportToDB.deleteSCRReportTable("scr_report");
+        scrReportToDB.createSCRReportTable("scr_report");
+        scrReportToDB.insertSCRReportData("total_scr", "scr_report");
         scrReportToDB.closeAll();
     }
 }

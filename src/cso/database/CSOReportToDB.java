@@ -39,8 +39,8 @@ public class CSOReportToDB {
         return con;
     }
 
-    public void createCSOReportTable() {
-        String sql = "create table cso_report (" +
+    public void createCSOReportTable(String reportTableName) {
+        String sql = "create table " + reportTableName + " (" +
                 "\"Year\" NUMBER," +
                 "\"FW\" NUMBER," +
                 "\"Total Open CSO\" NUMBER," +
@@ -65,15 +65,13 @@ public class CSOReportToDB {
             stmt = con.createStatement();
             stmt.executeUpdate(sql);
             stmt.close();
-            System.out.println();
-            System.out.println("CSO Report --- Create Success!");
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
 
     @SuppressWarnings("ConstantConditions")
-    public void insertCSOReportData(String tableName) {
+    public void insertCSOReportData(String tableName, String reportTableName) {
 
         /** these maps are used for loading cso information by every year and every fw. */
         Map<String, List<String>> open_cso = new HashMap<String, List<String>>();
@@ -287,7 +285,7 @@ public class CSOReportToDB {
                 p50_open_cso = p50_red_open_cso_percentile.getResult();
 
                 String insert_sql = String.format(
-                        "insert into cso_report (" +
+                        "insert into " + reportTableName + " (" +
                                 "\"Year\"," +
                                 "\"FW\"," +
                                 "\"New Open This Week\"," +
@@ -308,7 +306,7 @@ public class CSOReportToDB {
                         cso_year, cso_fw, new_open_cso, close, red_cso_sum, open_red_cso, close_red_cso, p95_open_cso,
                         p95_red_open_cso, p50_open_cso, p95_non_red_open_cso, open_sum, all_close, all_cso, Collections.max(all_opend_age));
                 String insert_sql2 = String.format(
-                        "update cso_report set " +
+                        "update " + reportTableName + " set " +
                                 "\"Red Open This Week\"=%d," +
                                 "\"Red Closed This Week\"=%d," +
                                 "\"CSO Over 60 Days\"=%d," +
@@ -327,10 +325,10 @@ public class CSOReportToDB {
         }
     }
 
-    public List<List<Integer>> getReport() {
+    public List<List<Integer>> getReport(String reportTableName) {
         List<List<Integer>> reportList = new ArrayList<List<Integer>>();
 
-        String sql = "select * from cso_report order by \"Year\",\"FW\"";
+        String sql = "select * from " + reportTableName + " order by \"Year\",\"FW\"";
         try {
             stmt = con.createStatement();
             rs = stmt.executeQuery(sql);
@@ -420,9 +418,9 @@ public class CSOReportToDB {
         return totalContent.toString();
     }
 
-    public void deleteCSOReportTable() {
+    public void deleteCSOReportTable(String reportTableName) {
         String sql;
-        sql = "drop table cso_report";
+        sql = "drop table " + reportTableName;
         try {
             stmt = con.createStatement();
             stmt.executeUpdate(sql);
@@ -458,9 +456,9 @@ public class CSOReportToDB {
         CSOReportToDB csoReportToDB = new CSOReportToDB(
                 GlobalVariables.oracleUrl, GlobalVariables.oracleUserName, GlobalVariables.oraclePassword);
         csoReportToDB.getConnect();
-        csoReportToDB.deleteCSOReportTable();
-        csoReportToDB.createCSOReportTable();
-        csoReportToDB.insertCSOReportData("total_cso");
+        csoReportToDB.deleteCSOReportTable("cso_report");
+        csoReportToDB.createCSOReportTable("cso_report");
+        csoReportToDB.insertCSOReportData("total_cso", "cso_report");
         //csoReportToDB.getTree();
         csoReportToDB.closeAll();
     }

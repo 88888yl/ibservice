@@ -105,6 +105,30 @@
     function chooseItems() {
         var items = window.frames["treePage"].getCheckedInfo();
         console.log(items);
+        var itemStr = '@';
+        for (var i = 0; i < items.length; i++) {
+            itemStr += items[i] + '@';
+        }
+        var itemString = itemStr.substring(1, itemStr.length - 1);
+        var id = "scr_report";
+        $("#refresh").attr("disabled", "disabled");
+        $.ajax({
+            type: 'post',
+            dataType: 'text',
+            async: true,
+            url: 'refresh.action',
+            data: {
+                items: itemString,
+                id: id
+            },
+            success: function () {
+                window.frames["resultPage"].location.href = "/scr_report_table.jsp?&id=" + id;
+                $("#refresh").removeAttr("disabled");
+            },
+            error: function () {
+                $("#refresh").removeAttr("disabled");
+            }
+        });
     }
 
     function getSCRReport() {
