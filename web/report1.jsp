@@ -348,7 +348,7 @@
 
     function chooseItems() {
         var items = window.frames["treePage"].getCheckedInfo();
-        console.log(items);
+//        console.log(items);
         var itemStr = '@';
         for (var i = 0; i < items.length; i++) {
             itemStr += items[i] + '@';
@@ -479,7 +479,6 @@
             var end_text = document.getElementById("endTime");
             end_text.innerHTML = "now";
             end_text.value = "now";
-            console.log(end_text.value);
         }
     }
 

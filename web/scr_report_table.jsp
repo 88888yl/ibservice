@@ -24,6 +24,14 @@
     var winWidth;
     var winHeight;
     var tmpId = getParameter("id").split("?")[0];
+    var startTime = getParameter("start_time").split("?")[0];
+    var endTime = getParameter("end_time").split("?")[0];
+
+//    if (startTime != null && endTime != null && startTime != "" && endTime != "") {
+//        console.log(tmpId);
+//        console.log(startTime);
+//        console.log(endTime);
+//    }
 
     if (window.innerWidth)
         winWidth = window.innerWidth;
@@ -74,6 +82,12 @@
     }
 
     function initTable(result) {
+        var chartList;
+        if (startTime != null && endTime != null && startTime != "" && endTime != "") {
+            chartList = getChartList(result);
+        } else {
+            chartList = result;
+        }
         var table = document.createElement("table");
         table.align = "center";
         table.style.border = "solid dashed #157fcc";
@@ -82,7 +96,7 @@
         table.setAttribute("id", "tblContent");
         var tr;
         var td;
-        var len = result.length;
+        var len = chartList.length;
         var i;
 
         if (len > 12) {
@@ -101,7 +115,7 @@
             tr.appendChild(td);
             for (i = len - 12; i < len; i++) {
                 td = document.createElement("td");
-                td.innerHTML = "FW" + result[i][1];
+                td.innerHTML = "FW" + chartList[i][1];
                 td.style.width = "100px";
                 td.style.color = "#ffffff";
                 td.style.textAlign = "center";
@@ -123,7 +137,7 @@
             tr.appendChild(td);
             for (i = len - 12; i < len; i++) {
                 td = document.createElement("td");
-                td.innerHTML = result[i][2];
+                td.innerHTML = chartList[i][2];
                 td.style.width = "80px";
                 td.style.textAlign = "right";
                 tr.appendChild(td);
@@ -144,7 +158,7 @@
             tr.appendChild(td);
             for (i = len - 12; i < len; i++) {
                 td = document.createElement("td");
-                td.innerHTML = result[i][3];
+                td.innerHTML = chartList[i][3];
                 td.style.width = "80px";
                 td.style.textAlign = "right";
                 tr.appendChild(td);
@@ -165,7 +179,7 @@
             tr.appendChild(td);
             for (i = len - 12; i < len; i++) {
                 td = document.createElement("td");
-                td.innerHTML = result[i][4];
+                td.innerHTML = chartList[i][4];
                 td.style.width = "80px";
                 td.style.textAlign = "right";
                 tr.appendChild(td);
@@ -186,7 +200,7 @@
             tr.appendChild(td);
             for (i = len - 12; i < len; i++) {
                 td = document.createElement("td");
-                td.innerHTML = result[i][5];
+                td.innerHTML = chartList[i][5];
                 td.style.width = "100px";
                 td.style.textAlign = "right";
                 tr.appendChild(td);
@@ -207,7 +221,7 @@
             tr.appendChild(td);
             for (i = len - 12; i < len; i++) {
                 td = document.createElement("td");
-                td.innerHTML = result[i][6];
+                td.innerHTML = chartList[i][6];
                 td.style.width = "100px";
                 td.style.textAlign = "right";
                 tr.appendChild(td);
@@ -228,7 +242,7 @@
             tr.appendChild(td);
             for (i = len - 12; i < len; i++) {
                 td = document.createElement("td");
-                td.innerHTML = result[i][7];
+                td.innerHTML = chartList[i][7];
                 td.style.width = "100px";
                 td.style.textAlign = "right";
                 tr.appendChild(td);
@@ -253,7 +267,7 @@
             tr.appendChild(td);
             for (i = 0; i < len; i++) {
                 td = document.createElement("td");
-                td.innerHTML = "FW" + result[i][1];
+                td.innerHTML = "FW" + chartList[i][1];
                 td.style.width = "100px";
                 td.style.color = "#ffffff";
                 td.style.textAlign = "center";
@@ -275,7 +289,7 @@
             tr.appendChild(td);
             for (i = 0; i < len; i++) {
                 td = document.createElement("td");
-                td.innerHTML = result[i][2];
+                td.innerHTML = chartList[i][2];
                 td.style.width = "80px";
                 td.style.textAlign = "right";
                 tr.appendChild(td);
@@ -296,7 +310,7 @@
             tr.appendChild(td);
             for (i = 0; i < len; i++) {
                 td = document.createElement("td");
-                td.innerHTML = result[i][3];
+                td.innerHTML = chartList[i][3];
                 td.style.width = "80px";
                 td.style.textAlign = "right";
                 tr.appendChild(td);
@@ -317,7 +331,7 @@
             tr.appendChild(td);
             for (i = 0; i < len; i++) {
                 td = document.createElement("td");
-                td.innerHTML = result[i][4];
+                td.innerHTML = chartList[i][4];
                 td.style.width = "80px";
                 td.style.textAlign = "right";
                 tr.appendChild(td);
@@ -338,7 +352,7 @@
             tr.appendChild(td);
             for (i = 0; i < len; i++) {
                 td = document.createElement("td");
-                td.innerHTML = result[i][5];
+                td.innerHTML = chartList[i][5];
                 td.style.width = "100px";
                 td.style.textAlign = "right";
                 tr.appendChild(td);
@@ -359,7 +373,7 @@
             tr.appendChild(td);
             for (i = 0; i < len; i++) {
                 td = document.createElement("td");
-                td.innerHTML = result[i][6];
+                td.innerHTML = chartList[i][6];
                 td.style.width = "100px";
                 td.style.textAlign = "right";
                 tr.appendChild(td);
@@ -380,7 +394,7 @@
             tr.appendChild(td);
             for (i = 0; i < len; i++) {
                 td = document.createElement("td");
-                td.innerHTML = result[i][7];
+                td.innerHTML = chartList[i][7];
                 td.style.width = "100px";
                 td.style.textAlign = "right";
                 tr.appendChild(td);
@@ -413,13 +427,21 @@
                     alert("Report is not found!");
                 } else {
                     result = eval("(" + result + ")");
-                    myChart(result);
+                    myChart2(result);
                 }
             },
             error: function () {
                 $("#result").html("Receive failed!");
             }
         });
+    }
+
+    function myChart2(result) {
+        if (startTime != null && endTime != null && startTime != "" && endTime != "") {
+            chart20xx(getChartList(result));
+        } else {
+            myChart(result);
+        }
     }
 
     function myChart(result) {
@@ -474,6 +496,62 @@
         chart20xx(list_2013);
     }
 
+    function getChartList(result) {
+        if (startTime != null && endTime != null && startTime != "" && endTime != "") {
+            var chartList = [];
+            var n = 0;
+            var startYear = parseInt(startTime.substring(0, 4));
+            var startFW = parseInt(startTime.substring(7));
+            var endYear;
+            var endFW;
+            if (endTime == "now") {
+                var myDate = new Date();
+                endYear = myDate.getFullYear();
+                endFW = Ext.Date.getWeekOfYear(myDate);
+            } else {
+                endYear = parseInt(endTime.substring(0, 4));
+                endFW = parseInt(endTime.substring(7));
+            }
+            console.log(startYear + "-fw" + startFW + " ~ " + endYear + "-fw" + endFW);
+
+            for (var i = 0; i < result.length; i++) {
+                var fwList = [];
+                for (var j = 0; j < result[i].length; j++) {
+                    fwList[j] = result[i][j];
+                }
+                if (startYear == endYear) {
+                    if (fwList[0] == startYear) {
+                        if (startFW <= fwList[1]) {
+                            if (fwList[1] <= endFW) {
+                                chartList[n] = fwList;
+                                n++;
+                            }
+                        }
+                    }
+                } else {
+                    if (fwList[0] > startYear) {
+                        if (fwList[0] < endYear) {
+                            chartList[n] = fwList;
+                            n++;
+                        }
+                        if (fwList[0] == endYear) {
+                            if (fwList[1] <= endFW) {
+                                chartList[n] = fwList;
+                                n++;
+                            }
+                        }
+                    } else if (fwList[0] == startYear) {
+                        if (fwList[1] >= startFW) {
+                            chartList[n] = fwList;
+                            n++;
+                        }
+                    }
+                }
+            }
+            return chartList;
+        }
+    }
+
     function chart20xx(list) {
         var max = 0;
         for (var i = 0; i < list.length; i++) {
@@ -485,10 +563,19 @@
         }
         max = Math.ceil(max * 1.25);
 
+        for (var n = 0; n < list.length; n++) {
+            list[n][1] = list[n][0] + "-fw" + list[n][1];
+        }
+
         var myStore = Ext.create('Ext.data.JsonStore', {
             fields: ['0', '1', '2', '3', '4', '5', '6', '7'],
             data: list
         });
+
+        var title = "FW of 2013";
+        if (startTime != null && endTime != null && startTime != "" && endTime != "") {
+            title = startTime + " ~ " + endTime;
+        }
 
         var chart = Ext.create('Ext.chart.Chart', {
             style: 'background:#fff',
@@ -512,7 +599,7 @@
                     }
                 },
                 {
-                    title: 'FW of 2013',
+                    title: title,
                     type: 'Category',
                     position: 'bottom',
                     fields: ['1'],
@@ -520,7 +607,7 @@
                     label: {
                         font: '11px Arial',
                         renderer: function (name) {
-                            return "FW" + name;
+                            return name;
                         },
                         rotate: {
                             degrees: -45
