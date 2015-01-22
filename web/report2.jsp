@@ -28,7 +28,7 @@
     #content-wrapper {
         margin: 0;
         width: 100%;
-        height: 93.2%;
+        height: 88%;
         overflow: hidden;
     }
 
@@ -124,7 +124,8 @@
             <input type="text" class="form-control" id="email" placeholder="example@example.com">
         </div>
         <div style="margin: 5px 10px 5px 0; width: 120px; float: left" class="input-group" onclick="hidePopovers()">
-            <input type="button" id="send" value="Send" class="btn btn-warning" onclick="sendReport()">
+            <input type="button" id="send" value="Send" class="btn btn-warning"
+                   onclick="{window.frames['resultPage'].getSVG();this.disabled = true;var me = this;setTimeout(function() { me.disabled = false; }, 5000);}">
             <span class="label label-default" id="information" style="width: 30px; margin-left: 5px"></span>
         </div>
     </div>

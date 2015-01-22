@@ -125,7 +125,8 @@
             <input type="text" class="form-control" id="email" placeholder="example@example.com">
         </div>
         <div style="margin: 5px 10px 5px 0; width: 120px; float: left" class="input-group" onclick="hidePopovers()">
-            <input type="button" id="send" value="Send" class="btn btn-warning" onclick="sendReport()">
+            <input type="button" id="send" value="Send" class="btn btn-warning"
+                   onclick="{window.frames['resultPage'].getSVG();this.disabled = true;var me = this;setTimeout(function() { me.disabled = false; }, 5000);}">
             <span class="label label-default" id="information" style="width: 30px; margin-left: 5px"></span>
         </div>
     </div>
@@ -154,7 +155,7 @@
                 </li>
                 <li class="dropdown-submenu">
                     <a tabindex="-1" href="#">2012</a>
-                    <ul class="dropdown-menu"  id="start_li_2">
+                    <ul class="dropdown-menu" id="start_li_2">
                         <li><a href="#">2012-FW1</a></li>
                         <li><a href="#">2012-FW5</a></li>
                         <li><a href="#">2012-FW10</a></li>
@@ -466,7 +467,7 @@
                     } else if (start_text.substring(0, 4) > end_text.value.substring(0, 4)) {
                         alert("End year must older than start year, please reselect the time");
                     } else if (start_text.substring(0, 4) == end_text.value.substring(0, 4)
-                    && parseInt(start_text.substring(7)) >= parseInt(end_text.value.substring(7))) {
+                            && parseInt(start_text.substring(7)) >= parseInt(end_text.value.substring(7))) {
                         alert("End fw must older than start fw, please reselect the time");
                     } else {
                         end_text.innerHTML = end_result;
@@ -480,28 +481,6 @@
             end_text.innerHTML = "now";
             end_text.value = "now";
         }
-    }
-
-    function sendReport() {
-        $("#send").attr("disabled", "disabled");
-        $.ajax({
-            type: 'post',
-            dataType: 'text',
-            async: true,
-            url: 'email.action',
-            data: {email: $("#email").val()},
-            beforeSend: function () {
-                $("#information").html("Running...");
-            },
-            success: function (data) {
-                $("#information").html(data);
-                $("#send").removeAttr("disabled");
-            },
-            error: function () {
-                $("#information").html("Update database failed!");
-                $("#send").removeAttr("disabled");
-            }
-        })
     }
 </script>
 </body>

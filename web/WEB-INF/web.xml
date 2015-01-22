@@ -108,7 +108,15 @@
         <servlet-name>RefreshChartServlet</servlet-name>
         <servlet-class>report.servlet.RefreshChartServlet</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>ImageExportService</servlet-name>
+        <servlet-class>utils.ImageExportService</servlet-class>
+    </servlet>
 
+    <servlet-mapping>
+        <servlet-name>ImageExportService</servlet-name>
+        <url-pattern>/imageExportService.action</url-pattern>
+    </servlet-mapping>
     <servlet-mapping>
         <servlet-name>RefreshChartServlet</servlet-name>
         <url-pattern>/refresh.action</url-pattern>

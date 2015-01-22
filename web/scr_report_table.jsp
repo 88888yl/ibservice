@@ -574,10 +574,15 @@
 
         var title = "FW of 2013";
         if (startTime != null && endTime != null && startTime != "" && endTime != "") {
+            if (endTime == "now") {
+                var myDate = new Date();
+                endTime = myDate.getFullYear() + "-FW" + Ext.Date.getWeekOfYear(myDate);
+            }
             title = startTime + " ~ " + endTime;
         }
 
         var chart = Ext.create('Ext.chart.Chart', {
+            id: 'scr_chart',
             style: 'background:#fff',
             animate: true,
             store: myStore,
@@ -754,6 +759,26 @@
 
     Ext.onReady(createChart);
 
+    function getSVG() {
+        Ext.draw.engine.SvgExporter.defaultUrl = 'imageExportService.action';
+        var svg = Ext.draw.engine.SvgExporter.generate(Ext.getCmp('scr_chart').surface, Ext.getCmp('scr_chart').config);
+        var email = parent.window.document.getElementById('email').value;
+        var table = document.getElementById("tblContent");
+        var name = "SCR Report";
+
+        $.ajax({
+            type: 'post',
+            dataType: 'text',
+            async: true,
+            url: 'imageExportService.action',
+            data: {
+                email: email,
+                svg: svg,
+                table: table.outerHTML,
+                name: name
+            }
+        })
+    }
 </script>
 </body>
 </html>
