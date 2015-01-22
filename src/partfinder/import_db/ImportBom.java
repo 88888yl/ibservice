@@ -2,7 +2,7 @@ package partfinder.import_db;
 
 import partfinder.database.ExcelToDB;
 import partfinder.database.InfoToDB;
-import partfinder.utils.ExcelLoader;
+import utils.ExcelLoader;
 import partfinder.utils.FindFather;
 import utils.GlobalVariables;
 

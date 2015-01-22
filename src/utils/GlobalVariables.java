@@ -16,6 +16,8 @@ public class GlobalVariables {
     public static final String ipPath = resourcePath + "ip_info/";
     public static final String bomPath = resourcePath + "BOM/";
     public static final String scrPath = resourcePath + "SCR/";
+    public static final String complaintsPath = resourcePath + "Complaints/";
+    public static final String dispatchPath = resourcePath + "Dispatch/";
 
     /** oracle table name */
     public static final String totalCSOTable = "total_cso";

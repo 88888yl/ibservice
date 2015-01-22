@@ -1,6 +1,6 @@
 package partfinder.database;
 
-import partfinder.utils.ExcelLoader;
+import utils.ExcelLoader;
 import utils.GlobalVariables;
 
 import java.sql.*;

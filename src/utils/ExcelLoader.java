@@ -1,4 +1,4 @@
-package partfinder.utils;
+package utils;
 
 import org.apache.poi.ss.usermodel.*;
 
