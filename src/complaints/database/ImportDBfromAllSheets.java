@@ -1,13 +1,16 @@
 package complaints.database;
 
+import utils.FindExcels;
 import utils.GetExcelTableInfo;
 import utils.GlobalVariables;
 
+import java.io.File;
 import java.sql.*;
 import java.util.List;
 
 /**
- * Created by myl on 2015/1/22.
+ * Created by myl
+ * on 2015/1/22.
  */
 public class ImportDBfromAllSheets {
     private String path = GlobalVariables.complaintsPath;
@@ -55,7 +58,7 @@ public class ImportDBfromAllSheets {
                     stmt = con.createStatement();
                     stmt.executeUpdate(create_sql.toString());
                     stmt.close();
-                    System.out.println(tableName + " insert success!");
+                    System.out.println(tableName + " create success!");
                 } catch (SQLException e) {
                     e.printStackTrace();
                 }
@@ -94,7 +97,6 @@ public class ImportDBfromAllSheets {
                 String substring2 = subSql2.substring(0, subSql2.length() - 1);
                 insert_sql.append("insert into \"").append(tableName).append("\" (")
                         .append(substring).append(") values (").append(substring2).append(")");
-//                System.out.println(insert_sql);
                 try {
                     con.setAutoCommit(false);
                     PreparedStatement pst = con.prepareStatement(insert_sql.toString());
@@ -117,6 +119,99 @@ public class ImportDBfromAllSheets {
             }
         }
         closeAll();
+    }
+
+    private void firstInsert(List<List<String>> rows, String tableName) {
+        StringBuilder insert_sql = new StringBuilder();
+        StringBuilder subSql1 = new StringBuilder();
+        StringBuilder subSql2 = new StringBuilder();
+        List<String> columnNames = getExcelTableInfo.getColumnNames(tableName);
+        for (String columnName : columnNames) {
+            subSql1.append("\"").append(columnName).append("\",");
+            subSql2.append("?,");
+        }
+        String substring = subSql1.substring(0, subSql1.length() - 1);
+        String substring2 = subSql2.substring(0, subSql2.length() - 1);
+        insert_sql.append("insert into ").append(tableName).append(" (")
+                .append(substring).append(") values (").append(substring2).append(")");
+        try {
+            con.setAutoCommit(false);
+            PreparedStatement pst = con.prepareStatement(insert_sql.toString());
+            for (List<String> row : rows.subList(1, rows.size())) {
+                for (int j = 0; j < columnNames.size(); j++) {
+                    if (row.get(j).isEmpty())
+                        pst.setNull(j + 1, Types.VARCHAR);
+                    else
+                        pst.setString(j + 1, row.get(j));
+                }
+                pst.addBatch();
+            }
+            pst.executeBatch();
+            con.commit();
+            System.out.println(tableName + ": insert success!");
+            fileRename(path);
+            pst.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void updateInsert(List<List<String>> rows, String tableName) {
+        StringBuilder insert_sql = new StringBuilder();
+        StringBuilder subSql1 = new StringBuilder();
+        StringBuilder subSql2 = new StringBuilder();
+        List<String> columnNames = getExcelTableInfo.getColumnNames(tableName);
+        for (String columnName : columnNames) {
+            subSql1.append("\"").append(columnName).append("\",");
+            subSql2.append("?,");
+        }
+        String substring = subSql1.substring(0, subSql1.length() - 1);
+        String substring2 = subSql2.substring(0, subSql2.length() - 1);
+        insert_sql.append("insert into ").append(tableName).append(" (")
+                .append(substring).append(") select ").append(substring2).append(" from dual where not exists(select \"PR ID\" from ").append(tableName).append(" where (\"PR ID\"=?))");
+        try {
+            con.setAutoCommit(false);
+            PreparedStatement pst = con.prepareStatement(insert_sql.toString());
+            for (List<String> row : rows.subList(1, rows.size())) {
+                for (int j = 0; j < columnNames.size(); j++) {
+                    if (row.get(j).isEmpty())
+                        pst.setNull(j + 1, Types.VARCHAR);
+                    else
+                        pst.setString(j + 1, row.get(j));
+                }
+                pst.setString(columnNames.size() + 1, row.get(0));
+                pst.addBatch();
+            }
+            pst.executeBatch();
+            con.commit();
+            System.out.println(tableName + ": insert success!");
+            fileRename(path);
+            pst.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void fileRename(String path) {
+        String[] excels = new FindExcels().getExcelsName(path);
+        for (String excel : excels) {
+            if (!excel.contains("(Up to date)")) {
+                File excelFile = new File(path + excel);
+                excelFile.renameTo(new File(path + "(Up to date)" + excel));
+            }
+        }
+    }
+
+    private String trimStr(String s) {
+        int i = s.length();
+        int j = 0;
+        int k = 0;
+        char[] arrayOfChar = s.toCharArray();
+        while ((j < i) && (arrayOfChar[(k + j)] <= ' '))
+            ++j;
+        while ((j < i) && (arrayOfChar[(k + i - 1)] <= ' '))
+            --i;
+        return (((j > 0) || (i < s.length())) ? s.substring(j, i) : s);
     }
 
     private void getConnect() {

@@ -14,6 +14,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -69,11 +70,16 @@ public class GetExcelTableInfo {
                         if (sheet == null) {
                             return Collections.emptyList();
                         }
-                        for (Cell cell : sheet.getRow(0)) {
-                            if (cell.getCellType() == Cell.CELL_TYPE_NUMERIC) {
-                                columnNames.add(String.valueOf(cell.getNumericCellValue()));
+                        for (int j = 0; j < sheet.getRow(0).getLastCellNum(); j++) {
+                            Cell cell = sheet.getRow(0).getCell(j);
+                            if (cell == null) {
+                                columnNames.add("empty-" + j);
                             } else {
-                                columnNames.add(String.valueOf(cell.getStringCellValue()));
+                                if (cell.getCellType() == Cell.CELL_TYPE_NUMERIC) {
+                                    columnNames.add(String.valueOf(cell.getNumericCellValue()));
+                                } else {
+                                    columnNames.add(String.valueOf(cell.getStringCellValue()));
+                                }
                             }
                         }
                     }
@@ -113,13 +119,30 @@ public class GetExcelTableInfo {
                                             value = cell.getStringCellValue();
                                             break;
                                         case Cell.CELL_TYPE_NUMERIC:
-                                            value = String.valueOf((int) cell.getNumericCellValue());
+                                            if (DateUtil.isCellDateFormatted(cell)) {
+                                                value = DateFormat.getDateInstance().format(cell.getDateCellValue());
+                                            } else {
+                                                java.text.NumberFormat nf = java.text.NumberFormat.getInstance();
+                                                nf.setGroupingUsed(false);
+                                                value = String.valueOf(nf.format(cell.getNumericCellValue()));
+                                            }
                                             break;
                                         case Cell.CELL_TYPE_BOOLEAN:
                                             value = String.valueOf(cell.getBooleanCellValue());
                                             break;
                                         case Cell.CELL_TYPE_FORMULA:
-                                            value = String.valueOf(cell.getCellFormula());
+                                            switch (cell.getCachedFormulaResultType()) {
+                                                case Cell.CELL_TYPE_STRING:
+                                                    value = cell.getStringCellValue();
+                                                    break;
+                                                case Cell.CELL_TYPE_NUMERIC:
+                                                    value = String.valueOf(cell.getNumericCellValue());
+                                                    break;
+                                                default:
+                                            }
+                                            break;
+                                        case Cell.CELL_TYPE_ERROR:
+                                            value = String.valueOf(cell.getErrorCellValue());
                                             break;
                                         case Cell.CELL_TYPE_BLANK:
                                             break;
@@ -139,13 +162,5 @@ public class GetExcelTableInfo {
             }
         }
         return rows;
-    }
-
-    public static void main(String[] args) {
-        GetExcelTableInfo getExcelTableInfo = new GetExcelTableInfo(GlobalVariables.complaintsPath);
-        System.out.println(getExcelTableInfo.getAllTableNames());
-//        for (String tableName : getExcelTableInfo.getAllTableNames()) {
-            System.out.println(getExcelTableInfo.getRows("Comp-S-P Data").get(32));
-//        }
     }
 }
