@@ -112,7 +112,55 @@
         <servlet-name>ImageExportService</servlet-name>
         <servlet-class>utils.ImageExportService</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>DispatchSearchServlet</servlet-name>
+        <servlet-class>dispatch.servlet.DispatchSearchServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>UploadDispatchServlet</servlet-name>
+        <servlet-class>dispatch.servlet.UploadDispatchServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>UpdateDispatchServlet</servlet-name>
+        <servlet-class>dispatch.servlet.UpdateDispatchServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>ComplaintsSearchServlet</servlet-name>
+        <servlet-class>complaints.servlet.ComplaintsSearchServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>UploadComplaintsServlet</servlet-name>
+        <servlet-class>complaints.servlet.UploadComplaintsServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>UpdateComplaintsServlet</servlet-name>
+        <servlet-class>complaints.servlet.UpdateComplaintsServlet</servlet-class>
+    </servlet>
 
+    <servlet-mapping>
+        <servlet-name>UploadComplaintsServlet</servlet-name>
+        <url-pattern>/uploadComplaints.action</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>UpdateComplaintsServlet</servlet-name>
+        <url-pattern>/updateComplaints.action</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ComplaintsSearchServlet</servlet-name>
+        <url-pattern>/complaintsSearch.action</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>UpdateDispatchServlet</servlet-name>
+        <url-pattern>/updateDispatch.action</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>UploadDispatchServlet</servlet-name>
+        <url-pattern>/uploadDispatch.action</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>DispatchSearchServlet</servlet-name>
+        <url-pattern>/dispatchSearch.action</url-pattern>
+    </servlet-mapping>
     <servlet-mapping>
         <servlet-name>ImageExportService</servlet-name>
         <url-pattern>/imageExportService.action</url-pattern>

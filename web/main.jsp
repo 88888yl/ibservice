@@ -49,6 +49,8 @@
                 <%--<li id="tab4" onclick="changeTab4(this);"><a>Chart</a></li>--%>
                 <li id="tab6" onclick="changeTab6(this);"><a href="#">SCR Report</a></li>
                 <li id="tab8" onclick="changeTab8(this);"><a href="#">Report Service</a></li>
+                <li id="tab9" onclick="changeTab9(this);"><a href="#">Complaints</a></li>
+                <li id="tab10" onclick="changeTab10(this);"><a href="#">Dispatch</a></li>
                 <%--<li id="tab7" onclick="changeTab7(this);"><a>Access Statistics</a></li>--%>
             </ul>
         </div>
@@ -98,6 +100,14 @@
         $("#tab").load("report_service.jsp");
         changeTabColor(elem);
     }
+    function changeTab9(elem) {
+        $("#tab").load("complaints.jsp");
+        changeTabColor(elem);
+    }
+    function changeTab10(elem) {
+        $("#tab").load("dispatch.jsp");
+        changeTabColor(elem);
+    }
     function changeTabColor(elem) {
         var className = 'active';
         var tab1 = document.getElementById('tab1');
@@ -108,6 +118,8 @@
         var tab6 = document.getElementById('tab6');
         //var tab7 = document.getElementById('tab7');
         var tab8 = document.getElementById('tab8');
+        var tab9 = document.getElementById('tab9');
+        var tab10 = document.getElementById('tab10');
 
         tab1.removeAttribute('class');
         tab2.removeAttribute('class');
@@ -117,6 +129,8 @@
         tab6.removeAttribute('class');
         //tab7.removeAttribute('class');
         tab8.removeAttribute('class');
+        tab9.removeAttribute('class');
+        tab10.removeAttribute('class');
 
         elem.setAttribute('class', className);
     }

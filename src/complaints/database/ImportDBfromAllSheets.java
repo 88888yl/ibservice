@@ -6,6 +6,7 @@ import utils.GlobalVariables;
 
 import java.io.File;
 import java.sql.*;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -119,6 +120,12 @@ public class ImportDBfromAllSheets {
             }
         }
         closeAll();
+    }
+
+    public List<List<String>> complaintsSearch(String id) {
+        getConnect();
+        List<List<String>> resultLists = new ArrayList<List<String>>();
+        return resultLists;
     }
 
     private void firstInsert(List<List<String>> rows, String tableName) {

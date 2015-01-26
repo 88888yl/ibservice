@@ -82,6 +82,38 @@ public class ImportDBfromDispatch {
         closeAll();
     }
 
+    public List<List<String>> dispatchSearch(String id) {
+        getConnect();
+        List<List<String>> resultLists = new ArrayList<List<String>>();
+
+        String search_sql = "select * from \"Dispatch-All\" where \"Dispatch Number\" like '%" + id + "%'";
+        try {
+            stmt = con.createStatement();
+            rs = stmt.executeQuery(search_sql);
+            ResultSetMetaData rsmd = rs.getMetaData();
+            int size = rsmd.getColumnCount();
+            List<String> tmpRows = new ArrayList<String>();
+            for (int i = 1; i < size + 1; i++) {
+                tmpRows.add(rsmd.getColumnLabel(i));
+            }
+            resultLists.add(tmpRows);
+            while (rs.next()) {
+                List<String> tmpRows2 = new ArrayList<String>();
+                for (int i = 1; i < size + 1; i++) {
+                    String value = rs.getString(rsmd.getColumnLabel(i));
+                    tmpRows2.add(value == null ? "" : value);
+                }
+                resultLists.add(tmpRows2);
+            }
+            rs.close();
+            stmt.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        closeAll();
+        return resultLists;
+    }
+
     private List<String> getColumnNames() {
         List<String> columnNames = new ArrayList<String>();
 
@@ -331,10 +363,10 @@ public class ImportDBfromDispatch {
             }
     }
 
-    public static void main(String[] args) {
-        ImportDBfromDispatch importDBfromDispatch = new ImportDBfromDispatch(
-                GlobalVariables.oracleUrl, GlobalVariables.oracleUserName, GlobalVariables.oraclePassword);
+//    public static void main(String[] args) {
+//        ImportDBfromDispatch importDBfromDispatch = new ImportDBfromDispatch(
+//                GlobalVariables.oracleUrl, GlobalVariables.oracleUserName, GlobalVariables.oraclePassword);
 //        importDBfromDispatch.createTablesFromSheets();
-        importDBfromDispatch.insertTables();
-    }
+//        importDBfromDispatch.insertTables();
+//    }
 }
