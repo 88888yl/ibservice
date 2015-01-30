@@ -121,7 +121,7 @@
         </div>
         <div style="margin: 5px 10px 5px 0; width: 300px; float: left" class="input-group" onclick="hidePopovers()">
             <span class="input-group-addon"><span class="glyphicon glyphicon-send"></span> Email</span>
-            <input type="text" class="form-control" id="email" placeholder="example@example.com">
+            <input type="text" class="form-control" id="email">
         </div>
         <div style="margin: 5px 10px 5px 0; width: 120px; float: left" class="input-group" onclick="hidePopovers()">
             <input type="button" id="send" value="Send" class="btn btn-warning"
@@ -435,7 +435,7 @@
         "<div style=\"margin: 10px; width: 200px;\" " +
         "class=\"input-group\"><span class=\"input-group-addon\">" +
         "Email</span><input type=\"text\" class=\"form-control\" " +
-        "id=\"emailAddr\" placeholder=\"example@example.com\"></div><div " +
+        "id=\"emailAddr\"></div><div " +
         "style=\"margin: 0 10px 10px 10px; width: 200px\" " +
         "class=\"input-group\"><input style=\"width: 200px\" " +
         "type=\"button\" id=\"confirm_add\" value=\"Confirm to add\" " +

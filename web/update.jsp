@@ -18,9 +18,9 @@
     <div class="container pull-left" style="margin-top: 10px">
         <div style="margin: 5px 10px 5px 0; width: 600px; float: left" class="input-group">
             <span class="input-group-addon"><span class="glyphicon glyphicon-user"></span> Username</span>
-            <input type="text" class="form-control" id="username" placeholder="oracle user">
+            <input type="text" class="form-control" id="username">
             <span class="input-group-addon">Password</span>
-            <input type="password" class="form-control" id="password" placeholder="oracle password">
+            <input type="password" class="form-control" id="password">
         </div>
 
         <div style="margin: 5px 10px 5px 0; width: 240px; float: left" class="input-group">
@@ -64,20 +64,19 @@
     <div class="container pull-left">
         <div style="margin: 5px 10px 5px 0; width: 110px; float: left" class="input-group">
             <span class="input-group-addon">PN#</span>
-            <input type="text" class="form-control" id="partnumber" name="partnumber" placeholder="pn">
+            <input type="text" class="form-control" id="partnumber" name="partnumber">
         </div>
         <div style="margin: 5px 10px 5px 0; width: 240px; float: left" class="input-group">
             <span class="input-group-addon">Description</span>
-            <input type="text" class="form-control" id="description" name="description"
-                   placeholder="full/part of description">
+            <input type="text" class="form-control" id="description" name="description">
         </div>
         <div style="margin: 5px 10px 5px 0; width: 110px; float: left" class="input-group">
             <span class="input-group-addon">MEP#</span>
-            <input type="text" class="form-control" id="mep" name="mep" placeholder="mep">
+            <input type="text" class="form-control" id="mep" name="mep">
         </div>
         <div style="margin: 5px 10px 5px 0; width: 110px; float: left" class="input-group">
             <span class="input-group-addon">RDO</span>
-            <input type="text" class="form-control" id="rdo" name="rdo" placeholder="rdo">
+            <input type="text" class="form-control" id="rdo" name="rdo">
         </div>
         <div style="margin: 5px 10px 5px 0; width: 240px; float: left" class="input-group">
             <input type="button" class="btn btn-primary" id="searchByPN" name="searchByPN" value="PN Search"

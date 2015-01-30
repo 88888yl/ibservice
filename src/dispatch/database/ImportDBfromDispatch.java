@@ -11,6 +11,7 @@ import java.sql.*;
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by myl
@@ -82,36 +83,98 @@ public class ImportDBfromDispatch {
         closeAll();
     }
 
-    public List<List<String>> dispatchSearch(String id) {
+    public List<String> dispatchCatalogue() {
         getConnect();
-        List<List<String>> resultLists = new ArrayList<List<String>>();
-
-        String search_sql = "select * from \"Dispatch-All\" where \"Dispatch Number\" like '%" + id + "%'";
+        List<String> result = new ArrayList<String>();
+        String column_sql = "SELECT column_name FROM user_tab_columns WHERE table_name=\'Dispatch-All\'";
+        String ColumnStr = "";
         try {
             stmt = con.createStatement();
-            rs = stmt.executeQuery(search_sql);
-            ResultSetMetaData rsmd = rs.getMetaData();
-            int size = rsmd.getColumnCount();
-            List<String> tmpRows = new ArrayList<String>();
-            for (int i = 1; i < size + 1; i++) {
-                tmpRows.add(rsmd.getColumnLabel(i));
-            }
-            resultLists.add(tmpRows);
+            rs = stmt.executeQuery(column_sql);
+            StringBuilder subColumns = new StringBuilder();
+            subColumns.append("{");
             while (rs.next()) {
-                List<String> tmpRows2 = new ArrayList<String>();
-                for (int i = 1; i < size + 1; i++) {
-                    String value = rs.getString(rsmd.getColumnLabel(i));
-                    tmpRows2.add(value == null ? "" : value);
-                }
-                resultLists.add(tmpRows2);
+                subColumns.append("\'").append(rs.getString("COLUMN_NAME")).append("\':\"\",");
             }
+            ColumnStr = subColumns.substring(0, subColumns.length() - 1) + "}";
+            result.add(ColumnStr);
             rs.close();
             stmt.close();
         } catch (SQLException e) {
             e.printStackTrace();
         }
         closeAll();
-        return resultLists;
+        return result;
+    }
+
+    public List<String> dispatchSearch(Map<String, String> stringMap) {
+        getConnect();
+        List<String> result = new ArrayList<String>();
+        StringBuilder subSqlBuider = new StringBuilder();
+        for (Map.Entry<String, String> str : stringMap.entrySet()) {
+            subSqlBuider.append("\"").append(str.getKey()).append("\" like \'%").append(str.getValue()).append("%\' and ");
+        }
+        String sub_sql = subSqlBuider.substring(0, subSqlBuider.length() - 4);
+        String search_sql = "select * from \"Dispatch-All\" where " + sub_sql;
+        try {
+            stmt = con.createStatement();
+            rs = stmt.executeQuery(search_sql);
+            ResultSetMetaData rsmd = rs.getMetaData();
+            int size = rsmd.getColumnCount();
+            List<String> tmpRows = new ArrayList<String>();
+            StringBuilder subFields = new StringBuilder();
+            StringBuilder subColumns = new StringBuilder();
+            subFields.append("[");
+            subColumns.append("[");
+            for (int i = 1; i < size + 1; i++) {
+//                tmpRows.add(rsmd.getColumnLabel(i));
+                subFields.append("{name: \'").append(rsmd.getColumnLabel(i).replaceAll("\'", " ")).append("\'},");
+                subColumns.append("{text: \'")
+                        .append(rsmd.getColumnLabel(i).replaceAll("\'", " "))
+                        .append("\', sortable: true, dataIndex: \'")
+                        .append(rsmd.getColumnLabel(i).replaceAll("\'", " ")).append("\'},");
+            }
+            String fields = (subFields.substring(0, subFields.length() - 1) + "]")
+                    .replaceAll("\"", " ").replaceAll("\\s", "").replaceAll("\\n", "");
+            String columns = (subColumns.substring(0, subColumns.length() - 1) + "]")
+                    .replaceAll("\"", " ").replaceAll("\\s", "").replaceAll("\\n", "");
+            result.add(fields);
+            result.add(columns);
+
+//            resultLists.add(tmpRows);
+            StringBuilder subDummyData = new StringBuilder();
+            subDummyData.append("[");
+            while (rs.next()) {
+//                List<String> tmpRows2 = new ArrayList<String>();
+                StringBuilder subDummyData2 = new StringBuilder();
+                subDummyData2.append("[");
+                for (int i = 1; i < size + 1; i++) {
+                    String value = rs.getString(rsmd.getColumnLabel(i));
+//                    tmpRows2.add(value == null ? "" : value);
+                    subDummyData2.append("\'").append(value == null ? "" : value.replaceAll("\'", " ")).append("\',");
+                }
+                subDummyData.append(subDummyData2.substring(0, subDummyData2.length() - 1)).append("],");
+//                resultLists.add(tmpRows2);
+            }
+            String dummyData = (subDummyData.substring(0, subDummyData.length() - 1) + "]")
+                    .replaceAll("\"", " ").replaceAll("\\s", "").replaceAll("\\n", "");
+            result.add(dummyData);
+            rs.close();
+            stmt.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        closeAll();
+
+        if (result.get(2).equals("]"))
+            return null;
+
+//        String[] tmp = resultStr.toString().split("@@");
+//        System.out.println(tmp[0]);
+//        System.out.println(tmp[1]);
+
+//        return (result.get(0) + "@@" + result.get(1) + "@@" + result.get(2)).replaceAll(" +", " ");
+        return result;
     }
 
     private List<String> getColumnNames() {
@@ -363,10 +426,10 @@ public class ImportDBfromDispatch {
             }
     }
 
-//    public static void main(String[] args) {
-//        ImportDBfromDispatch importDBfromDispatch = new ImportDBfromDispatch(
-//                GlobalVariables.oracleUrl, GlobalVariables.oracleUserName, GlobalVariables.oraclePassword);
-//        importDBfromDispatch.createTablesFromSheets();
-//        importDBfromDispatch.insertTables();
-//    }
+    public static void main(String[] args) {
+        ImportDBfromDispatch importDBfromDispatch = new ImportDBfromDispatch(
+                GlobalVariables.oracleUrl, GlobalVariables.oracleUserName, GlobalVariables.oraclePassword);
+//        importDBfromDispatch.dispatchSearch("5386098853");
+        importDBfromDispatch.dispatchCatalogue();
+    }
 }

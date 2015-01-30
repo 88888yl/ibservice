@@ -27,7 +27,7 @@
     }
 
     #content-left {
-        width: 15%;
+        width: 20%;
         height: 100%;
         float: left;
         border-right: solid 1px #A9D0D6;
@@ -35,7 +35,7 @@
     }
 
     #content-right {
-        width: 85%;
+        width: 80%;
         height: 100%;
         float: right;
         overflow-y: hidden;
@@ -48,9 +48,9 @@
 
         <div style="margin: 5px 10px 5px 0; width: 600px; float: left" class="input-group">
             <span class="input-group-addon"><span class="glyphicon glyphicon-user"></span> Username</span>
-            <input type="text" class="form-control" id="username" placeholder="user">
+            <input type="text" class="form-control" id="username">
             <span class="input-group-addon">Password</span>
-            <input type="password" class="form-control" id="password" placeholder="password">
+            <input type="password" class="form-control" id="password">
         </div>
 
         <div style="margin: 5px 10px 5px 0; width: 260px; float: left" class="input-group">
@@ -62,12 +62,7 @@
     </div>
     <div class="container pull-left">
         <div style="margin: 5px 10px 5px 0; width: 240px; float: left" class="input-group">
-            <span class="input-group-addon">PR ID</span>
-            <input type="text" class="form-control" id="pr_id" placeholder="full/part of ID Number">
-        </div>
-
-        <div style="margin: 5px 10px 5px 0; width: 240px; float: left" class="input-group">
-            <input type="button" id="submit" value="submit" class="btn btn-warning" onclick="showResult()">
+            <input type="button" id="search" value="Search" class="btn btn-warning" onclick="showResult()">
         </div>
     </div>
 </div>
@@ -84,18 +79,40 @@
         </iframe>
     </div>
 </div>
-<script type="text/javascript">
-    function showResult() {
-        var id = document.getElementById("pr_id").value;
-        window.frames["resultPage"].location.href = "/complaints_table.jsp?id=" + id;
 
-        var btn = document.getElementById("submit");
+<div id="tmpValue" style="display: none"></div>
+<script type="text/javascript">
+    var winHeight;
+    var winWidth;
+
+    if (window.innerWidth)
+        winWidth = window.innerWidth;
+    else if ((document.body) && (document.body.clientWidth))
+        winWidth = document.body.clientWidth;
+
+    if (window.innerHeight)
+        winHeight = window.innerHeight;
+    else if ((document.body) && (document.body.clientHeight))
+        winHeight = document.body.clientHeight;
+
+    var frameBody = document.getElementById("content-wrapper");
+    frameBody.style.height = winHeight - 48;
+
+    window.frames["treePage"].location.href = "/complaints_catalogue.jsp";
+
+    function showResult() {
+        document.getElementById("tmpValue").innerText = window.frames["treePage"].getSearchValues();
+
+        var btn = document.getElementById("search");
         btn.disabled = true;
         var me = btn;
         setTimeout(function () {
             me.disabled = false;
         }, 3000);
+
+        window.frames["resultPage"].location.href = "/complaints_table.jsp";
     }
+
     $(function () {
         var $uploadBtn = $("#uploadBtn");
         new AjaxUpload($uploadBtn, {
@@ -115,6 +132,7 @@
             }
         });
     });
+
     function updateComplaints() {
         $("#updateComplaints").attr("disabled", "disabled");
         $.ajax({

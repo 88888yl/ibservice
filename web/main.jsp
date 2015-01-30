@@ -44,13 +44,14 @@
             <ul class="nav navbar-nav">
                 <li id="tab3" onclick="changeTab3(this);"><a href="#">PartFinder</a></li>
                 <li id="tab1" onclick="changeTab1(this);"><a href="#">CSO</a></li>
-                <li id="tab5" onclick="changeTab5(this);"><a href="#">CSO Report</a></li>
                 <li id="tab2" onclick="changeTab2(this);"><a href="#">SCR</a></li>
-                <%--<li id="tab4" onclick="changeTab4(this);"><a>Chart</a></li>--%>
-                <li id="tab6" onclick="changeTab6(this);"><a href="#">SCR Report</a></li>
-                <li id="tab8" onclick="changeTab8(this);"><a href="#">Report Service</a></li>
                 <li id="tab9" onclick="changeTab9(this);"><a href="#">Complaints</a></li>
                 <li id="tab10" onclick="changeTab10(this);"><a href="#">Dispatch</a></li>
+
+                <li id="tab5" onclick="changeTab5(this);"><a href="#">CSO Report</a></li>
+                <li id="tab6" onclick="changeTab6(this);"><a href="#">SCR Report</a></li>
+                <li id="tab8" onclick="changeTab8(this);"><a href="#">Report Service</a></li>
+
                 <%--<li id="tab7" onclick="changeTab7(this);"><a>Access Statistics</a></li>--%>
             </ul>
         </div>

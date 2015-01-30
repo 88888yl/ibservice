@@ -8,6 +8,7 @@ import java.io.File;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by myl
@@ -122,10 +123,87 @@ public class ImportDBfromAllSheets {
         closeAll();
     }
 
-    public List<List<String>> complaintsSearch(String id) {
+    public List<String> complaintsSearch(Map<String, String> stringMap) {
         getConnect();
-        List<List<String>> resultLists = new ArrayList<List<String>>();
-        return resultLists;
+        List<String> result = new ArrayList<String>();
+        StringBuilder subSqlBuider = new StringBuilder();
+        for (Map.Entry<String, String> str : stringMap.entrySet()) {
+            subSqlBuider.append("\"").append(str.getKey()).append("\" like \'%").append(str.getValue()).append("%\' and ");
+        }
+        String sub_sql = subSqlBuider.substring(0, subSqlBuider.length() - 4);
+        String search_sql = "select * from \"Comp-BI Export Modified\" where " + sub_sql;
+        try {
+            stmt = con.createStatement();
+            rs = stmt.executeQuery(search_sql);
+            ResultSetMetaData rsmd = rs.getMetaData();
+            int size = rsmd.getColumnCount();
+            StringBuilder subFields = new StringBuilder();
+            StringBuilder subColumns = new StringBuilder();
+            subFields.append("[");
+            subColumns.append("[");
+            for (int i = 1; i < size + 1; i++) {
+                subFields.append("{name: \'").append(rsmd.getColumnLabel(i).replaceAll("\'", " ")).append("\'},");
+                subColumns.append("{text: \'")
+                        .append(rsmd.getColumnLabel(i).replaceAll("\'", " "))
+                        .append("\', sortable: true, dataIndex: \'")
+                        .append(rsmd.getColumnLabel(i).replaceAll("\'", " ")).append("\'},");
+            }
+            String fields = (subFields.substring(0, subFields.length() - 1) + "]")
+                    .replaceAll("\"", " ").replaceAll("\\s", "").replaceAll("\\n", "");
+            String columns = (subColumns.substring(0, subColumns.length() - 1) + "]")
+                    .replaceAll("\"", " ").replaceAll("\\s", "").replaceAll("\\n", "");
+            result.add(fields);
+            result.add(columns);
+
+            StringBuilder subDummyData = new StringBuilder();
+            subDummyData.append("[");
+            while (rs.next()) {
+                StringBuilder subDummyData2 = new StringBuilder();
+                subDummyData2.append("[");
+                for (int i = 1; i < size + 1; i++) {
+                    String value = rs.getString(rsmd.getColumnLabel(i));
+                    subDummyData2.append("\'").append(value == null ? "" : value.replaceAll("\'", " ")).append("\',");
+                }
+                subDummyData.append(subDummyData2.substring(0, subDummyData2.length() - 1)).append("],");
+            }
+            String dummyData = (subDummyData.substring(0, subDummyData.length() - 1) + "]")
+                    .replaceAll("\"", " ").replaceAll("\\s", "").replaceAll("\\n", "");
+            result.add(dummyData);
+            rs.close();
+            stmt.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        closeAll();
+
+        if (result.get(2).equals("]"))
+            return null;
+        return result;
+    }
+
+    public List<String> complaintsCatalogue() {
+        getConnect();
+        List<String> result = new ArrayList<String>();
+        String column_sql = "SELECT column_name FROM user_tab_columns WHERE table_name=\'Comp-BI Export Modified\'";
+        String ColumnStr = "";
+        try {
+            stmt = con.createStatement();
+            rs = stmt.executeQuery(column_sql);
+            StringBuilder subColumns = new StringBuilder();
+            subColumns.append("{");
+            while (rs.next()) {
+                String value = rs.getString("COLUMN_NAME");
+                subColumns.append("\'").append(value == null ? "" : value.replaceAll("\'", " ")).append("\':\"\",");
+            }
+            ColumnStr = subColumns.substring(0, subColumns.length() - 1) + "}";
+            result.add(ColumnStr);
+            rs.close();
+            stmt.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        closeAll();
+        return result;
     }
 
     private void firstInsert(List<List<String>> rows, String tableName) {
@@ -269,7 +347,6 @@ public class ImportDBfromAllSheets {
     public static void main(String[] args) {
         ImportDBfromAllSheets importDBfromAllSheets = new ImportDBfromAllSheets(
                 GlobalVariables.oracleUrl, GlobalVariables.oracleUserName, GlobalVariables.oraclePassword);
-        importDBfromAllSheets.createTablesFromSheets();
-        importDBfromAllSheets.insertTables();
+        importDBfromAllSheets.complaintsCatalogue();
     }
 }

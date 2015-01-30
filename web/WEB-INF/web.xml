@@ -136,7 +136,23 @@
         <servlet-name>UpdateComplaintsServlet</servlet-name>
         <servlet-class>complaints.servlet.UpdateComplaintsServlet</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>DispatchCatalogueServlet</servlet-name>
+        <servlet-class>dispatch.servlet.DispatchCatalogueServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>ComplaintsCatalogueServlet</servlet-name>
+        <servlet-class>complaints.servlet.ComplaintsCatalogueServlet</servlet-class>
+    </servlet>
 
+    <servlet-mapping>
+        <servlet-name>ComplaintsCatalogueServlet</servlet-name>
+        <url-pattern>/complaintsCatalogue.action</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>DispatchCatalogueServlet</servlet-name>
+        <url-pattern>/dispatchCatalogue.action</url-pattern>
+    </servlet-mapping>
     <servlet-mapping>
         <servlet-name>UploadComplaintsServlet</servlet-name>
         <url-pattern>/uploadComplaints.action</url-pattern>

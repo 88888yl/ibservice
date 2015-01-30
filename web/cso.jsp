@@ -23,9 +23,9 @@
 
         <div style="margin: 5px 10px 5px 0; width: 600px; float: left" class="input-group" onclick="hidePopovers();">
             <span class="input-group-addon"><span class="glyphicon glyphicon-user"></span> Username</span>
-            <input type="text" class="form-control" id="username" placeholder="user">
+            <input type="text" class="form-control" id="username">
             <span class="input-group-addon">Password</span>
-            <input type="password" class="form-control" id="password" placeholder="password">
+            <input type="password" class="form-control" id="password">
         </div>
 
         <div style="margin: 5px 10px 5px 0; width: 220px; float: left" class="input-group">
@@ -46,24 +46,24 @@
 
         <div style="margin: 5px 10px 5px 0; width: 200px; float: left" class="input-group" onclick="hidePopovers();">
             <span class="input-group-addon">Age</span>
-            <input type="text" class="form-control" id="age_min" placeholder="min">
+            <input type="text" class="form-control" id="age_min">
             <span class="input-group-addon">-</span>
-            <input type="text" class="form-control" id="age_max" placeholder="max">
+            <input type="text" class="form-control" id="age_max">
         </div>
 
         <div style="margin: 5px 10px 5px 0; width: 190px; float: left" class="input-group" onclick="hidePopovers();">
             <span class="input-group-addon">CSO Number</span>
-            <input type="text" class="form-control" id="csonumber" placeholder="full/part">
+            <input type="text" class="form-control" id="csonumber">
         </div>
 
         <div style="margin: 5px 10px 5px 0; width: 190px;" class="input-group" onclick="hidePopovers();">
             <span class="input-group-addon">Owner Name</span>
-            <input type="text" class="form-control" id="ownername" placeholder="full/part">
+            <input type="text" class="form-control" id="ownername">
         </div>
 
         <div style="margin: 5px 10px 5px 0; width: 600px; float: left" class="input-group" onclick="hidePopovers();">
             <span class="input-group-addon">Problem Descrption</span>
-            <input type="text" class="form-control" id="problem" placeholder="full/part of descrption">
+            <input type="text" class="form-control" id="problem">
         </div>
 
         <div style="margin: 5px 10px 5px 0; width: 240px; float: left" class="input-group" onclick="hidePopovers4()">

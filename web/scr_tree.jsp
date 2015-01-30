@@ -44,6 +44,7 @@
             async: true,
             url: 'scrtree.action',
             success: function (data) {
+                console.log(data);
                 jsonArray = JSON.parse(data);
                 csoTreeBuild(jsonArray);
             },

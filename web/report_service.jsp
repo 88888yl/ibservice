@@ -90,7 +90,7 @@
         </div>
         <div style="margin: 0 10px 5px 0; width: 300px; float: left" class="input-group">
             <span class="input-group-addon"><span class="glyphicon glyphicon-send"></span> Email</span>
-            <input type="text" class="form-control" id="email" placeholder="example@example.com">
+            <input type="text" class="form-control" id="email">
         </div>
         <div style="margin: 0 10px 5px 0; width: 120px; float: left" class="input-group">
             <input type="button" id="send" value="Subscribe" class="btn btn-warning">
