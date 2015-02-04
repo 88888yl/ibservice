@@ -1,15 +1,14 @@
 package report.service;
 
 import cso.database.CSOReportToDB;
+import org.apache.commons.mail.DefaultAuthenticator;
+import org.apache.commons.mail.HtmlEmail;
 import report.database.CreateTmpReport;
 import scr.database.SCRReportToDB;
 import utils.GlobalVariables;
 
 import javax.servlet.ServletContext;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
-import java.util.TimerTask;
+import java.util.*;
 
 /**
  * Created by myl
@@ -33,16 +32,19 @@ public class SendEmail extends TimerTask {
 
         if (!subscriberList.isEmpty()) {
             for (List<Object> subscriber : subscriberList) {
+                String email = subscriber.get(0).toString();
                 String serviceType = subscriber.get(1).toString();
+                String startTime = subscriber.get(2).toString();
                 String[] itemArray = (String[]) subscriber.get(4);
+
                 List<List<Integer>> reportList;
                 if (serviceType.equals("CSO Report")) {
-                    if ((reportList = getReportList(serviceType, itemArray)) != null) {
-                        System.out.println(reportList);
+                    if ((reportList = getReportList(serviceType, itemArray, startTime)) != null) {
+                        sendReport(email, serviceType, reportList);
                     }
                 } else if (serviceType.equals("SCR Report")) {
-                    if ((reportList = getReportList(serviceType, itemArray)) != null) {
-                        System.out.println(reportList);
+                    if ((reportList = getReportList(serviceType, itemArray, startTime)) != null) {
+                        sendReport(email, serviceType, reportList);
                     }
                 }
             }
@@ -59,8 +61,9 @@ public class SendEmail extends TimerTask {
         return weekDays[w];
     }
 
-    private List<List<Integer>> getReportList(String serviceType, String[] itemArray) {
-        List<List<Integer>> reportList = null;
+    private List<List<Integer>> getReportList(String serviceType, String[] itemArray, String startTime) {
+        List<List<Integer>> reportList;
+        List<List<Integer>> finalList = null;
         if (serviceType.equals("CSO Report")) {
             CreateTmpReport createTmpReport = new CreateTmpReport(
                     GlobalVariables.oracleUrl, GlobalVariables.oracleUserName, GlobalVariables.oraclePassword);
@@ -71,6 +74,7 @@ public class SendEmail extends TimerTask {
                     GlobalVariables.oracleUrl, GlobalVariables.oracleUserName, GlobalVariables.oraclePassword);
             csoReportToDB.getConnect();
             reportList = csoReportToDB.getReport("cso_report_tmp");
+            finalList = changeList(reportList, startTime);
         } else if (serviceType.equals("SCR Report")) {
             CreateTmpReport createTmpReport = new CreateTmpReport(
                     GlobalVariables.oracleUrl, GlobalVariables.oracleUserName, GlobalVariables.oraclePassword);
@@ -81,7 +85,70 @@ public class SendEmail extends TimerTask {
                     GlobalVariables.oracleUrl, GlobalVariables.oracleUserName, GlobalVariables.oraclePassword);
             scrReportToDB.getConnect();
             reportList = scrReportToDB.getReport("scr_report_tmp");
+            finalList = changeList(reportList, startTime);
         }
-        return reportList;
+        return finalList;
+    }
+
+    private List<List<Integer>> changeList(List<List<Integer>> reportList, String startTime) {
+        int startYear = Integer.parseInt(startTime.substring(0, 4));
+        int startFW = Integer.parseInt(startTime.substring(7));
+
+        Calendar calendar = Calendar.getInstance();
+        int endYear = calendar.get(Calendar.YEAR);
+        int endFW = calendar.get(Calendar.WEEK_OF_YEAR);
+
+        List<List<Integer>> finalList = new ArrayList<List<Integer>>();
+
+        for (List<Integer> fwList : reportList) {
+            if (startYear == endYear) {
+                if (fwList.get(0) == startYear) {
+                    if (startFW <= fwList.get(1)) {
+                        if (fwList.get(1) <= endFW) {
+                            finalList.add(fwList);
+                        }
+                    }
+                }
+            } else {
+                if (fwList.get(0) > startYear) {
+                    if (fwList.get(0) < endYear) {
+                        finalList.add(fwList);
+                    }
+                    if (fwList.get(0) == endYear) {
+                        if (fwList.get(0) <= endFW) {
+                            finalList.add(fwList);
+                        }
+                    }
+                } else if (fwList.get(0) == startYear) {
+                    if (fwList.get(1) >= startFW) {
+                        finalList.add(fwList);
+                    }
+                }
+            }
+        }
+        return finalList;
+    }
+
+    private void sendReport(String emailAddr, String serviceType, List<List<Integer>> reportList) {
+        if (emailAddr.contains("@") && emailAddr.contains(".")) {
+            HtmlEmail email = new HtmlEmail();
+            email.setHostName("smtp.163.com");
+            email.setSmtpPort(25);
+            email.setAuthenticator(new DefaultAuthenticator("ibservice", "service123456"));
+            StringBuilder sb = new StringBuilder();
+
+            sb.append(reportList);
+
+            try {
+                email.setFrom("ibservice@163.com");
+                email.setSubject(serviceType);
+                email.setHtmlMsg(sb.toString());
+                email.addTo(emailAddr);
+                email.send();
+                System.out.println("Send to " + emailAddr + " success!");
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
     }
 }
