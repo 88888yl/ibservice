@@ -96,9 +96,11 @@
     function getCheckedInfo() {
         var items = Ext.getCmp('scr_tree').getView().getChecked();
         var values = [];
+        var j = 0;
         for (var i = 0; i < items.length; i++) {
             if (items[i].isLeaf()) {
-                values[i] = items[i].getData().text;
+                values[j] = items[i].getData().text;
+                j++;
             }
         }
         return values;

@@ -64,8 +64,11 @@
         </div>
     </div>
     <div class="container pull-left">
-        <div style="margin: 5px 10px 5px 0; width: 240px; float: left" class="input-group">
+        <div style="margin: 5px 10px 5px 0; float: left" class="input-group">
             <input type="button" id="search" value="Search" class="btn btn-warning" onclick="showResult()">
+        </div>
+        <div style="margin: 5px 10px 5px 0; float: left" class="input-group">
+            <input type="button" id="export" value="Export" class="btn btn-warning" onclick="getExport()">
         </div>
     </div>
 </div>
@@ -114,6 +117,31 @@
         }, 3000);
 
         window.frames["resultPage"].location.href = "/dispatch_table.jsp";
+    }
+
+    function getExport() {
+        var store = window.frames["resultPage"].getGridStore();
+
+        var btn = document.getElementById("export");
+        btn.disabled = true;
+        var me = btn;
+        setTimeout(function () {
+            me.disabled = false;
+        }, 2000);
+
+        var form = document.createElement("form");
+        var element1 = document.createElement("input");
+        form.method = "POST";
+        form.action = "exportDispatch.action";
+
+        element1.value = JSON.stringify(store);
+        element1.name = "store";
+        element1.type = 'hidden';
+        form.appendChild(element1);
+
+        document.body.appendChild(form);
+
+        form.submit();
     }
 
     $(function () {

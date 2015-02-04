@@ -15,8 +15,7 @@ Ext.define("Ext.ux.exporter.excelFormatter.Worksheet", {
       hasTitle   : true,
       hasHeadings: true,
       stripeRows : true,
-
-      title      : "Workbook",
+      title  : "通讯录",
       columns    : store.fields == undefined ? {} : store.fields.items
     });
 
@@ -78,13 +77,15 @@ Ext.define("Ext.ux.exporter.excelFormatter.Worksheet", {
    * @param {Ext.data.Store} store The store to build from
    */
   render: function(store) {
+
     return this.worksheetTpl.apply({
+      title   : this.title,
       header  : this.buildHeader(),
       columns : this.buildColumns().join(""),
       rows    : this.buildRows().join(""),
       colCount: this.columns.length,
-      rowCount: this.store.getCount() + 2,
-      title   : this.title
+      rowCount: this.store.getCount() + 2
+
     });
   },
 
@@ -112,48 +113,70 @@ Ext.define("Ext.ux.exporter.excelFormatter.Worksheet", {
     return rows;
   },
 
-  buildHeader: function() {
-    var cells = [];
-
-    Ext.each(this.columns, function(col) {
-      var title;
-
-      //if(col.dataIndex) {
-          if (col.text != undefined) {
+    buildHeader:function () {
+    var cells = [],
+        insertCell=function(col){
+        var title;
+        if (col.text != undefined) {
             title = col.text;
-          } else if(col.name) {
-            //make columns taken from Record fields (e.g. with a col.name) human-readable
+        } else if (col.name) {
             title = col.name.replace(/_/g, " ");
             title = Ext.String.capitalize(title);
-          }
+        }
+        //console.log(title);
+        cells.push(Ext.String.format('<ss:Cell ss:StyleID="headercell"><ss:Data ss:Type="String">{0}</ss:Data><ss:NamedCell ss:Name="Print_Titles" /></ss:Cell>', title));
+    }
 
-          cells.push(Ext.String.format('<ss:Cell ss:StyleID="headercell"><ss:Data ss:Type="String">{0}</ss:Data><ss:NamedCell ss:Name="Print_Titles" /></ss:Cell>', title));
-      //}
-    }, this);
+        Ext.each(this.columns, function (col, dataIndex) {
 
-    return cells.join("");
-  },
+            if (col.xtype == "rownumberer") return;
+
+            if (Ext.isArray(col.columns) && col.columns.length>0) {
+                Ext.each(col.columns, function (col, dataIndex) {
+                    insertCell(col);
+                });
+            }
+            else{
+                insertCell(col);
+            }
+        }, this);
+
+        return cells.join("");
+    },
 
   buildRow: function(record, index) {
     var style,
         cells = [];
     if (this.stripeRows === true) style = index % 2 == 0 ? 'even' : 'odd';
+    var insertRow=function(col,record,me){
+        var name  = col.name || col.dataIndex;
 
-    Ext.each(this.columns, function(col) {
-      var name  = col.name || col.dataIndex;
+        if(name) {
+            if (Ext.isFunction(col.renderer)) {
+                var value = col.renderer(record.get(name), record, record),
+                    type = "String";
+            } else {
+                var value = record.get(name), type  = me.typeMappings[col.type || record.fields.get(name).type.type];
 
-      if(name) {
-          //if given a renderer via a ColumnModel, use it and ensure data type is set to String
-          if (Ext.isFunction(col.renderer)) {
-            var value = col.renderer(record.get(name), null, record),
-                type = "String";
-          } else {
-            var value = record.get(name),
-                type  = this.typeMappings[col.type || record.fields.get(name).type.type];
-          }
-
-          cells.push(this.buildCell(value, type, style).render());
-      }
+            }
+            if(me.expandTypeMapping[type]){
+                value=value.display || value.vl;
+                type=me.expandTypeMapping[type];
+            }
+            //console.log(name+'|'+value+'|'+type);
+            cells.push(me.buildCell(value, type, style).render());
+        }
+    };
+    Ext.each(this.columns, function(col,index,self) {
+        var me=this;
+        if(Ext.isArray(col.columns) && col.columns.length>0){
+            Ext.each(col.columns, function(col) {
+                insertRow(col,record,me);
+            })
+        }
+        else{
+            insertRow(col,record,me);
+        }
     }, this);
 
     return Ext.String.format("<ss:Row>{0}</ss:Row>", cells.join(""));
@@ -178,6 +201,19 @@ Ext.define("Ext.ux.exporter.excelFormatter.Worksheet", {
     'int'   : "Number",
     'string': "String",
     'float' : "Number",
-    'date'  : "DateTime"
-  }
+    'date'  : "DateTime",
+
+
+    'TsStringExt':'TsStringExt',
+    'TsFloatExt':'TsFloatExt'
+
+  } ,
+    /**
+     * 对于Ts扩展类型  的映射
+     */
+    expandTypeMapping:{
+
+        'TsStringExt':'String',
+        'TsFloatExt':'String'
+    }
 });

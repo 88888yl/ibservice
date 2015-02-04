@@ -98,6 +98,7 @@
         };
 
         var myGrid = Ext.create('Ext.grid.Panel', {
+            id: 'myDispatchGrid',
             store: getLocalStore(),
             columns: result[1],
             columnLines: true,
@@ -122,6 +123,10 @@
         if (rowIndex % 2 == 0) {
             return 'x-grid-record-grey';
         }
+    }
+
+    function getGridStore() {
+        return Ext.getCmp('myDispatchGrid').getStore().getProxy().getReader().rawData;
     }
 
     Ext.onReady(getDispatchTable);

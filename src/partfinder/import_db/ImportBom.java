@@ -27,35 +27,41 @@ public class ImportBom {
 
         String[] files = GetFileName();
         for (int i = 0; i < files.length; i++) {
-            String table_name = GetTableName(files[i]);
-            String table_desc = GetTableDesc(files[i]);
-            Map<String, String> table_info = GetTableInfo(files[i]);
+//            if (!files[i].contains("(Up to date)")) {
+                String table_name = GetTableName(files[i]);
+                String table_desc = GetTableDesc(files[i]);
+                Map<String, String> table_info = GetTableInfo(files[i]);
 
-            /** create table from excels data */
-            ExcelToDB excelToDB = new ExcelToDB(GlobalVariables.oracleUrl, GlobalVariables.oracleUserName, GlobalVariables.oraclePassword,
-                    GlobalVariables.bomPath + files[i], table_name, table_desc);
-            excelToDB.getConnect();
-            excelToDB.deleteTableFromExcel();
-            excelToDB.createTableFromExcel();
-            excelToDB.excelToTable();
-            excelToDB.closeAll();
+                /** create table from excels data */
+                ExcelToDB excelToDB = new ExcelToDB(GlobalVariables.oracleUrl, GlobalVariables.oracleUserName, GlobalVariables.oraclePassword,
+                        GlobalVariables.bomPath + files[i], table_name, table_desc);
+                excelToDB.getConnect();
+                excelToDB.deleteTableFromExcel();
+                excelToDB.createTableFromExcel();
+                excelToDB.excelToTable();
+                excelToDB.closeAll();
 
-            /** create table from excels information */
-            InfoToDB infoToDB = new InfoToDB(GlobalVariables.oracleUrl, GlobalVariables.oracleUserName, GlobalVariables.oraclePassword,
-                    GlobalVariables.bomPath + files[i], table_name.replaceAll("BOM", "I"));
-            infoToDB.setTableInfo(table_info);
-            infoToDB.getConnect();
-            infoToDB.deleteTableFromInfo();
-            infoToDB.createTableFromInfo();
-            infoToDB.infoToTable();
-            infoToDB.closeAll();
+                /** create table from excels information */
+                InfoToDB infoToDB = new InfoToDB(GlobalVariables.oracleUrl, GlobalVariables.oracleUserName, GlobalVariables.oraclePassword,
+                        GlobalVariables.bomPath + files[i], table_name.replaceAll("BOM", "I"));
+                infoToDB.setTableInfo(table_info);
+                infoToDB.getConnect();
+                infoToDB.deleteTableFromInfo();
+                infoToDB.createTableFromInfo();
+                infoToDB.infoToTable();
+                infoToDB.closeAll();
 
-            /** insert fathers in excel data tables */
-            FindFather findFather = new FindFather(GlobalVariables.oracleUrl, GlobalVariables.oracleUserName, GlobalVariables.oraclePassword,
-                    table_name);
-            findFather.getConnect();
-            findFather.insertFatherNumber();
-            findFather.closeAll();
+                /** insert fathers in excel data tables */
+                FindFather findFather = new FindFather(GlobalVariables.oracleUrl, GlobalVariables.oracleUserName, GlobalVariables.oraclePassword,
+                        table_name);
+                findFather.getConnect();
+                findFather.insertFatherNumber();
+                findFather.closeAll();
+
+//                String excel = GlobalVariables.bomPath + files[i];
+//                File excelFile = new File(excel);
+//                excelFile.renameTo(new File(GlobalVariables.bomPath + "(Up to date)" + files[i]));
+//            }
         }
     }
 
@@ -63,7 +69,7 @@ public class ImportBom {
         File file = new File(GlobalVariables.bomPath);
         String[] files = file.list(new FilenameFilter() {
             public boolean accept(File dir, String name) {
-                return name.endsWith(".xlsx");
+                return (name.endsWith(".xlsx") || name.endsWith(".xls") || name.endsWith(".slk"));
             }
         });
         System.out.println("Find " + files.length + " excel files in " + GlobalVariables.bomPath);
@@ -92,7 +98,7 @@ public class ImportBom {
                 "Description",
                 "Nbr_of_level",
                 "Excel_Date",
-                "State" };
+                "State"};
         ExcelLoader loader = new ExcelLoader(GlobalVariables.bomPath + fileName);
         List<List<String>> rows = loader.loadData(0);
 

@@ -8,6 +8,10 @@
         <welcome-file>main.jsp</welcome-file>
     </welcome-file-list>
 
+    <listener>
+        <listener-class>report.service.ReportService</listener-class>
+    </listener>
+
     <servlet>
         <servlet-name>UploadServlet</servlet-name>
         <servlet-class>partfinder.servlet.UploadServlet</servlet-class>
@@ -144,7 +148,31 @@
         <servlet-name>ComplaintsCatalogueServlet</servlet-name>
         <servlet-class>complaints.servlet.ComplaintsCatalogueServlet</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>ExportComplaintsServlet</servlet-name>
+        <servlet-class>complaints.servlet.ExportComplaintsServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>ExportDispatchServlet</servlet-name>
+        <servlet-class>dispatch.servlet.ExportDispatchServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>SubscribeServlet</servlet-name>
+        <servlet-class>report.servlet.SubscribeServlet</servlet-class>
+    </servlet>
 
+    <servlet-mapping>
+        <servlet-name>SubscribeServlet</servlet-name>
+        <url-pattern>/subscribe.action</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ExportDispatchServlet</servlet-name>
+        <url-pattern>/exportDispatch.action</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ExportComplaintsServlet</servlet-name>
+        <url-pattern>/exportComplaints.action</url-pattern>
+    </servlet-mapping>
     <servlet-mapping>
         <servlet-name>ComplaintsCatalogueServlet</servlet-name>
         <url-pattern>/complaintsCatalogue.action</url-pattern>

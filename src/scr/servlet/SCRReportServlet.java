@@ -41,9 +41,6 @@ public class SCRReportServlet extends HttpServlet {
                     response.getWriter().write("fail");
                 }
             }
-            if (id.equals("scr_service")) {
-
-            }
         }
     }
 

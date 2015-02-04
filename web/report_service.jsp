@@ -45,12 +45,60 @@
         float: right;
         overflow-y: hidden;
     }
+
+    .dropdown-submenu {
+        position: relative;
+    }
+
+    .dropdown-submenu > .dropdown-menu {
+        top: 0;
+        left: 100%;
+        margin-top: -6px;
+        margin-left: -1px;
+        -webkit-border-radius: 0 6px 6px 6px;
+        -moz-border-radius: 0 6px 6px;
+        border-radius: 0 6px 6px 6px;
+    }
+
+    .dropdown-submenu:hover > .dropdown-menu {
+        display: block;
+    }
+
+    .dropdown-submenu > a:after {
+        display: block;
+        content: " ";
+        float: right;
+        width: 0;
+        height: 0;
+        border-color: transparent;
+        border-style: solid;
+        border-width: 5px 0 5px 5px;
+        border-left-color: #ccc;
+        margin-top: 5px;
+        margin-right: -10px;
+    }
+
+    .dropdown-submenu:hover > a:after {
+        border-left-color: #fff;
+    }
+
+    .dropdown-submenu.pull-left {
+        float: none;
+    }
+
+    .dropdown-submenu.pull-left > .dropdown-menu {
+        left: -100%;
+        margin-left: 10px;
+        -webkit-border-radius: 6px 0 6px 6px;
+        -moz-border-radius: 6px 0 6px 6px;
+        border-radius: 6px 0 6px 6px;
+    }
 </style>
 <div id="div1" class="container-fluid panel"
      style="background-image: url('image/background1.jpg'); margin-bottom: 6px; box-shadow: 0 3px 6px black">
     <div class="container pull-left" style="margin-top: 10px">
         <div class="btn-group" style="margin: 5px 10px 5px 0; float: left">
-            <button type="button" class="btn btn-primary dropdown-toggle"
+            <button id="serviceType" type="button" class="btn btn-primary dropdown-toggle"
                     data-toggle="dropdown">
                 Choose a service<span class="caret"></span>
             </button>
@@ -60,10 +108,102 @@
             </ul>
         </div>
         <div style="margin: 0 10px 5px 0; float: left" class="input-group">
+            <div class="dropdown" style="margin: 5px 10px 5px 0; float: left">
+                <a id="startTime" role="button" data-toggle="dropdown" class="btn btn-primary" data-target="#">
+                    Choose start time... <span class="caret"></span>
+                </a>
+                <ul id="start_ul" class="dropdown-menu multi-level" role="menu" aria-labelledby="dropdownMenu">
+                    <li class="dropdown-submenu">
+                        <a tabindex="-1" href="#">2011</a>
+                        <ul class="dropdown-menu" id="start_li_1">
+                            <li><a href="#">2011-FW1</a></li>
+                            <li><a href="#">2011-FW5</a></li>
+                            <li><a href="#">2011-FW10</a></li>
+                            <li><a href="#">2011-FW15</a></li>
+                            <li><a href="#">2011-FW20</a></li>
+                            <li><a href="#">2011-FW25</a></li>
+                            <li><a href="#">2011-FW30</a></li>
+                            <li><a href="#">2011-FW35</a></li>
+                            <li><a href="#">2011-FW40</a></li>
+                            <li><a href="#">2011-FW45</a></li>
+                            <li><a href="#">2011-FW50</a></li>
+                            <li><a href="#">2011-FW52</a></li>
+                        </ul>
+                    </li>
+                    <li class="dropdown-submenu">
+                        <a tabindex="-1" href="#">2012</a>
+                        <ul class="dropdown-menu" id="start_li_2">
+                            <li><a href="#">2012-FW1</a></li>
+                            <li><a href="#">2012-FW5</a></li>
+                            <li><a href="#">2012-FW10</a></li>
+                            <li><a href="#">2012-FW15</a></li>
+                            <li><a href="#">2012-FW20</a></li>
+                            <li><a href="#">2012-FW25</a></li>
+                            <li><a href="#">2012-FW30</a></li>
+                            <li><a href="#">2012-FW35</a></li>
+                            <li><a href="#">2012-FW40</a></li>
+                            <li><a href="#">2012-FW45</a></li>
+                            <li><a href="#">2012-FW50</a></li>
+                            <li><a href="#">2012-FW52</a></li>
+                        </ul>
+                    </li>
+                    <li class="dropdown-submenu">
+                        <a tabindex="-1" href="#">2013</a>
+                        <ul class="dropdown-menu" id="start_li_3">
+                            <li><a href="#">2013-FW1</a></li>
+                            <li><a href="#">2013-FW5</a></li>
+                            <li><a href="#">2013-FW10</a></li>
+                            <li><a href="#">2013-FW15</a></li>
+                            <li><a href="#">2013-FW20</a></li>
+                            <li><a href="#">2013-FW25</a></li>
+                            <li><a href="#">2013-FW30</a></li>
+                            <li><a href="#">2013-FW35</a></li>
+                            <li><a href="#">2013-FW40</a></li>
+                            <li><a href="#">2013-FW45</a></li>
+                            <li><a href="#">2013-FW50</a></li>
+                            <li><a href="#">2013-FW52</a></li>
+                        </ul>
+                    </li>
+                    <li class="dropdown-submenu">
+                        <a tabindex="-1" href="#">2014</a>
+                        <ul class="dropdown-menu" id="start_li_4">
+                            <li><a href="#">2014-FW1</a></li>
+                            <li><a href="#">2014-FW5</a></li>
+                            <li><a href="#">2014-FW10</a></li>
+                            <li><a href="#">2014-FW15</a></li>
+                            <li><a href="#">2014-FW20</a></li>
+                            <li><a href="#">2014-FW25</a></li>
+                            <li><a href="#">2014-FW30</a></li>
+                            <li><a href="#">2014-FW35</a></li>
+                            <li><a href="#">2014-FW40</a></li>
+                            <li><a href="#">2014-FW45</a></li>
+                            <li><a href="#">2014-FW50</a></li>
+                            <li><a href="#">2014-FW52</a></li>
+                        </ul>
+                    </li>
+                    <li class="dropdown-submenu">
+                        <a tabindex="-1" href="#">2015</a>
+                        <ul class="dropdown-menu" id="start_li_5">
+                            <li><a href="#">2015-FW1</a></li>
+                            <li><a href="#">2015-FW5</a></li>
+                            <li><a href="#">2015-FW10</a></li>
+                            <li><a href="#">2015-FW15</a></li>
+                            <li><a href="#">2015-FW20</a></li>
+                            <li><a href="#">2015-FW25</a></li>
+                            <li><a href="#">2015-FW30</a></li>
+                            <li><a href="#">2015-FW35</a></li>
+                            <li><a href="#">2015-FW40</a></li>
+                            <li><a href="#">2015-FW45</a></li>
+                            <li><a href="#">2015-FW50</a></li>
+                            <li><a href="#">2015-FW52</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
             <div class="btn-group" style="margin: 5px 0 5px 0; float: left">
-                <button type="button" class="btn btn-primary dropdown-toggle"
+                <button id="dayofweek" type="button" class="btn btn-primary dropdown-toggle"
                         data-toggle="dropdown">
-                    Day of week<span class="caret"></span>
+                    Accept subscription time<span class="caret"></span>
                 </button>
                 <ul class="dropdown-menu" role="menu" id="week_menu">
                     <li><a href="#">Monday</a></li>
@@ -76,13 +216,6 @@
                 </ul>
             </div>
         </div>
-        <div style="margin: 5px 0 5px 0; width: 200px; float: left" class="input-group">
-            <span class="input-group-addon"><span class="glyphicon glyphicon-info-sign"></span> Info</span>
-            <input type="text" class="form-control" id="service_type" placeholder="Subscribe type" readonly>
-        </div>
-        <div style="margin: 5px 10px 5px 0; width: 160px; float: left" class="input-group">
-            <input type="text" class="form-control" id="service_date" placeholder="Subscribe date" readonly>
-        </div>
     </div>
     <div class="container pull-left">
         <div style="margin: 0 10px 5px 0; float: left" class="input-group">
@@ -92,9 +225,8 @@
             <span class="input-group-addon"><span class="glyphicon glyphicon-send"></span> Email</span>
             <input type="text" class="form-control" id="email">
         </div>
-        <div style="margin: 0 10px 5px 0; width: 120px; float: left" class="input-group">
-            <input type="button" id="send" value="Subscribe" class="btn btn-warning">
-            <span class="label label-default" id="information" style="width: 30px; margin-left: 5px"></span>
+        <div style="margin: 0 10px 5px 0; float: left" class="input-group">
+            <input type="button" id="send" value="Subscribe" class="btn btn-warning" onclick="getSubscribeInfo()">
         </div>
     </div>
 </div>
@@ -110,13 +242,74 @@
         </iframe>
     </div>
 </div>
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog"
+     aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close"
+                        data-dismiss="modal" aria-hidden="true">
+                    &times;
+                </button>
+                <h4 class="modal-title" id="myModalLabel">
+                </h4>
+            </div>
+            <div class="modal-body" id="myModalContent">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary"
+                        data-dismiss="modal">Close
+                </button>
+                <button type="button" class="btn btn-danger" data-dismiss="modal"
+                        id="save_subscribe" onclick="saveSubscribe();">
+                    Confirm
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
 
 <script type="text/javascript">
     bind_info();
 
     function chooseItems() {
         var items = window.frames["treePage"].getCheckedInfo();
-        console.log(items);
+        var itemStr = '@';
+        for (var i = 0; i < items.length; i++) {
+            itemStr += items[i] + '@';
+        }
+        var itemString = itemStr.substring(1, itemStr.length - 1);
+        var type = document.getElementById("serviceType");
+        var id;
+        if (type.value == "CSO Report") id = "cso_report";
+        if (type.value == "SCR Report") id = "scr_report";
+        var start_time = document.getElementById("startTime").value;
+        var end_time = "now";
+        $("#refresh").attr("disabled", "disabled");
+        $.ajax({
+            type: 'post',
+            dataType: 'text',
+            async: true,
+            url: 'refresh.action',
+            data: {
+                items: itemString,
+                id: id
+            },
+            success: function () {
+                if (id == "cso_report") {
+                    window.frames["resultPage"].location.href =
+                            "/cso_report_table.jsp?&id=" + id + "&start_time=" + start_time + "&end_time=" + end_time;
+                }
+                if (id == "scr_report") {
+                    window.frames["resultPage"].location.href =
+                            "/scr_report_table.jsp?&id=" + id + "&start_time=" + start_time + "&end_time=" + end_time;
+                }
+                $("#refresh").removeAttr("disabled");
+            },
+            error: function () {
+                $("#refresh").removeAttr("disabled");
+            }
+        });
     }
 
     function getCSOReport() {
@@ -133,19 +326,104 @@
 
         for (var i = 0; i < week_lis.length; i++) {
             week_lis[i].onclick = function () {
-                var info = document.getElementById("service_date");
-                info.value = this.getElementsByTagName("a")[0].innerHTML;
+                var time_result = this.getElementsByTagName("a")[0].innerHTML;
+                var time = document.getElementById("dayofweek");
+                time.innerText = time_result;
+                time.value = time_result;
             };
         }
 
         for (var j = 0; j < type_lis.length; j++) {
             type_lis[j].onclick = function () {
-                var info2 = document.getElementById("service_type");
-                info2.value = this.getElementsByTagName("a")[0].innerHTML;
-                if (info2.value == "CSO Report") getCSOReport();
-                if (info2.value == "SCR Report") getSCRReport();
+                var type_result = this.getElementsByTagName("a")[0].innerHTML;
+                var type = document.getElementById("serviceType");
+                type.innerText = type_result;
+                type.value = type_result;
+                if (type.value == "CSO Report") getCSOReport();
+                if (type.value == "SCR Report") getSCRReport();
             };
         }
+
+        bind_start_time();
+    }
+
+    function bind_start_time() {
+        var start_result;
+        for (var i = 0; i < 5; i++) {
+            var tmpId = "start_li_" + (i + 1).toString();
+            var subLis = document.getElementById(tmpId).getElementsByTagName("li");
+            for (var j = 0; j < subLis.length; j++) {
+                subLis[j].onclick = function () {
+                    start_result = this.getElementsByTagName("a")[0].innerHTML;
+                    var start_text = document.getElementById("startTime");
+                    start_text.innerHTML = start_result;
+                    start_text.value = start_result;
+                }
+            }
+        }
+    }
+
+    function getSubscribeInfo() {
+        $('#myModal').modal('show');
+        $('#myModalLabel').text("Subscribe Info");
+
+        var type = document.getElementById("serviceType").value;
+        var start = document.getElementById("startTime").value;
+        var time = document.getElementById("dayofweek").value;
+        var email = document.getElementById("email").value;
+
+
+        if (type == "") {
+            $('#myModalContent').text('Please choose a service first!');
+            $('#save_subscribe').attr("disabled", "disabled");
+        } else {
+            if (start == "") {
+                $('#myModalContent').text('Please input a start time!');
+                $('#save_subscribe').attr("disabled", "disabled");
+            } else if (time == "") {
+                $('#myModalContent').text('Please choose a report time!');
+                $('#save_subscribe').attr("disabled", "disabled");
+            } else if (email == "") {
+                $('#myModalContent').text('Please input a subscribe author(email address)!');
+                $('#save_subscribe').attr("disabled", "disabled");
+            } else {
+                $("#save_subscribe").removeAttr("disabled");
+                $('#myModalContent').html(
+                        '<p><b>Author</b>: ' + email + '</p>' +
+                        '<p><b>Type</b>: ' + type + '</p>' +
+                        '<p><b>Start FW</b>: ' + start + '</p>' +
+                        '<p><b>Time</b>: Every ' + time + ' of week</p>'
+                );
+            }
+        }
+    }
+
+    function saveSubscribe() {
+        var items = window.frames["treePage"].getCheckedInfo();
+        var itemStr = '@';
+        for (var i = 0; i < items.length; i++) {
+            itemStr += items[i] + '@';
+        }
+        var itemString = itemStr.substring(1, itemStr.length - 1);
+
+        var type = document.getElementById("serviceType").value;
+        var start = document.getElementById("startTime").value;
+        var time = document.getElementById("dayofweek").value;
+        var email = document.getElementById("email").value;
+
+        $.ajax({
+            type: 'post',
+            dataType: 'text',
+            async: true,
+            url: 'subscribe.action',
+            data: {
+                items: itemString,
+                serviceType: type,
+                startTime: start,
+                dayOfWeek: time,
+                email: email
+            }
+        });
     }
 </script>
 </body>

@@ -23,20 +23,20 @@
 <link rel="stylesheet" type="text/css" href="ext_js/resources/css/ext-all-neptune.css"/>
 <script type="text/javascript" src="ext_js/bootstrap.js"></script>
 <script type="text/javascript" src="ext_js/locale/ext-lang-en.js"></script>
-<script type="text/javascript" src="ext_js/exporter/Exporter.js"></script>
+<script type="text/javascript" src="ext_js/myExporter/export-all.js"></script>
 <script type="text/javascript">
     Ext.Loader.setConfig({
         enabled: true
     });
 
-    Ext.Loader.setPath('Ext.ux', '/ext_js/exporter');
+    Ext.Loader.setPath('Ext.ux.exporter', '/ext_js/myExporter/exporter');
 
     Ext.require([
         'Ext.toolbar.*',
         'Ext.grid.*',
         'Ext.data.*',
         'Ext.selection.CheckboxModel',
-        'Ext.ux.*'
+        'Ext.ux.exporter.Exporter'
     ]);
 
     var winWidth;
@@ -98,6 +98,7 @@
         };
 
         var myGrid = Ext.create('Ext.grid.Panel', {
+            id: 'myComplaintsGrid',
             store: getLocalStore(),
             columns: result[1],
             columnLines: true,
@@ -112,7 +113,17 @@
             iconCls: 'icon-grid',
             margin: '0 0 0 0',
             viewConfig: {
-                getRowClass: changeRowClass
+                getRowClass: changeRowClass,
+                stripeRows: true,
+                enableTextSelection: true
+            },
+            listeners: {
+                celldblclick : function (view, cell, cellIndex, record,row, rowIndex, e) {
+                    var clickedDataIndex = view.panel.headerCt.getHeaderAtIndex(cellIndex).dataIndex;
+                    var clickedColumnName = view.panel.headerCt.getHeaderAtIndex(cellIndex).text;
+                    var clickedCellValue = record.get(clickedDataIndex);
+                    Ext.MessageBox.alert('Detailed', clickedCellValue);
+                }
             },
             renderTo: Ext.getBody()
         });
@@ -122,6 +133,10 @@
         if (rowIndex % 2 == 0) {
             return 'x-grid-record-grey';
         }
+    }
+
+    function getGridStore() {
+        return Ext.getCmp('myComplaintsGrid').getStore().getProxy().getReader().rawData;
     }
 
     Ext.onReady(getComplaintsTable);

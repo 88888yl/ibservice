@@ -8,13 +8,13 @@ Ext.define("Ext.ux.exporter.excelFormatter.Workbook", {
   constructor: function(config) {
     config = config || {};
 
-    Ext.apply(this, config, {
+    Ext.applyIf(config, {
       /**
        * @property title
        * @type String
        * The title of the workbook (defaults to "Workbook")
        */
-      title: "Workbook",
+      title: "表格导出",
 
       /**
        * @property worksheets
@@ -70,6 +70,8 @@ Ext.define("Ext.ux.exporter.excelFormatter.Workbook", {
       protectStructure: false,
       protectWindows  : false
     });
+
+    Ext.apply(this, config);
 
     if (this.hasDefaultStyle) this.addDefaultStyle();
     if (this.hasStripeStyles) this.addStripedStyles();

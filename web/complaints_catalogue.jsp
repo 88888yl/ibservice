@@ -70,7 +70,8 @@
             id: 'complaints_catalogue',
             title: 'Search Catalogue',
             width: '100%',
-            hideHeaders: true,
+//            hideHeaders: true,
+//            Headers: 'center',
             height: winHeight - 95,
             x: 0,
             y: '95px',
@@ -84,7 +85,9 @@
                 }
             },
             viewConfig: {
-                getRowClass: changeRowClass
+                getRowClass: changeRowClass,
+                stripeRows: true,
+                enableTextSelection: true
             }
         });
     }

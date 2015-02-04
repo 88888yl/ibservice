@@ -81,16 +81,20 @@ public class FindFather {
 
             Statement stmt = conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE,
                     ResultSet.CONCUR_UPDATABLE);
+//            rs = stmt.executeQuery("select \"Row Number\",\"Level\" from " + tableName + " order by \"Row Number\"");
             rs = stmt.executeQuery("select \"Row_Number\",\"Level_Number\" from " + tableName + " order by \"Row_Number\"");
             rs.next();
 
             while (rs.next()) {
                 DBtoObject dbToObject = new DBtoObject();
+//                dbToObject.setRow_number(rs.getInt("Row Number"));
                 dbToObject.setRow_number(rs.getInt("Row_Number"));
+//                dbToObject.setLevel_Number(rs.getInt("Level"));
                 dbToObject.setLevel_Number(rs.getInt("Level_Number"));
 
                 objectList.add(dbToObject);
             }
+
             objectList.get(0).setFather_number(0);
             for (int i = 1; i < objectList.size(); ++i) {
                 int cur_level = objectList.get(i).getLevel_Number();
@@ -110,6 +114,7 @@ public class FindFather {
 
             conn.setAutoCommit(false);
             sql.append("update ").append(tableName).append(" set \"Father_Number\"=? where \"Row_Number\"=?");
+//            sql.append("update ").append(tableName).append(" set \"Father Number\"=? where \"Row Number\"=?");
             ps = conn.prepareStatement(sql.toString(), ResultSet.TYPE_SCROLL_SENSITIVE,
                     ResultSet.CONCUR_UPDATABLE);
 

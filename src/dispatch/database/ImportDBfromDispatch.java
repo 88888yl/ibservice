@@ -135,9 +135,9 @@ public class ImportDBfromDispatch {
                         .append(rsmd.getColumnLabel(i).replaceAll("\'", " ")).append("\'},");
             }
             String fields = (subFields.substring(0, subFields.length() - 1) + "]")
-                    .replaceAll("\"", " ").replaceAll("\\s", "").replaceAll("\\n", "");
+                    .replaceAll("\"", " ").replaceAll("\\n", "");
             String columns = (subColumns.substring(0, subColumns.length() - 1) + "]")
-                    .replaceAll("\"", " ").replaceAll("\\s", "").replaceAll("\\n", "");
+                    .replaceAll("\"", " ").replaceAll("\\n", "");
             result.add(fields);
             result.add(columns);
 
@@ -157,7 +157,7 @@ public class ImportDBfromDispatch {
 //                resultLists.add(tmpRows2);
             }
             String dummyData = (subDummyData.substring(0, subDummyData.length() - 1) + "]")
-                    .replaceAll("\"", " ").replaceAll("\\s", "").replaceAll("\\n", "");
+                    .replaceAll("\"", " ").replaceAll("\\n", "");
             result.add(dummyData);
             rs.close();
             stmt.close();

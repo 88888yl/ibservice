@@ -42,9 +42,6 @@ public class CSOReportServlet extends HttpServlet {
                     response.getWriter().write("fail");
                 }
             }
-            if (id.equals("sco_service")) {
-
-            }
         }
 
 

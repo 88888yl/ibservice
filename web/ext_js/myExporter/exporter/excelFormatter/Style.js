@@ -55,6 +55,7 @@ Ext.define("Ext.ux.exporter.excelFormatter.Style", {
       this.attributes[index].children = attr.children || [];
 
       Ext.each(attr.children, function(child, childIndex) {
+
         this.attributes[index].children[childIndex].propertiesString = this.buildPropertyString(child);
       }, this);
     }, this);
@@ -67,6 +68,7 @@ Ext.define("Ext.ux.exporter.excelFormatter.Style", {
     var propertiesString = "";
 
     Ext.each(attribute.properties || [], function(property) {
+
       propertiesString += Ext.String.format('ss:{0}="{1}" ', property.name, property.value);
     }, this);
 
@@ -88,7 +90,7 @@ Ext.define("Ext.ux.exporter.excelFormatter.Style", {
       '<tpl if="children.length == 0">',
         '<ss:{name} {propertiesString} />',
       '</tpl>',
-      '<tpl if="children.length > 0">',
+      '<tpl if="children.length &gt; 0">',     // 大于号( > ) 必须转移 ExtJS 4.1 有改动
         '<ss:{name} {propertiesString}>',
           '<tpl for="children">',
             '<ss:{name} {propertiesString} />',
