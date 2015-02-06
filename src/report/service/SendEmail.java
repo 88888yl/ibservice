@@ -151,4 +151,18 @@ public class SendEmail extends TimerTask {
             }
         }
     }
+
+//    private StringBuilder createTableFromReportList(List<List<Integer>> reportList) {
+//        StringBuilder sb = new StringBuilder();
+//        sb.append(reportList);
+//
+//        return sb;
+//    }
+//
+//    private StringBuilder createChartFromReportList(List<List<Integer>> reportList) {
+//        StringBuilder sb = new StringBuilder();
+//        sb.append(reportList);
+//
+//        return sb;
+//    }
 }

@@ -6,10 +6,7 @@ import utils.GlobalVariables;
 import java.sql.*;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
 import java.util.Date;
 
 /**
@@ -62,6 +59,89 @@ public class TotalCSOtoDB {
 
         addNewColumn();
         closeAll();
+    }
+
+    public List<String> csoCatalogue() {
+        getConnect();
+        List<String> result = new ArrayList<String>();
+        String column_sql = "SELECT column_name FROM user_tab_columns WHERE table_name=\'TOTAL_CSO\'";
+        String ColumnStr = "";
+        try {
+            stmt = con.createStatement();
+            rs = stmt.executeQuery(column_sql);
+            StringBuilder subColumns = new StringBuilder();
+            subColumns.append("{");
+            while (rs.next()) {
+                String value = rs.getString("COLUMN_NAME");
+                subColumns.append("\'").append(value == null ? "" : value.replaceAll("\'", " ")).append("\':\"\",");
+            }
+            ColumnStr = subColumns.substring(0, subColumns.length() - 1) + "}";
+            result.add(ColumnStr);
+            rs.close();
+            stmt.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        closeAll();
+        return result;
+    }
+
+    public List<String> csoSearch(Map<String, String> stringMap) {
+        if (stringMap.isEmpty()) {
+            return null;
+        }
+        getConnect();
+        List<String> result = new ArrayList<String>();
+        StringBuilder subSqlBuider = new StringBuilder();
+        for (Map.Entry<String, String> str : stringMap.entrySet()) {
+            subSqlBuider.append("\"").append(str.getKey()).append("\" like \'%").append(str.getValue()).append("%\' and ");
+        }
+        String sub_sql = subSqlBuider.substring(0, subSqlBuider.length() - 4);
+        String search_sql = "select * from \"TOTAL_CSO\" where " + sub_sql;
+        try {
+            stmt = con.createStatement();
+            rs = stmt.executeQuery(search_sql);
+            ResultSetMetaData rsmd = rs.getMetaData();
+            int size = rsmd.getColumnCount();
+            StringBuilder subFields = new StringBuilder();
+            StringBuilder subColumns = new StringBuilder();
+            subFields.append("[");
+            subColumns.append("[");
+            for (int i = 1; i < size + 1; i++) {
+                subFields.append("{name: \'").append(rsmd.getColumnLabel(i).replaceAll("\'", " ")).append("\'},");
+                subColumns.append("{text: \'")
+                        .append(rsmd.getColumnLabel(i).replaceAll("\'", " "))
+                        .append("\', sortable: true, dataIndex: \'")
+                        .append(rsmd.getColumnLabel(i).replaceAll("\'", " ")).append("\'},");
+            }
+            String fields = (subFields.substring(0, subFields.length() - 1) + "]")
+                    .replaceAll("\"", " ").replaceAll("\\n", "");
+            String columns = (subColumns.substring(0, subColumns.length() - 1) + "]")
+                    .replaceAll("\"", " ").replaceAll("\\n", "");
+            result.add(fields);
+            result.add(columns);
+
+            StringBuilder subDummyData = new StringBuilder();
+            subDummyData.append("[");
+            while (rs.next()) {
+                StringBuilder subDummyData2 = new StringBuilder();
+                subDummyData2.append("[");
+                for (int i = 1; i < size + 1; i++) {
+                    String value = rs.getString(rsmd.getColumnLabel(i));
+                    subDummyData2.append("\'").append(value == null ? "" : value.replaceAll("\'", " ")).append("\',");
+                }
+                subDummyData.append(subDummyData2.substring(0, subDummyData2.length() - 1)).append("],");
+            }
+            String dummyData = (subDummyData.substring(0, subDummyData.length() - 1) + "]")
+                    .replaceAll("\"", " ").replaceAll("\\n", "");
+            result.add(dummyData);
+            rs.close();
+            stmt.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        closeAll();
+        return result;
     }
 
     public void insertOpenCSOtoTable() {

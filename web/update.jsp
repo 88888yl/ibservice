@@ -14,7 +14,32 @@
 
 <body id="body" style="margin: 0; padding:0; background-color: darkgray; border: 0">
 
-<div class="container-fluid panel" style="background-image: url('image/background1.jpg'); position: fixed; top: 45px; box-shadow: 0 3px 6px black">
+<style>
+    #content-wrapper {
+        margin: 0;
+        width: 100%;
+        height: 93.2%;
+        overflow: hidden;
+    }
+
+    #content-left {
+        width: 20%;
+        height: 100%;
+        float: left;
+        border-right: solid 1px #A9D0D6;
+        overflow-y: hidden;
+    }
+
+    #content-right {
+        width: 80%;
+        height: 100%;
+        float: right;
+        overflow-y: hidden;
+    }
+</style>
+
+<div class="container-fluid panel"
+     style="background-image: url('image/background1.jpg'); position: fixed; top: 45px; box-shadow: 0 3px 6px black">
     <div class="container pull-left" style="margin-top: 10px">
         <div style="margin: 5px 10px 5px 0; width: 600px; float: left" class="input-group">
             <span class="input-group-addon"><span class="glyphicon glyphicon-user"></span> Username</span>
@@ -26,7 +51,7 @@
         <div style="margin: 5px 10px 5px 0; width: 240px; float: left" class="input-group">
             <input type="button" id="uploadBtn" value="Select File..." class="btn btn-primary">
             &nbsp;
-            <input type="button" id="update" value="UpdateCSO" class="btn btn-warning" onclick="login();">
+            <input type="button" id="update" value="UpdateBOM" class="btn btn-warning" onclick="login();">
             <span class="label label-default" id="information" style="width: 30px; margin-left: 5px"></span>
         </div>
     </div>
@@ -62,49 +87,90 @@
     </div>
 
     <div class="container pull-left">
-        <div style="margin: 5px 10px 5px 0; width: 110px; float: left" class="input-group">
-            <span class="input-group-addon">PN#</span>
-            <input type="text" class="form-control" id="partnumber" name="partnumber">
-        </div>
-        <div style="margin: 5px 10px 5px 0; width: 240px; float: left" class="input-group">
-            <span class="input-group-addon">Description</span>
-            <input type="text" class="form-control" id="description" name="description">
-        </div>
-        <div style="margin: 5px 10px 5px 0; width: 110px; float: left" class="input-group">
-            <span class="input-group-addon">MEP#</span>
-            <input type="text" class="form-control" id="mep" name="mep">
-        </div>
-        <div style="margin: 5px 10px 5px 0; width: 110px; float: left" class="input-group">
-            <span class="input-group-addon">RDO</span>
-            <input type="text" class="form-control" id="rdo" name="rdo">
-        </div>
-        <div style="margin: 5px 10px 5px 0; width: 240px; float: left" class="input-group">
-            <input type="button" class="btn btn-primary" id="searchByPN" name="searchByPN" value="PN Search"
-                   onclick="searchPN();">
-            &nbsp;
-            <input type="button" class="btn btn-primary" id="searchSubmit" name="searchSubmit" value="TreeList Search"
-                   onclick="Click();"/>
+        <%--<div style="margin: 5px 10px 5px 0; width: 110px; float: left" class="input-group">--%>
+            <%--<span class="input-group-addon">PN#</span>--%>
+            <%--<input type="text" class="form-control" id="partnumber" name="partnumber">--%>
+        <%--</div>--%>
+        <%--<div style="margin: 5px 10px 5px 0; width: 240px; float: left" class="input-group">--%>
+            <%--<span class="input-group-addon">Description</span>--%>
+            <%--<input type="text" class="form-control" id="description" name="description">--%>
+        <%--</div>--%>
+        <%--<div style="margin: 5px 10px 5px 0; width: 110px; float: left" class="input-group">--%>
+            <%--<span class="input-group-addon">MEP#</span>--%>
+            <%--<input type="text" class="form-control" id="mep" name="mep">--%>
+        <%--</div>--%>
+        <%--<div style="margin: 5px 10px 5px 0; width: 110px; float: left" class="input-group">--%>
+            <%--<span class="input-group-addon">RDO</span>--%>
+            <%--<input type="text" class="form-control" id="rdo" name="rdo">--%>
+        <%--</div>--%>
+        <div style="margin: 5px 10px 5px 0; float: left" class="input-group">
+            <div style="margin: 5px 10px 5px 0; float: left" class="input-group">
+                <input type="button" class="btn btn-primary" id="search_table" name="search_table" value="Grid Search"
+                       onclick="showGridResult();">
+            </div>
+            <div style="margin: 5px 10px 5px 0; float: left" class="input-group">
+                <input type="button" class="btn btn-primary" id="searchSubmit" name="searchSubmit" value="TreeList Search"
+                       onclick="Click();"/>
+            </div>
+            <div style="margin: 5px 10px 5px 0; float: left" class="input-group">
+                <input type="button" id="export" value="Grid Export" class="btn btn-primary" onclick="getExport()">
+            </div>
         </div>
     </div>
 </div>
 
-<iframe src="empty.jsp" id="resultPage" name="resultPage" width="100%" height="78%" frameborder="0" style="background-color: darkgray; margin-top: 160px"></iframe>
+<div id='content-wrapper'>
+    <div id='content-left'>
+        <iframe src="empty.jsp" id="treePage" name="treePage" width="100%" height="100%" frameborder="0"
+                style="background-color: darkgray; overflow-y: hidden;">
+        </iframe>
+    </div>
+    <div id='content-right'>
+        <iframe src="empty.jsp" id="resultPage" name="resultPage" width="100%" height="100%" frameborder="0"
+                style="background-color: darkgray; overflow-y: hidden;">
+        </iframe>
+    </div>
+</div>
+<div id="tmpValue" style="display: none"></div>
 
 <script type="text/javascript">
+    var winHeight;
+    var winWidth;
+
+    if (window.innerWidth)
+        winWidth = window.innerWidth;
+    else if ((document.body) && (document.body.clientWidth))
+        winWidth = document.body.clientWidth;
+
+    if (window.innerHeight)
+        winHeight = window.innerHeight;
+    else if ((document.body) && (document.body.clientHeight))
+        winHeight = document.body.clientHeight;
+
+    var frameBody = document.getElementById("content-wrapper");
+    frameBody.style.height = winHeight - 48;
+
+    window.frames["treePage"].location.href = "/partFinder_catalogue.jsp";
+
+    function showGridResult() {
+        document.getElementById("tmpValue").innerText = window.frames["treePage"].getSearchValues();
+
+        var btn = document.getElementById("search_table");
+        btn.disabled = true;
+        var me = btn;
+        setTimeout(function () {
+            me.disabled = false;
+        }, 3000);
+
+        window.frames["resultPage"].location.href = "/partFinder_table.jsp";
+    }
+
     function Click() {
+        var searchValues = window.frames["treePage"].getSearchValues();
+
         var selectObj = document.getElementById("searchSelect");
         var index = selectObj.selectedIndex;
         var tableName = selectObj.options[index].value;
-        var partnumber = document.getElementById("partnumber").value;
-        var description = document.getElementById("description").value;
-        var mep = document.getElementById("mep").value;
-        var rdo = document.getElementById("rdo").value;
-        var check1 = document.getElementsByName("choice");
-        var radioCheck;
-        for (var i = 0; i < check1.length; i++) {
-            if (check1[i].checked)
-                radioCheck = check1[i].value;
-        }
 
         var check2 = document.getElementById("info");
         var isAllInfo = false;
@@ -117,10 +183,8 @@
             isChildren = true;
 
         window.frames["resultPage"].location.href = "/tree.jsp?tableName=" + tableName
-                + "&partnumber=" + partnumber +
-                "&description=" + description + "&mep=" + mep +
-                "&rdo=" + rdo + "&isAllInfo=" + isAllInfo +
-                "&isChildren=" + isChildren + "&radioCheck=" + radioCheck;
+         + "&isAllInfo=" + isAllInfo +
+        "&isChildren=" + isChildren + "&searchValues=" + searchValues;
     }
 
     function searchPN() {
@@ -130,8 +194,8 @@
         var rdo = document.getElementById("rdo").value;
 
         window.frames["resultPage"].location.href = "/table.jsp?&partnumber=" + partnumber +
-                "&description=" + description + "&mep=" + mep +
-                "&rdo=" + rdo;
+        "&description=" + description + "&mep=" + mep +
+        "&rdo=" + rdo;
     }
 
     $(function () {
@@ -168,6 +232,31 @@
                 $("#update").removeAttr("disabled");
             }
         })
+    }
+
+    function getExport() {
+        var store = window.frames["resultPage"].getGridStore();
+
+        var btn = document.getElementById("export");
+        btn.disabled = true;
+        var me = btn;
+        setTimeout(function () {
+            me.disabled = false;
+        }, 2000);
+
+        var form = document.createElement("form");
+        var element1 = document.createElement("input");
+        form.method = "POST";
+        form.action = "exportPartFinder.action";
+
+        element1.value = JSON.stringify(store);
+        element1.name = "store";
+        element1.type = 'hidden';
+        form.appendChild(element1);
+
+        document.body.appendChild(form);
+
+        form.submit();
     }
 </script>
 </body>

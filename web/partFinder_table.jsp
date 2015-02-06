@@ -1,14 +1,14 @@
 <%--
   Created by IntelliJ IDEA.
   User: Administrator
-  Date: 2015/1/26
-  Time: 15:21
+  Date: 2015/2/6
+  Time: 14:37
   To change this template use File | Settings | File Templates.
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
-    <title>Complaints Table</title>
+    <title>PartFinder Table</title>
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
@@ -25,7 +25,6 @@
         background: #eaeaea;
     }
 </style>
-
 <script type="text/javascript">
     Ext.Loader.setConfig({
         enabled: true
@@ -44,6 +43,19 @@
     var winWidth;
     var winHeight;
     var searchKeys = parent.document.getElementById("tmpValue").innerText;
+    var searchTable = parent.document.getElementById("searchSelect");
+    var index = searchTable.selectedIndex;
+    var tableName = searchTable.options[index].value;
+
+    var isShowInfo = parent.document.getElementById("info");
+    var isAllInfo = false;
+    if (isShowInfo.checked)
+        isAllInfo = true;
+
+    var isShowChildren = parent.document.getElementById("children");
+    var isChildren = false;
+    if (isShowChildren.checked)
+        isChildren = true;
 
     if (window.innerWidth)
         winWidth = window.innerWidth;
@@ -63,18 +75,21 @@
         return RegExp.$1;
     }
 
-    function getComplaintsTable() {
+    function getPartFinderTable() {
         $.ajax({
             type: 'post',
             dataType: 'text',
             async: true,
-            url: 'complaintsSearch.action',
+            url: 'partFinderSearch.action',
             data: {
-                searchKeys: searchKeys
+                searchKeys: searchKeys,
+                tableName: tableName,
+                isShowInfo: isAllInfo,
+                isShowChildren: isChildren
             },
             success: function (result) {
                 if (result == "fail") {
-                    Ext.MessageBox.alert("Error Info", "SearchKeys is empty or not found!");
+                    Ext.MessageBox.alert("Error info", "SearchKeys is empty or keywords are not found!");
                 } else {
                     result = eval("(" + result + ")");
                     initTable(result);
@@ -85,7 +100,7 @@
 
     function initTable(result) {
 
-        Ext.define('Complaints', {
+        Ext.define('PartFinder', {
             extend: 'Ext.data.Model',
             fields: result[0]
         });
@@ -94,24 +109,24 @@
 
         var getLocalStore = function () {
             return Ext.create('Ext.data.ArrayStore', {
-                model: 'Complaints',
+                model: 'PartFinder',
                 data: Ext.grid.myData
             });
         };
 
         var myGrid = Ext.create('Ext.grid.Panel', {
-            id: 'myComplaintsGrid',
+            id: 'myPartFinderGrid',
             store: getLocalStore(),
             columns: result[1],
             columnLines: true,
             enableLocking: true,
             x: 0,
-            y: '95px',
+            y: '165px',
             width: '100%',
-            height: winHeight - 95,
+            height: winHeight - 165,
             collapsible: false,
             animCollapse: false,
-            title: 'Complaints grid info',
+            title: 'PartFinder grid info',
             iconCls: 'icon-grid',
             margin: '0 0 0 0',
             viewConfig: {
@@ -120,7 +135,7 @@
                 enableTextSelection: true
             },
             listeners: {
-                celldblclick : function (view, cell, cellIndex, record,row, rowIndex, e) {
+                celldblclick: function (view, cell, cellIndex, record, row, rowIndex, e) {
                     var clickedDataIndex = view.panel.headerCt.getHeaderAtIndex(cellIndex).dataIndex;
                     var clickedColumnName = view.panel.headerCt.getHeaderAtIndex(cellIndex).text;
                     var clickedCellValue = record.get(clickedDataIndex);
@@ -139,10 +154,10 @@
     }
 
     function getGridStore() {
-        return Ext.getCmp('myComplaintsGrid').getStore().getProxy().getReader().rawData;
+        return Ext.getCmp('myPartFinderGrid').getStore().getProxy().getReader().rawData;
     }
 
-    Ext.onReady(getComplaintsTable);
+    Ext.onReady(getPartFinderTable);
 </script>
 </body>
 </html>

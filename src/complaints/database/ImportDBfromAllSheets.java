@@ -124,6 +124,9 @@ public class ImportDBfromAllSheets {
     }
 
     public List<String> complaintsSearch(Map<String, String> stringMap) {
+        if (stringMap.isEmpty()) {
+            return null;
+        }
         getConnect();
         List<String> result = new ArrayList<String>();
         StringBuilder subSqlBuider = new StringBuilder();
@@ -149,10 +152,8 @@ public class ImportDBfromAllSheets {
                         .append(rsmd.getColumnLabel(i).replaceAll("\'", " ")).append("\'},");
             }
             String fields = (subFields.substring(0, subFields.length() - 1) + "]")
-//                    .replaceAll("\"", " ").replaceAll("\\s", "").replaceAll("\\n", "");
                     .replaceAll("\"", " ").replaceAll("\\n", "");
             String columns = (subColumns.substring(0, subColumns.length() - 1) + "]")
-//                    .replaceAll("\"", " ").replaceAll("\\s", "").replaceAll("\\n", "");
                     .replaceAll("\"", " ").replaceAll("\\n", "");
             result.add(fields);
             result.add(columns);
@@ -169,7 +170,6 @@ public class ImportDBfromAllSheets {
                 subDummyData.append(subDummyData2.substring(0, subDummyData2.length() - 1)).append("],");
             }
             String dummyData = (subDummyData.substring(0, subDummyData.length() - 1) + "]")
-//                    .replaceAll("\"", " ").replaceAll("\\s", "").replaceAll("\\n", "");
                     .replaceAll("\"", " ").replaceAll("\\n", "");
             result.add(dummyData);
             rs.close();
@@ -178,9 +178,6 @@ public class ImportDBfromAllSheets {
             e.printStackTrace();
         }
         closeAll();
-
-        if (result.get(2).equals("]"))
-            return null;
         return result;
     }
 

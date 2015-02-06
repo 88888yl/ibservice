@@ -65,10 +65,10 @@
     </div>
     <div class="container pull-left">
         <div style="margin: 5px 10px 5px 0; float: left" class="input-group">
-            <input type="button" id="search" value="Search" class="btn btn-warning" onclick="showResult()">
+            <input type="button" id="search" value="Search" class="btn btn-primary" onclick="showResult()">
         </div>
         <div style="margin: 5px 10px 5px 0; float: left" class="input-group">
-            <input type="button" id="export" value="Export" class="btn btn-warning" onclick="getExport()">
+            <input type="button" id="export" value="Export" class="btn btn-primary" onclick="getExport()">
         </div>
     </div>
 </div>

@@ -160,7 +160,55 @@
         <servlet-name>SubscribeServlet</servlet-name>
         <servlet-class>report.servlet.SubscribeServlet</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>PartFinderCatalogueServlet</servlet-name>
+        <servlet-class>partfinder.servlet.PartFinderCatalogueServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>PartFinderSearchServlet</servlet-name>
+        <servlet-class>partfinder.servlet.PartFinderSearchServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>ExportPartFinderServlet</servlet-name>
+        <servlet-class>partfinder.servlet.ExportPartFinderServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>CSOCatalogueServlet</servlet-name>
+        <servlet-class>cso.servlet.CSOCatalogueServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>CSOSearchServlet</servlet-name>
+        <servlet-class>cso.servlet.CSOSearchServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>ExportCSOServlet</servlet-name>
+        <servlet-class>cso.servlet.ExportCSOServlet</servlet-class>
+    </servlet>
 
+    <servlet-mapping>
+        <servlet-name>ExportCSOServlet</servlet-name>
+        <url-pattern>/exportCSO.action</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>CSOSearchServlet</servlet-name>
+        <url-pattern>/csoSearch.action</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>CSOCatalogueServlet</servlet-name>
+        <url-pattern>/csoCatalogue.action</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ExportPartFinderServlet</servlet-name>
+        <url-pattern>/exportPartFinder.action</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>PartFinderSearchServlet</servlet-name>
+        <url-pattern>/partFinderSearch.action</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>PartFinderCatalogueServlet</servlet-name>
+        <url-pattern>/partFinderCatalogue.action</url-pattern>
+    </servlet-mapping>
     <servlet-mapping>
         <servlet-name>SubscribeServlet</servlet-name>
         <url-pattern>/subscribe.action</url-pattern>

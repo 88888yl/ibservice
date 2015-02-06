@@ -1,14 +1,14 @@
 <%--
   Created by IntelliJ IDEA.
   User: Administrator
-  Date: 2015/1/26
-  Time: 15:21
+  Date: 2015/2/6
+  Time: 18:47
   To change this template use File | Settings | File Templates.
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
-    <title>Complaints Table</title>
+    <title>CSO Table</title>
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
@@ -63,12 +63,12 @@
         return RegExp.$1;
     }
 
-    function getComplaintsTable() {
+    function getCSOTable() {
         $.ajax({
             type: 'post',
             dataType: 'text',
             async: true,
-            url: 'complaintsSearch.action',
+            url: 'csoSearch.action',
             data: {
                 searchKeys: searchKeys
             },
@@ -85,7 +85,7 @@
 
     function initTable(result) {
 
-        Ext.define('Complaints', {
+        Ext.define('CSO', {
             extend: 'Ext.data.Model',
             fields: result[0]
         });
@@ -94,13 +94,13 @@
 
         var getLocalStore = function () {
             return Ext.create('Ext.data.ArrayStore', {
-                model: 'Complaints',
+                model: 'CSO',
                 data: Ext.grid.myData
             });
         };
 
         var myGrid = Ext.create('Ext.grid.Panel', {
-            id: 'myComplaintsGrid',
+            id: 'myCSOGrid',
             store: getLocalStore(),
             columns: result[1],
             columnLines: true,
@@ -139,10 +139,11 @@
     }
 
     function getGridStore() {
-        return Ext.getCmp('myComplaintsGrid').getStore().getProxy().getReader().rawData;
+        return Ext.getCmp('myCSOGrid').getStore().getProxy().getReader().rawData;
     }
 
-    Ext.onReady(getComplaintsTable);
+    Ext.onReady(getCSOTable);
 </script>
+
 </body>
 </html>

@@ -15,7 +15,8 @@ public class ReportService implements ServletContextListener {
     public void contextInitialized(ServletContextEvent servletContextEvent) {
         timer = new Timer(true);
         servletContextEvent.getServletContext().log("Start timer");
-        timer.schedule(new SendEmail(servletContextEvent.getServletContext()), 0, 60 * 1000);
+        System.out.println("Start timer");
+        timer.schedule(new SendEmail(servletContextEvent.getServletContext()), 0, 24 * 60 * 60 * 1000);
     }
 
     @Override

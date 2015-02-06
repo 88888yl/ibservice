@@ -1,5 +1,6 @@
 <%@ page import="java.util.*" language="java" contentType="text/html; charset=gb2312" %>
 <%@ page import="partfinder.build.Entry" %>
+<%@ page import="net.sf.json.JSONObject" %>
 <jsp:useBean id="tree" class="partfinder.build.TreeBuilder" scope="page"/>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN">
 <html>
@@ -14,7 +15,7 @@
     <link rel="stylesheet" href="js/tree/tree.css">
 </head>
 
-<body id="body" style="margin: 10px 0 0 30px; padding:0; background-color: darkgray; border: 0">
+<body id="body" style="margin: 185px 0 0 30px; padding:0; border: 0">
 
 <div style="position: fixed; right: 60px; top: 30px;" class="input-group">
     <input type="button" style="box-shadow: 0 3px 6px grey" class="btn btn-danger" value="ExpandAll"
@@ -34,6 +35,7 @@
 
 <script language=JavaScript>
     buildTree();
+    var searchKeys = parent.document.getElementById("tmpValue").innerText;
 
     function expand() {
         document.getElementById("loading").style.display = "";
@@ -43,13 +45,38 @@
 
     function buildTree() {
         <%
+        String partNumber = "";
+        String description = "";
+        String mep = "";
+        String rdo = "";
         String tableName = request.getParameter("tableName");
-        String partNumber = request.getParameter("partnumber");
-        String description = request.getParameter("description");
-        String mep = request.getParameter("mep");
-        String rdo = request.getParameter("rdo");
         String isChildren = request.getParameter("isChildren");
         String isAllInfo = request.getParameter("isAllInfo");
+        String searchValues = request.getParameter("searchValues");
+        Map<String, String> searchMap = new HashMap<String, String>();
+        JSONObject searchObj = JSONObject.fromObject(searchValues);
+        for (Object o : searchObj.entrySet()) {
+            Map.Entry<Object, Object> entry = (Map.Entry<Object, Object>) o;
+            if (!entry.getValue().toString().isEmpty()) {
+                searchMap.put(entry.getKey().toString(), entry.getValue().toString());
+            }
+        }
+        if (!searchMap.isEmpty()) {
+            for (Map.Entry<String, String> str : searchMap.entrySet()) {
+                if (str.getKey().equals("Name")) {
+                    partNumber = str.getValue();
+                }
+                if (str.getKey().equals("Description")) {
+                    description = str.getValue();
+                }
+                if (str.getKey().equals("Manufacturer_Equivalent_part")) {
+                    mep = str.getValue();
+                }
+                if (str.getKey().equals("RDO")) {
+                    rdo = str.getValue();
+                }
+            }
+        }
         %>
 
         window.TreeView = new MzTreeView("TreeView");

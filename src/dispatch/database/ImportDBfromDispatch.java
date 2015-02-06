@@ -108,6 +108,9 @@ public class ImportDBfromDispatch {
     }
 
     public List<String> dispatchSearch(Map<String, String> stringMap) {
+        if (stringMap.isEmpty()) {
+            return null;
+        }
         getConnect();
         List<String> result = new ArrayList<String>();
         StringBuilder subSqlBuider = new StringBuilder();
@@ -127,7 +130,6 @@ public class ImportDBfromDispatch {
             subFields.append("[");
             subColumns.append("[");
             for (int i = 1; i < size + 1; i++) {
-//                tmpRows.add(rsmd.getColumnLabel(i));
                 subFields.append("{name: \'").append(rsmd.getColumnLabel(i).replaceAll("\'", " ")).append("\'},");
                 subColumns.append("{text: \'")
                         .append(rsmd.getColumnLabel(i).replaceAll("\'", " "))
@@ -141,20 +143,16 @@ public class ImportDBfromDispatch {
             result.add(fields);
             result.add(columns);
 
-//            resultLists.add(tmpRows);
             StringBuilder subDummyData = new StringBuilder();
             subDummyData.append("[");
             while (rs.next()) {
-//                List<String> tmpRows2 = new ArrayList<String>();
                 StringBuilder subDummyData2 = new StringBuilder();
                 subDummyData2.append("[");
                 for (int i = 1; i < size + 1; i++) {
                     String value = rs.getString(rsmd.getColumnLabel(i));
-//                    tmpRows2.add(value == null ? "" : value);
                     subDummyData2.append("\'").append(value == null ? "" : value.replaceAll("\'", " ")).append("\',");
                 }
                 subDummyData.append(subDummyData2.substring(0, subDummyData2.length() - 1)).append("],");
-//                resultLists.add(tmpRows2);
             }
             String dummyData = (subDummyData.substring(0, subDummyData.length() - 1) + "]")
                     .replaceAll("\"", " ").replaceAll("\\n", "");
@@ -165,15 +163,6 @@ public class ImportDBfromDispatch {
             e.printStackTrace();
         }
         closeAll();
-
-        if (result.get(2).equals("]"))
-            return null;
-
-//        String[] tmp = resultStr.toString().split("@@");
-//        System.out.println(tmp[0]);
-//        System.out.println(tmp[1]);
-
-//        return (result.get(0) + "@@" + result.get(1) + "@@" + result.get(2)).replaceAll(" +", " ");
         return result;
     }
 

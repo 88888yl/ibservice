@@ -72,7 +72,7 @@
             },
             success: function (result) {
                 if (result == "fail") {
-                    alert("SearchKeys is empty or not found!");
+                    Ext.MessageBox.alert("Error Info", "SearchKeys is empty or not found!");
                 } else {
                     result = eval("(" + result + ")");
                     initTable(result);
@@ -113,8 +113,19 @@
             iconCls: 'icon-grid',
             margin: '0 0 0 0',
             viewConfig: {
-                getRowClass: changeRowClass
+                getRowClass: changeRowClass,
+                stripeRows: true,
+                enableTextSelection: true
             },
+            listeners: {
+                celldblclick : function (view, cell, cellIndex, record,row, rowIndex, e) {
+                    var clickedDataIndex = view.panel.headerCt.getHeaderAtIndex(cellIndex).dataIndex;
+                    var clickedColumnName = view.panel.headerCt.getHeaderAtIndex(cellIndex).text;
+                    var clickedCellValue = record.get(clickedDataIndex);
+                    Ext.MessageBox.alert('Detailed', clickedCellValue);
+                }
+            },
+            selModel: Ext.create('Ext.selection.Model', {listeners: {}}),
             renderTo: Ext.getBody()
         });
     }
