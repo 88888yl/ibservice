@@ -184,7 +184,31 @@
         <servlet-name>ExportCSOServlet</servlet-name>
         <servlet-class>cso.servlet.ExportCSOServlet</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>SCRCatalogueServlet</servlet-name>
+        <servlet-class>scr.servlet.SCRCatalogueServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>SCRSearchServlet</servlet-name>
+        <servlet-class>scr.servlet.SCRSearchServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>ExportSCRServlet</servlet-name>
+        <servlet-class>scr.servlet.ExportSCRServlet</servlet-class>
+    </servlet>
 
+    <servlet-mapping>
+        <servlet-name>ExportSCRServlet</servlet-name>
+        <url-pattern>/exportSCR.action</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>SCRSearchServlet</servlet-name>
+        <url-pattern>/scrSearch.action</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>SCRCatalogueServlet</servlet-name>
+        <url-pattern>/scrCatalogue.action</url-pattern>
+    </servlet-mapping>
     <servlet-mapping>
         <servlet-name>ExportCSOServlet</servlet-name>
         <url-pattern>/exportCSO.action</url-pattern>

@@ -8,7 +8,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
-    <title>CSO Table</title>
+    <title>SCR Table</title>
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
@@ -63,12 +63,12 @@
         return RegExp.$1;
     }
 
-    function getCSOTable() {
+    function getSCRTable() {
         $.ajax({
             type: 'post',
             dataType: 'text',
             async: true,
-            url: 'csoSearch.action',
+            url: 'scrSearch.action',
             data: {
                 searchKeys: searchKeys
             },
@@ -85,7 +85,7 @@
 
     function initTable(result) {
 
-        Ext.define('CSO', {
+        Ext.define('SCR', {
             extend: 'Ext.data.Model',
             fields: result[0]
         });
@@ -94,13 +94,13 @@
 
         var getLocalStore = function () {
             return Ext.create('Ext.data.ArrayStore', {
-                model: 'CSO',
+                model: 'SCR',
                 data: Ext.grid.myData
             });
         };
 
         var myGrid = Ext.create('Ext.grid.Panel', {
-            id: 'myCSOGrid',
+            id: 'mySCRGrid',
             store: getLocalStore(),
             columns: result[1],
             columnLines: true,
@@ -111,7 +111,7 @@
             height: winHeight - 95,
             collapsible: false,
             animCollapse: false,
-            title: 'CSO grid info',
+            title: 'SCR grid info',
             iconCls: 'icon-grid',
             margin: '0 0 0 0',
             viewConfig: {
@@ -139,10 +139,10 @@
     }
 
     function getGridStore() {
-        return Ext.getCmp('myCSOGrid').getStore().getProxy().getReader().rawData;
+        return Ext.getCmp('mySCRGrid').getStore().getProxy().getReader().rawData;
     }
 
-    Ext.onReady(getCSOTable);
+    Ext.onReady(getSCRTable);
 </script>
 
 </body>

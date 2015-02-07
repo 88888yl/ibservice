@@ -52,7 +52,7 @@
         <div style="margin: 5px 10px 5px 0; width: 220px; float: left" class="input-group">
             <input type="button" style="float: left; margin-right: 10px" id="uploadBtn" value="Select File..."
                    class="btn btn-primary">
-            <input type="button" style="float: left" id="updateCSO" value="UpdateCSO" class="btn btn-warning">
+            <input type="button" style="float: left" id="updateCSO" value="UpdateCSO" class="btn btn-warning" onclick="updateCSO()">
         </div>
         <div style="margin: 5px 10px 5px 0; width: 220px; float: left" class="input-group">
             <span class="label label-default" id="information" style=" width: 30px; margin-top: 10px"></span>
