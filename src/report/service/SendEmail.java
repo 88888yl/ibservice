@@ -137,7 +137,7 @@ public class SendEmail extends TimerTask {
             email.setAuthenticator(new DefaultAuthenticator("ibservice", "service123456"));
             StringBuilder sb = new StringBuilder();
 
-            sb.append(reportList);
+            sb.append(createTableFromReportList(reportList));
 
             try {
                 email.setFrom("ibservice@163.com");
@@ -152,17 +152,144 @@ public class SendEmail extends TimerTask {
         }
     }
 
-//    private StringBuilder createTableFromReportList(List<List<Integer>> reportList) {
-//        StringBuilder sb = new StringBuilder();
-//        sb.append(reportList);
-//
-//        return sb;
-//    }
-//
-//    private StringBuilder createChartFromReportList(List<List<Integer>> reportList) {
-//        StringBuilder sb = new StringBuilder();
-//        sb.append(reportList);
-//
-//        return sb;
-//    }
+    private StringBuilder createTableFromReportList(List<List<Integer>> reportList) {
+        int size = reportList.size();
+        List<List<Integer>> tableList;
+        if (size > 12) {
+            tableList = reportList.subList(reportList.size() - 12, reportList.size());
+        } else {
+            tableList = reportList;
+        }
+
+        StringBuilder sb = new StringBuilder();
+        sb.append("<table align=\"center\" id=\"tblContent\" style=\"width: 100%; height: 15%;\">");
+
+        sb.append("<tr style=\"background-color: rgb(71, 146, 200);\">")
+                .append("<td style=\"text-align: center; color: rgb(255, 255, 255);\">RRF QTO Metrics</td>")
+                .append("<td style=\"width: 80px; text-align: center; color: rgb(255, 255, 255);\">GOAL</td>");
+        for (List<Integer> aTableList : tableList) {
+            sb.append("<td style=\"width: 100px; color: rgb(255, 255, 255); text-align: center;\">FW")
+                    .append(aTableList.get(1)).append("</td>");
+        }
+        sb.append("</tr>");
+
+        sb.append("<tr style=\"background-color: rgb(255, 255, 255);\">")
+                .append("<td nowrap=\"\" style=\"text-align: right;\"># All Open CSO</td>")
+                .append("<td style=\"width: 100px; text-align: right;\">0</td>");
+        for (List<Integer> aTableList : tableList) {
+            sb.append("<td style=\"width: 80px; text-align: right;\">")
+                    .append(aTableList.get(2)).append("</td>");
+        }
+        sb.append("</tr>");
+
+        sb.append("<tr style=\"background-color: rgb(255, 255, 255);\">")
+                .append("<td nowrap=\"\" style=\"text-align: right;\"># Red CSO</td>")
+                .append("<td style=\"width: 100px; text-align: right;\">0</td>");
+        for (List<Integer> aTableList : tableList) {
+            sb.append("<td style=\"width: 80px; text-align: right;\">")
+                    .append(aTableList.get(3)).append("</td>");
+        }
+        sb.append("</tr>");
+
+        sb.append("<tr style=\"background-color: rgb(255, 255, 255);\">")
+                .append("<td nowrap=\"\" style=\"text-align: right;\"># CSO's &gt;60 Days</td>")
+                .append("<td style=\"width: 100px; text-align: right;\">0</td>");
+        for (List<Integer> aTableList : tableList) {
+            sb.append("<td style=\"width: 80px; text-align: right;\">")
+                    .append(aTableList.get(4)).append("</td>");
+        }
+        sb.append("</tr>");
+
+        sb.append("<tr style=\"background-color: rgb(255, 255, 255);\">")
+                .append("<td nowrap=\"\" style=\"text-align: right;\"># Red CSO's &gt;60 Days</td>")
+                .append("<td style=\"width: 100px; text-align: right;\">0</td>");
+        for (List<Integer> aTableList : tableList) {
+            sb.append("<td style=\"width: 80px; text-align: right;\">")
+                    .append(aTableList.get(5)).append("</td>");
+        }
+        sb.append("</tr>");
+
+        sb.append("<tr style=\"background-color: rgb(255, 255, 255);\">")
+                .append("<td nowrap=\"\" style=\"text-align: right;\">New Open this week</td>")
+                .append("<td style=\"width: 100px; text-align: right;\">0</td>");
+        for (List<Integer> aTableList : tableList) {
+            sb.append("<td style=\"width: 80px; text-align: right;\">")
+                    .append(aTableList.get(6)).append("</td>");
+        }
+        sb.append("</tr>");
+
+        sb.append("<tr style=\"background-color: rgb(255, 255, 255);\">")
+                .append("<td nowrap=\"\" style=\"text-align: right;\">Red Open This Week</td>")
+                .append("<td style=\"width: 100px; text-align: right;\">0</td>");
+        for (List<Integer> aTableList : tableList) {
+            sb.append("<td style=\"width: 80px; text-align: right;\">")
+                    .append(aTableList.get(7)).append("</td>");
+        }
+        sb.append("</tr>");
+
+        sb.append("<tr style=\"background-color: rgb(255, 255, 255);\">")
+                .append("<td nowrap=\"\" style=\"text-align: right;\">New Closed This Week</td>")
+                .append("<td style=\"width: 100px; text-align: right;\">0</td>");
+        for (List<Integer> aTableList : tableList) {
+            sb.append("<td style=\"width: 80px; text-align: right;\">")
+                    .append(aTableList.get(8)).append("</td>");
+        }
+        sb.append("</tr>");
+
+        sb.append("<tr style=\"background-color: rgb(255, 255, 255);\">")
+                .append("<td nowrap=\"\" style=\"text-align: right;\">Red Closed This Week</td>")
+                .append("<td style=\"width: 100px; text-align: right;\">0</td>");
+        for (List<Integer> aTableList : tableList) {
+            sb.append("<td style=\"width: 80px; text-align: right;\">")
+                    .append(aTableList.get(9)).append("</td>");
+        }
+        sb.append("</tr>");
+
+        sb.append("<tr style=\"background-color: rgb(255, 255, 255);\">")
+                .append("<td nowrap=\"\" style=\"text-align: right;\">P95 All Open CSO</td>")
+                .append("<td style=\"width: 100px; text-align: right;\">0</td>");
+        for (List<Integer> aTableList : tableList) {
+            sb.append("<td style=\"width: 80px; text-align: right;\">")
+                    .append(aTableList.get(10)).append("</td>");
+        }
+        sb.append("</tr>");
+
+        sb.append("<tr style=\"background-color: rgb(255, 255, 255);\">")
+                .append("<td nowrap=\"\" style=\"text-align: right;\">P95 Red CSO</td>")
+                .append("<td style=\"width: 100px; text-align: right;\">0</td>");
+        for (List<Integer> aTableList : tableList) {
+            sb.append("<td style=\"width: 80px; text-align: right;\">")
+                    .append(aTableList.get(11)).append("</td>");
+        }
+        sb.append("</tr>");
+
+        sb.append("<tr style=\"background-color: rgb(255, 255, 255);\">")
+                .append("<td nowrap=\"\" style=\"text-align: right;\">P95 Non Red CSO</td>")
+                .append("<td style=\"width: 100px; text-align: right;\">0</td>");
+        for (List<Integer> aTableList : tableList) {
+            sb.append("<td style=\"width: 80px; text-align: right;\">")
+                    .append(aTableList.get(12)).append("</td>");
+        }
+        sb.append("</tr>");
+
+        sb.append("<tr style=\"background-color: rgb(255, 255, 255);\">")
+                .append("<td nowrap=\"\" style=\"text-align: right;\">P50 Red CSO</td>")
+                .append("<td style=\"width: 100px; text-align: right;\">0</td>");
+        for (List<Integer> aTableList : tableList) {
+            sb.append("<td style=\"width: 80px; text-align: right;\">")
+                    .append(aTableList.get(13)).append("</td>");
+        }
+        sb.append("</tr>");
+
+        sb.append("</table>");
+
+        return sb;
+    }
+
+    private StringBuilder createChartFromReportList(List<List<Integer>> reportList) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(reportList);
+
+        return sb;
+    }
 }
