@@ -196,7 +196,31 @@
         <servlet-name>ExportSCRServlet</servlet-name>
         <servlet-class>scr.servlet.ExportSCRServlet</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>IPAddressInfoServlet</servlet-name>
+        <servlet-class>access.servlet.IPAddressInfoServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>DayAccessServlet</servlet-name>
+        <servlet-class>access.servlet.DayAccessServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>TotalAccessServlet</servlet-name>
+        <servlet-class>access.servlet.TotalAccessServlet</servlet-class>
+    </servlet>
 
+    <servlet-mapping>
+        <servlet-name>TotalAccessServlet</servlet-name>
+        <url-pattern>/totalAccess.action</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>DayAccessServlet</servlet-name>
+        <url-pattern>/dayAccess.action</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>IPAddressInfoServlet</servlet-name>
+        <url-pattern>/ipAddressInfo.action</url-pattern>
+    </servlet-mapping>
     <servlet-mapping>
         <servlet-name>ExportSCRServlet</servlet-name>
         <url-pattern>/exportSCR.action</url-pattern>

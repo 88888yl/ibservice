@@ -4,12 +4,11 @@ package utils;
  * Created by myl on 14-12-2.
  * global variables for ibservice
  */
+
+/** modify this path when deploy on a new server */
 public class GlobalVariables {
-    /** modify this path when deploy on a new server */
     /** absolute file path */
-    //private static final String resourcePath = "/home/myl/Desktop/ibservice_bak/resource/";
     private static final String resourcePath = "D:\\JavaProject\\resource\\";
-    //private static final String resourcePath = "D:\\workspace\\resource\\";
 
     /** related resource file path */
     public static final String csoPath = resourcePath + "CSO/";
@@ -21,8 +20,6 @@ public class GlobalVariables {
 
     /** oracle table name */
     public static final String totalCSOTable = "total_cso";
-    public static final String openCSOTable = "open_cso";
-    public static final String closeCSOTable = "close_cso";
     public static final String totalSCRTable = "total_scr";
 
     /** login user/password */
@@ -36,6 +33,6 @@ public class GlobalVariables {
     public static final String oracleUrl = "jdbc:oracle:thin:@127.0.0.1:1521:orcl";
 
     /** cso report chart image path url, always need to change when deploy on a new server */
-    public static final String csoReportChartImageUrl = "http://222.18.159.85:8080/image/cso_chart/chart.png";
-    public static final String scrReportChartImageUrl = "http://222.18.159.85:8080/image/scr_chart/chart.png";
+    public static final String csoReportChartImageUrl = "D:\\JavaProject\\resource\\ReportChart\\cso\\cso_chart.jpg";
+    public static final String scrReportChartImageUrl = "D:\\JavaProject\\resource\\ReportChart\\scr\\scr_chart.jpg";
 }

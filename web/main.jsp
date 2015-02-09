@@ -52,7 +52,7 @@
                 <li id="tab6" onclick="changeTab6(this);"><a href="#">SCR Report</a></li>
                 <li id="tab8" onclick="changeTab8(this);"><a href="#">Report Service</a></li>
 
-                <%--<li id="tab7" onclick="changeTab7(this);"><a>Access Statistics</a></li>--%>
+                <li id="tab7" onclick="changeTab7(this);"><a href="#">Access Statistics</a></li>
             </ul>
         </div>
     </div>
@@ -94,7 +94,9 @@
         changeTabColor(elem);
     }
     function changeTab7(elem) {
-        $("#tab").load("access.jsp");
+        document.getElementById("tab").innerHTML =
+                '<iframe name="file_frame" width="100%" height="95%" src="access.jsp" ' +
+                'style="margin: 0; padding:0; background-color: darkgray; border: 0"></iframe>';
         changeTabColor(elem);
     }
     function changeTab8(elem) {

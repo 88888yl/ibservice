@@ -210,7 +210,7 @@
             tr = document.createElement("tr");
             tr.style.backgroundColor = "#ffffff";
             td = document.createElement("td");
-            td.innerHTML = "P95 All Open CSO";
+            td.innerHTML = "P95 All Open SCR";
             td.noWrap = true;
             td.style.textAlign = "right";
             tr.appendChild(td);

@@ -7,7 +7,10 @@ import report.database.CreateTmpReport;
 import scr.database.SCRReportToDB;
 import utils.GlobalVariables;
 
+
 import javax.servlet.ServletContext;
+import java.io.File;
+import java.io.IOException;
 import java.util.*;
 
 /**
@@ -137,12 +140,20 @@ public class SendEmail extends TimerTask {
             email.setAuthenticator(new DefaultAuthenticator("ibservice", "service123456"));
             StringBuilder sb = new StringBuilder();
 
-            sb.append(createTableFromReportList(reportList));
-
+            sb.append(createTableFromReportList(reportList, serviceType));
+            createChartFromReportList(reportList, serviceType);
             try {
                 email.setFrom("ibservice@163.com");
                 email.setSubject(serviceType);
-                email.setHtmlMsg(sb.toString());
+                File img;
+                if (serviceType.equals("CSO Report")) {
+                    img = new File(GlobalVariables.csoReportChartImageUrl);
+                } else {
+                    img = new File(GlobalVariables.scrReportChartImageUrl);
+                }
+                String cid = email.embed(img);
+                email.setHtmlMsg(sb.toString() + "<html><img src=\"cid:" + cid + "\"></html>");
+
                 email.addTo(emailAddr);
                 email.send();
                 System.out.println("Send to " + emailAddr + " success!");
@@ -152,7 +163,7 @@ public class SendEmail extends TimerTask {
         }
     }
 
-    private StringBuilder createTableFromReportList(List<List<Integer>> reportList) {
+    private StringBuilder createTableFromReportList(List<List<Integer>> reportList, String serviceType) {
         int size = reportList.size();
         List<List<Integer>> tableList;
         if (size > 12) {
@@ -162,6 +173,35 @@ public class SendEmail extends TimerTask {
         }
 
         StringBuilder sb = new StringBuilder();
+        if (serviceType.equals("CSO Report")) {
+            sb.append(createCSOTable(tableList));
+        } else {
+            sb.append(createSCRTable(tableList));
+        }
+        return sb;
+    }
+
+    private void createChartFromReportList(List<List<Integer>> reportList, String serviceType) {
+        int max = 0;
+        for (List<Integer> aReportList : reportList) {
+            for (int j = 0; j < aReportList.size(); j++) {
+                if (j == 3 || j == 4 || j == 5 || j == 6 || j == 8) {
+                    max = max < aReportList.get(j) ? aReportList.get(j) : max;
+                }
+            }
+        }
+        max = (int) Math.ceil(max * 1.25);
+        CreateJFreeChart createJFreeChart = new CreateJFreeChart(reportList, max, serviceType);
+        try {
+            createJFreeChart.print();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private StringBuilder createCSOTable(List<List<Integer>> tableList) {
+        StringBuilder sb = new StringBuilder();
+
         sb.append("<table align=\"center\" id=\"tblContent\" style=\"width: 100%; height: 15%;\">");
 
         sb.append("<tr style=\"background-color: rgb(71, 146, 200);\">")
@@ -286,9 +326,75 @@ public class SendEmail extends TimerTask {
         return sb;
     }
 
-    private StringBuilder createChartFromReportList(List<List<Integer>> reportList) {
+    private StringBuilder createSCRTable(List<List<Integer>> tableList) {
         StringBuilder sb = new StringBuilder();
-        sb.append(reportList);
+
+        sb.append("<table align=\"center\" id=\"tblContent\" style=\"width: 100%; height: 15%;\">");
+
+        sb.append("<tr style=\"background-color: rgb(71, 146, 200);\">")
+                .append("<td style=\"text-align: center; color: rgb(255, 255, 255);\">RRF QTO Metrics</td>")
+                .append("<td style=\"width: 80px; text-align: center; color: rgb(255, 255, 255);\">GOAL</td>");
+        for (List<Integer> aTableList : tableList) {
+            sb.append("<td style=\"width: 100px; color: rgb(255, 255, 255); text-align: center;\">FW")
+                    .append(aTableList.get(1)).append("</td>");
+        }
+        sb.append("</tr>");
+
+        sb.append("<tr style=\"background-color: rgb(255, 255, 255);\">")
+                .append("<td nowrap=\"\" style=\"text-align: right;\"># All Open SCR</td>")
+                .append("<td style=\"width: 100px; text-align: right;\">0</td>");
+        for (List<Integer> aTableList : tableList) {
+            sb.append("<td style=\"width: 80px; text-align: right;\">")
+                    .append(aTableList.get(2)).append("</td>");
+        }
+        sb.append("</tr>");
+
+        sb.append("<tr style=\"background-color: rgb(255, 255, 255);\">")
+                .append("<td nowrap=\"\" style=\"text-align: right;\"># SCR's &gt;60 Days</td>")
+                .append("<td style=\"width: 100px; text-align: right;\">0</td>");
+        for (List<Integer> aTableList : tableList) {
+            sb.append("<td style=\"width: 80px; text-align: right;\">")
+                    .append(aTableList.get(3)).append("</td>");
+        }
+        sb.append("</tr>");
+
+        sb.append("<tr style=\"background-color: rgb(255, 255, 255);\">")
+                .append("<td nowrap=\"\" style=\"text-align: right;\">New Open This Week</td>")
+                .append("<td style=\"width: 100px; text-align: right;\">0</td>");
+        for (List<Integer> aTableList : tableList) {
+            sb.append("<td style=\"width: 80px; text-align: right;\">")
+                    .append(aTableList.get(4)).append("</td>");
+        }
+        sb.append("</tr>");
+
+        sb.append("<tr style=\"background-color: rgb(255, 255, 255);\">")
+                .append("<td nowrap=\"\" style=\"text-align: right;\">New Closed This Week</td>")
+                .append("<td style=\"width: 100px; text-align: right;\">0</td>");
+        for (List<Integer> aTableList : tableList) {
+            sb.append("<td style=\"width: 80px; text-align: right;\">")
+                    .append(aTableList.get(5)).append("</td>");
+        }
+        sb.append("</tr>");
+
+        sb.append("<tr style=\"background-color: rgb(255, 255, 255);\">")
+                .append("<td nowrap=\"\" style=\"text-align: right;\">P95 All Open SCR</td>")
+                .append("<td style=\"width: 100px; text-align: right;\">0</td>");
+        for (List<Integer> aTableList : tableList) {
+            sb.append("<td style=\"width: 80px; text-align: right;\">")
+                    .append(aTableList.get(6)).append("</td>");
+        }
+        sb.append("</tr>");
+
+        sb.append("<tr style=\"background-color: rgb(255, 255, 255);\">")
+                .append("<td nowrap=\"\" style=\"text-align: right;\">P50 SCR</td>")
+                .append("<td style=\"width: 100px; text-align: right;\">0</td>");
+        for (List<Integer> aTableList : tableList) {
+            sb.append("<td style=\"width: 80px; text-align: right;\">")
+                    .append(aTableList.get(7)).append("</td>");
+        }
+        sb.append("</tr>");
+
+        sb.append("</table>");
 
         return sb;
     }
