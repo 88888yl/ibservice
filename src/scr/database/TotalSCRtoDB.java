@@ -78,7 +78,15 @@ public class TotalSCRtoDB {
             subColumns.append("{");
             while (rs.next()) {
                 String value = rs.getString("COLUMN_NAME");
-                subColumns.append("\'").append(value == null ? "" : value.replaceAll("\'", " ")).append("\':\"\",");
+                if (!value.equals("Age")) {
+                    if (value.equals("SCR_AGE")) {
+                        value = "Age (from)";
+                        subColumns.append("\'").append(value).append("\':\"\",");
+                        subColumns.append("\'").append("Age (to)").append("\':\"\",");
+                    } else {
+                        subColumns.append("\'").append(value == null ? "" : value.replaceAll("\'", " ")).append("\':\"\",");
+                    }
+                }
             }
             ColumnStr = subColumns.substring(0, subColumns.length() - 1) + "}";
             result.add(ColumnStr);
@@ -98,11 +106,23 @@ public class TotalSCRtoDB {
         getConnect();
         List<String> result = new ArrayList<String>();
         StringBuilder subSqlBuider = new StringBuilder();
+        StringBuilder ageSqlBuider = new StringBuilder();
         for (Map.Entry<String, String> str : stringMap.entrySet()) {
-            subSqlBuider.append("\"").append(str.getKey()).append("\" like \'%").append(str.getValue()).append("%\' and ");
+            if (str.getKey().equals("Age (from)")) {
+                ageSqlBuider.append("\"SCR_AGE\">=\'").append(str.getValue()).append("\'");
+            } else if (str.getKey().equals("Age (to)")) {
+                ageSqlBuider.append(" and \"SCR_AGE\"<=\'").append(str.getValue()).append("\'");
+            } else {
+                subSqlBuider.append("\"").append(str.getKey()).append("\" like \'%").append(str.getValue()).append("%\' and ");
+            }
         }
-        String sub_sql = subSqlBuider.substring(0, subSqlBuider.length() - 4);
-        String search_sql = "select * from \"TOTAL_SCR\" where " + sub_sql;
+        String sub_sql = subSqlBuider.toString();
+        String search_sql;
+        if (ageSqlBuider.toString().isEmpty()) {
+            search_sql = "select * from \"TOTAL_SCR\" where " + sub_sql.substring(0, sub_sql.length() - 4);
+        } else {
+            search_sql = "select * from \"TOTAL_SCR\" where " + sub_sql + ageSqlBuider;
+        }
         try {
             stmt = con.createStatement();
             rs = stmt.executeQuery(search_sql);

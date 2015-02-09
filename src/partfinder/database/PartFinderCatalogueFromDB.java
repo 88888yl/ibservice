@@ -38,6 +38,9 @@ public class PartFinderCatalogueFromDB {
             subColumns.append("{");
             while (rs.next()) {
                 String value = rs.getString("COLUMN_NAME");
+                if (value.equals("Name")) {
+                    value = "Part Number";
+                }
                 subColumns.append("\'").append(value == null ? "" : value.replaceAll("\'", " ")).append("\':\"\",");
             }
             ColumnStr = subColumns.substring(0, subColumns.length() - 1) + "}";
@@ -58,7 +61,11 @@ public class PartFinderCatalogueFromDB {
         String sub_sql = null;
         if (!stringMap.isEmpty()) {
             for (Map.Entry<String, String> str : stringMap.entrySet()) {
-                subSqlBuider.append("\"").append(str.getKey()).append("\" like \'%").append(str.getValue()).append("%\' and ");
+                String colName = str.getKey();
+                if (colName.equals("Part Number")) {
+                    colName = "Name";
+                }
+                subSqlBuider.append("\"").append(colName).append("\" like \'%").append(str.getValue()).append("%\' and ");
             }
             sub_sql = subSqlBuider.substring(0, subSqlBuider.length() - 4);
         }
