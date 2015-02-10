@@ -53,7 +53,7 @@ public class ReportServiceDB {
     }
 
     public void insertReportDB() {
-        if(!validateTableExist()){
+        if (!validateTableExist()) {
             createReportDB();
         }
         getConnect();
@@ -75,6 +75,24 @@ public class ReportServiceDB {
             stmt = con.createStatement();
             rs = stmt.executeQuery(inset_sql);
             rs.next();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            closeAll();
+        }
+    }
+
+    public void unSubscribe(String email, String serviceType, String startTime, String dayOfWeek) {
+        getConnect();
+
+        String delete_sql = "delete from \"Users of Report Service\" where " +
+                "\"Email\"='" + email + "' and " +
+                "\"Day of Week\"='" + dayOfWeek + "' and " +
+                "\"Type\"='" + serviceType + "' and " +
+                "\"Start Time\"='" + startTime + "'";
+        try {
+            stmt = con.createStatement();
+            stmt.executeQuery(delete_sql);
         } catch (Exception e) {
             e.printStackTrace();
         } finally {

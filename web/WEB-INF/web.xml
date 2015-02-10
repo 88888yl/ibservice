@@ -208,7 +208,15 @@
         <servlet-name>TotalAccessServlet</servlet-name>
         <servlet-class>access.servlet.TotalAccessServlet</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>UnSubscribeServlet</servlet-name>
+        <servlet-class>report.servlet.UnSubscribeServlet</servlet-class>
+    </servlet>
 
+    <servlet-mapping>
+        <servlet-name>UnSubscribeServlet</servlet-name>
+        <url-pattern>/unSubscribe.action</url-pattern>
+    </servlet-mapping>
     <servlet-mapping>
         <servlet-name>TotalAccessServlet</servlet-name>
         <url-pattern>/totalAccess.action</url-pattern>

@@ -228,6 +228,9 @@
         <div style="margin: 0 10px 5px 0; float: left" class="input-group">
             <input type="button" id="send" value="Subscribe" class="btn btn-warning" onclick="getSubscribeInfo()">
         </div>
+        <div style="margin: 0 10px 5px 0; float: left" class="input-group">
+            <input type="button" id="setUnSub" value="Unsubscribe" class="btn btn-danger" onclick="setUnSubscribe()">
+        </div>
     </div>
 </div>
 <div id='content-wrapper'>
@@ -263,6 +266,33 @@
                 <button type="button" class="btn btn-danger" data-dismiss="modal"
                         id="save_subscribe" onclick="saveSubscribe();">
                     Confirm
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="myModal2" tabindex="-1" role="dialog"
+     aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close"
+                        data-dismiss="modal" aria-hidden="true">
+                    &times;
+                </button>
+                <h4 class="modal-title" id="myModalLabel2">
+                </h4>
+            </div>
+            <div class="modal-body" id="myModalContent2">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary"
+                        data-dismiss="modal">Close
+                </button>
+                <button type="button" class="btn btn-danger" data-dismiss="modal"
+                        id="unsubscribe" onclick="unSubscribe();">
+                    Unsubscribe
                 </button>
             </div>
         </div>
@@ -418,6 +448,60 @@
             url: 'subscribe.action',
             data: {
                 items: itemString,
+                serviceType: type,
+                startTime: start,
+                dayOfWeek: time,
+                email: email
+            }
+        });
+    }
+
+    function setUnSubscribe() {
+        $('#myModal2').modal('show');
+        $('#myModalLabel2').text("UnSubscribe Info");
+
+        var type = document.getElementById("serviceType").value;
+        var start = document.getElementById("startTime").value;
+        var time = document.getElementById("dayofweek").value;
+        var email = document.getElementById("email").value;
+
+        if (type == "") {
+            $('#myModalContent2').text('Please choose your unsubscribe service first!');
+            $('#unsubscribe').attr("disabled", "disabled");
+        } else {
+            if (start == "") {
+                $('#myModalContent2').text('Please choose unsubscribe start time!');
+                $('#unsubscribe').attr("disabled", "disabled");
+            } else if (time == "") {
+                $('#myModalContent2').text('Please choose your unsubscribe report time!');
+                $('#unsubscribe').attr("disabled", "disabled");
+            } else if (email == "") {
+                $('#myModalContent2').text('Please input your unsubscribe author(email address)!');
+                $('#unsubscribe').attr("disabled", "disabled");
+            } else {
+                $("#unsubscribe").removeAttr("disabled");
+                $('#myModalContent2').html(
+                        '<p><b>Author</b>: ' + email + '</p>' +
+                        '<p><b>Type</b>: ' + type + '</p>' +
+                        '<p><b>Start FW</b>: ' + start + '</p>' +
+                        '<p><b>Time</b>: Every ' + time + ' of week</p>'
+                );
+            }
+        }
+    }
+
+    function unSubscribe() {
+        var type = document.getElementById("serviceType").value;
+        var start = document.getElementById("startTime").value;
+        var time = document.getElementById("dayofweek").value;
+        var email = document.getElementById("email").value;
+
+        $.ajax({
+            type: 'post',
+            dataType: 'text',
+            async: true,
+            url: 'unSubscribe.action',
+            data: {
                 serviceType: type,
                 startTime: start,
                 dayOfWeek: time,
