@@ -89,9 +89,9 @@
             chartList = result;
         }
         var table = document.createElement("table");
-        table.align = "center";
+        table.align = "left";
         table.style.border = "solid dashed #157fcc";
-        table.style.width = "100%";
+//        table.style.width = "100%";
         table.style.height = "15%";
         table.setAttribute("id", "tblContent");
         var tr;

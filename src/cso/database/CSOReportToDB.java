@@ -365,17 +365,31 @@ public class CSOReportToDB {
     }
 
     public String getTree() {
-        Map<String, List<String>> treeMapList = new HashMap<String, List<String>>();
-
-        String sql = "select \"CSO Number\",\"PSI Description\" from TOTAL_CSO";
+        Map<String, Map<String, List<String>>> treeMapList = new HashMap<String, Map<String, List<String>>>();
+        String sql = "select \"CSO Number\", \"PSI Code\",\"PSI Description\" from TOTAL_CSO";
         try {
             stmt = con.createStatement();
             rs = stmt.executeQuery(sql);
             while (rs.next()) {
-                if (treeMapList.get(rs.getString("PSI Description")) == null) {
-                    treeMapList.put(rs.getString("PSI Description"), new ArrayList<String>());
+                if (rs.getString("PSI Code") != null) {
+                    String code = rs.getString("PSI Code");
+                    String desc = rs.getString("PSI Description");
+                    String num = rs.getString("CSO Number");
+
+                    if (code != null) code = code.replaceAll("\n", "").replaceAll("\"", "");
+                    if (desc != null) desc = desc.replaceAll("\n", "").replaceAll("\"", "");
+                    if (num != null) num = num.replaceAll("\n", "").replaceAll("\"", "");
+
+                    if (treeMapList.get(code) == null) {
+                        treeMapList.put(code, new HashMap<String, List<String>>());
+                    }
+                    if (treeMapList.get(code).get(desc) == null) {
+                        treeMapList.get(code).put(desc, new ArrayList<String>());
+                    }
+                    treeMapList.get(code)
+                            .get(desc)
+                            .add(num);
                 }
-                treeMapList.get(rs.getString("PSI Description")).add(rs.getString("CSO Number") + "@" + rs.getString("PSI Description"));
             }
             rs.close();
             stmt.close();
@@ -384,38 +398,26 @@ public class CSOReportToDB {
         }
 
         StringBuilder sb = new StringBuilder();
-        for (Object object : treeMapList.keySet()) {
-            if (object != null) {
-//                if (treeMapList.get(object.toString()).size() == 1) {
-//                    String csoNumberTmp = treeMapList.get(object.toString()).get(0).split("@")[0];
-//                    String psiDescriptionTmp = treeMapList.get(object.toString()).get(0).split("@")[1].replaceAll("\"", "").replaceAll("\n", "");
-//                    sb.append("{\"text\": \"")
-//                            .append(psiDescriptionTmp)
-//                            .append("\",\"checked\": false,\"leaf\": true},");
-//                } else {
-
-                String psiDescriptionTmp = treeMapList.get(object.toString()).get(0).split("@")[1].replaceAll("\"", "").replaceAll("\n", "");
-
-//                    sb.append("{\"text\": \"").append(object.toString().replaceAll("\"", "").replaceAll("\n", ""))
-                sb.append("{\"text\": \"").append(psiDescriptionTmp)
+        for (Map.Entry<String, Map<String, List<String>>> subMap : treeMapList.entrySet()) {
+            if (subMap != null) {
+                sb.append("{\"text\": \"").append(subMap.getKey())
                         .append("\",\"checked\": false,\"expanded\": false,\"children\": [");
                 StringBuilder subSb = new StringBuilder();
-                for (String str : treeMapList.get(object.toString())) {
-                    String csoNumberTmp = str.split("@")[0];
-                    subSb.append("{\"text\": \"")
-//                                .append(str.replaceAll("\"", "").replaceAll("\n", ""))
-                            .append(csoNumberTmp)
-                            .append("\",\"checked\": false,\"leaf\": true},");
+                for (Map.Entry<String, List<String>> list : subMap.getValue().entrySet()) {
+                    subSb.append("{\"text\": \"").append(list.getKey())
+                            .append("\",\"checked\": false,\"expanded\": false,\"children\": [");
+                    StringBuilder subSubSb = new StringBuilder();
+                    for (String numberStr : list.getValue()) {
+                        subSubSb.append("{\"text\": \"")
+                                .append(numberStr)
+                                .append("\",\"checked\": false,\"leaf\": true},");
+                    }
+                    subSb.append(subSubSb.substring(0, subSubSb.length() - 1)).append("]},");
                 }
-                String subStrTmp = subSb.substring(0, subSb.length() - 1);
-                sb.append(subStrTmp).append("]},");
-//                }
+                sb.append(subSb.substring(0, subSb.length() - 1)).append("]},");
             }
         }
-        StringBuilder totalContent = new StringBuilder();
-        totalContent.append("[").append(sb.substring(0, sb.length() - 1)).append("]");
-
-        return totalContent.toString();
+        return "[" + sb.substring(0, sb.length() - 1) + "]";
     }
 
     public void deleteCSOReportTable(String reportTableName) {

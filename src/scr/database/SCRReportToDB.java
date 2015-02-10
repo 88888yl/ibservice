@@ -242,17 +242,31 @@ public class SCRReportToDB {
     }
 
     public String getTree() {
-        Map<String, List<String>> treeMapList = new HashMap<String, List<String>>();
-
-        String sql = "select \"Number\",\"Item Description\" from TOTAL_SCR";
+        Map<String, Map<String, List<String>>> treeMapList = new HashMap<String, Map<String, List<String>>>();
+        String sql = "select \"BPOC\", \"SCR Assigned To\",\"Number\" from TOTAL_SCR";
         try {
             stmt = con.createStatement();
             rs = stmt.executeQuery(sql);
             while (rs.next()) {
-                if (treeMapList.get(rs.getString("Item Description")) == null) {
-                    treeMapList.put(rs.getString("Item Description"), new ArrayList<String>());
+                if (rs.getString("BPOC") != null) {
+                    String bpoc = rs.getString("BPOC");
+                    String sat = rs.getString("SCR Assigned To");
+                    String num = rs.getString("Number");
+
+                    if (bpoc != null) bpoc = bpoc.replaceAll("\n", "").replaceAll("\"", "");
+                    if (sat != null) sat = sat.replaceAll("\n", "").replaceAll("\"", "");
+                    if (num != null) num = num.replaceAll("\n", "").replaceAll("\"", "");
+
+                    if (treeMapList.get(bpoc) == null) {
+                        treeMapList.put(bpoc, new HashMap<String, List<String>>());
+                    }
+                    if (treeMapList.get(bpoc).get(sat) == null) {
+                        treeMapList.get(bpoc).put(sat, new ArrayList<String>());
+                    }
+                    treeMapList.get(bpoc)
+                            .get(sat)
+                            .add(num);
                 }
-                treeMapList.get(rs.getString("Item Description")).add(rs.getString("Number") + "@" + rs.getString("Item Description"));
             }
             rs.close();
             stmt.close();
@@ -261,26 +275,26 @@ public class SCRReportToDB {
         }
 
         StringBuilder sb = new StringBuilder();
-        for (Object object : treeMapList.keySet()) {
-            if (object != null) {
-                String psiDescriptionTmp = treeMapList.get(object.toString()).get(0).split("@")[1].replaceAll("\"", "").replaceAll("\n", "");
-                sb.append("{\"text\": \"").append(psiDescriptionTmp)
+        for (Map.Entry<String, Map<String, List<String>>> subMap : treeMapList.entrySet()) {
+            if (subMap != null) {
+                sb.append("{\"text\": \"").append(subMap.getKey())
                         .append("\",\"checked\": false,\"expanded\": false,\"children\": [");
                 StringBuilder subSb = new StringBuilder();
-                for (String str : treeMapList.get(object.toString())) {
-                    String csoNumberTmp = str.split("@")[0];
-                    subSb.append("{\"text\": \"")
-                            .append(csoNumberTmp)
-                            .append("\",\"checked\": false,\"leaf\": true},");
+                for (Map.Entry<String, List<String>> list : subMap.getValue().entrySet()) {
+                    subSb.append("{\"text\": \"").append(list.getKey())
+                            .append("\",\"checked\": false,\"expanded\": false,\"children\": [");
+                    StringBuilder subSubSb = new StringBuilder();
+                    for (String numberStr : list.getValue()) {
+                        subSubSb.append("{\"text\": \"")
+                                .append(numberStr)
+                                .append("\",\"checked\": false,\"leaf\": true},");
+                    }
+                    subSb.append(subSubSb.substring(0, subSubSb.length() - 1)).append("]},");
                 }
-                String subStrTmp = subSb.substring(0, subSb.length() - 1);
-                sb.append(subStrTmp).append("]},");
+                sb.append(subSb.substring(0, subSb.length() - 1)).append("]},");
             }
         }
-        StringBuilder totalContent = new StringBuilder();
-        totalContent.append("[").append(sb.substring(0, sb.length() - 1)).append("]");
-
-        return totalContent.toString();
+        return "[" + sb.substring(0, sb.length() - 1) + "]";
     }
 
     public Connection getConnect() {
