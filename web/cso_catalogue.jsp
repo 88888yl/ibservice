@@ -84,6 +84,12 @@
                     gridColumns[0].width = 200;
 
                 }
+//                ,itemclick: function (grid) {
+//                    var record = grid.getSelectionModel().getSelection()[0];
+//                    if (record.get('name') == "PSI Code") {
+//                        console.log(record.get('value'));
+//                    }
+//                }
             },
             viewConfig: {
                 getRowClass: changeRowClass,

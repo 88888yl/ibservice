@@ -142,18 +142,21 @@ public class SendEmail extends TimerTask {
 
             sb.append(createTableFromReportList(reportList, serviceType));
             createChartFromReportList(reportList, serviceType);
+            createPPTFromTableList(reportList, serviceType);
             try {
                 email.setFrom("ibservice@163.com");
                 email.setSubject(serviceType);
-                File img;
+                File img, ppt;
                 if (serviceType.equals("CSO Report")) {
                     img = new File(GlobalVariables.csoReportChartImageUrl);
+                    ppt = new File(GlobalVariables.csoReportPPT);
                 } else {
                     img = new File(GlobalVariables.scrReportChartImageUrl);
+                    ppt = new File(GlobalVariables.scrReportPPT);
                 }
                 String cid = email.embed(img);
                 email.setHtmlMsg(sb.toString() + "<html><img src=\"cid:" + cid + "\"></html>");
-
+                email.attach(ppt);
                 email.addTo(emailAddr);
                 email.send();
                 System.out.println("Send to " + emailAddr + " success!");
@@ -397,5 +400,14 @@ public class SendEmail extends TimerTask {
         sb.append("</table>");
 
         return sb;
+    }
+
+    private void createPPTFromTableList(List<List<Integer>> tableList, String serviceType) {
+        CreatePPT createPPT = new CreatePPT();
+        if (serviceType.equals("CSO Report")) {
+            createPPT.initCSO(tableList);
+        } else {
+            createPPT.initSCR(tableList);
+        }
     }
 }

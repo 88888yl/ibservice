@@ -32,7 +32,11 @@ public class GlobalVariables {
     public static final String oracleDriver = "oracle.jdbc.driver.OracleDriver";
     public static final String oracleUrl = "jdbc:oracle:thin:@127.0.0.1:1521:orcl";
 
-    /** cso report chart image path url, always need to change when deploy on a new server */
-    public static final String csoReportChartImageUrl = "D:\\JavaProject\\resource\\ReportChart\\cso\\cso_chart.jpg";
-    public static final String scrReportChartImageUrl = "D:\\JavaProject\\resource\\ReportChart\\scr\\scr_chart.jpg";
+    /** report chart image path url, always need to change when deploy on a new server */
+    public static final String csoReportChartImageUrl = "D:\\JavaProject\\resource\\Report\\cso\\cso_chart.jpg";
+    public static final String scrReportChartImageUrl = "D:\\JavaProject\\resource\\Report\\scr\\scr_chart.jpg";
+
+    /** report ppt path url, always need to change when deploy on a new server */
+    public static final String csoReportPPT = "D:\\JavaProject\\resource\\Report\\cso\\cso_ppt.pptx";
+    public static final String scrReportPPT = "D:\\JavaProject\\resource\\Report\\scr\\scr_ppt.pptx";
 }
