@@ -191,9 +191,9 @@ public class SendEmail extends TimerTask {
             }
         }
         max = (int) Math.ceil(max * 1.25);
-        CreateJFreeChart createJFreeChart = new CreateJFreeChart(reportList, max, serviceType);
+        CreateChart createChart = new CreateChart(reportList, max, serviceType);
         try {
-            createJFreeChart.print();
+            createChart.print();
         } catch (IOException e) {
             e.printStackTrace();
         }
