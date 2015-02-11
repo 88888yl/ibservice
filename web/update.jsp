@@ -171,17 +171,6 @@
         "&isChildren=" + isChildren + "&searchValues=" + searchValues;
     }
 
-    function searchPN() {
-        var partnumber = document.getElementById("partnumber").value;
-        var description = document.getElementById("description").value;
-        var mep = document.getElementById("mep").value;
-        var rdo = document.getElementById("rdo").value;
-
-        window.frames["resultPage"].location.href = "/table.jsp?&partnumber=" + partnumber +
-        "&description=" + description + "&mep=" + mep +
-        "&rdo=" + rdo;
-    }
-
     $(function () {
         var $uploadBtn = $("#uploadBtn");
         new AjaxUpload($uploadBtn, {

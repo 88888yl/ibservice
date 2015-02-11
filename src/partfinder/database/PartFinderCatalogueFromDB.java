@@ -65,56 +65,62 @@ public class PartFinderCatalogueFromDB {
                 if (colName.equals("Part Number")) {
                     colName = "Name";
                 }
-                subSqlBuider.append("\"").append(colName).append("\" like \'%").append(str.getValue()).append("%\' and ");
+                subSqlBuider.append("upper(\"").append(colName).append("\") like \'%").append(str.getValue().toUpperCase()).append("%\' and ");
             }
             sub_sql = subSqlBuider.substring(0, subSqlBuider.length() - 4);
         }
         String search_sql = null;
         if (!tableName.equals("all")) {
             if (stringMap.isEmpty()) {
-                return null;
+                search_sql = "select * from \"" + tableName + "\"";
             } else {
                 search_sql = "select * from \"" + tableName + "\" where " + sub_sql + " ORDER by \"Row_Number\"";
             }
             try {
                 stmt = con.createStatement();
                 rs = stmt.executeQuery(search_sql);
-                ResultSetMetaData rsmd = rs.getMetaData();
-                int size = rsmd.getColumnCount();
-                StringBuilder subFields = new StringBuilder();
-                StringBuilder subColumns = new StringBuilder();
-                subFields.append("[");
-                subColumns.append("[");
-                for (int i = 1; i < size + 1; i++) {
-                    subFields.append("{name: \'").append(rsmd.getColumnLabel(i).replaceAll("\'", " ")).append("\'},");
-                    subColumns.append("{text: \'")
-                            .append(rsmd.getColumnLabel(i).replaceAll("\'", " "))
-                            .append("\', sortable: true, dataIndex: \'")
-                            .append(rsmd.getColumnLabel(i).replaceAll("\'", " ")).append("\'},");
-                }
-                String fields = (subFields.substring(0, subFields.length() - 1) + "]")
-                        .replaceAll("\"", " ").replaceAll("\\n", "");
-                String columns = (subColumns.substring(0, subColumns.length() - 1) + "]")
-                        .replaceAll("\"", " ").replaceAll("\\n", "");
-                result.add(fields);
-                result.add(columns);
-
-                StringBuilder subDummyData = new StringBuilder();
-                subDummyData.append("[");
-                while (rs.next()) {
-                    StringBuilder subDummyData2 = new StringBuilder();
-                    subDummyData2.append("[");
+                if (rs.next()) {
+                    ResultSetMetaData rsmd = rs.getMetaData();
+                    int size = rsmd.getColumnCount();
+                    StringBuilder subFields = new StringBuilder();
+                    StringBuilder subColumns = new StringBuilder();
+                    subFields.append("[");
+                    subColumns.append("[");
                     for (int i = 1; i < size + 1; i++) {
-                        String value = rs.getString(rsmd.getColumnLabel(i));
-                        subDummyData2.append("\'").append(value == null ? "" : value.replaceAll("\'", " ")).append("\',");
+                        subFields.append("{name: \'").append(rsmd.getColumnLabel(i).replaceAll("\'", " ")).append("\'},");
+                        subColumns.append("{text: \'")
+                                .append(rsmd.getColumnLabel(i).replaceAll("\'", " "))
+                                .append("\', sortable: true, dataIndex: \'")
+                                .append(rsmd.getColumnLabel(i).replaceAll("\'", " ")).append("\'},");
                     }
-                    subDummyData.append(subDummyData2.substring(0, subDummyData2.length() - 1)).append("],");
+                    String fields = (subFields.substring(0, subFields.length() - 1) + "]")
+                            .replaceAll("\"", " ").replaceAll("\\n", "");
+                    String columns = (subColumns.substring(0, subColumns.length() - 1) + "]")
+                            .replaceAll("\"", " ").replaceAll("\\n", "");
+                    result.add(fields);
+                    result.add(columns);
+
+                    StringBuilder subDummyData = new StringBuilder();
+                    subDummyData.append("[");
+
+                    while (rs.next()) {
+                        StringBuilder subDummyData2 = new StringBuilder();
+                        subDummyData2.append("[");
+                        for (int i = 1; i < size + 1; i++) {
+                            String value = rs.getString(rsmd.getColumnLabel(i));
+                            subDummyData2.append("\'").append(value == null ? "" : value.replaceAll("\'", " ")).append("\',");
+                        }
+                        subDummyData.append(subDummyData2.substring(0, subDummyData2.length() - 1)).append("],");
+                    }
+                    String dummyData = (subDummyData.substring(0, subDummyData.length() - 1) + "]")
+                            .replaceAll("\"", " ").replaceAll("\\n", "");
+                    result.add(dummyData);
+                    rs.close();
+                    stmt.close();
+                } else {
+                    closeAll();
+                    return null;
                 }
-                String dummyData = (subDummyData.substring(0, subDummyData.length() - 1) + "]")
-                        .replaceAll("\"", " ").replaceAll("\\n", "");
-                result.add(dummyData);
-                rs.close();
-                stmt.close();
             } catch (SQLException e) {
                 e.printStackTrace();
             }
@@ -126,7 +132,7 @@ public class PartFinderCatalogueFromDB {
             StringBuilder dummyData = new StringBuilder();
             for (int n = 0; n < tableNames.size(); n++) {
                 if (stringMap.isEmpty()) {
-                    return null;
+                    search_sql = "select * from \"" + tableNames.get(n) + "\"";
                 } else {
                     search_sql = "select * from \"" + tableNames.get(n) + "\" where " + sub_sql + " ORDER by \"Row_Number\"";
                 }
@@ -157,6 +163,7 @@ public class PartFinderCatalogueFromDB {
                     }
 
                     StringBuilder subDummyData = new StringBuilder();
+
                     while (rs.next()) {
                         StringBuilder subDummyData2 = new StringBuilder();
                         subDummyData2.append("[");
@@ -173,6 +180,7 @@ public class PartFinderCatalogueFromDB {
                     e.printStackTrace();
                 }
             }
+            if (dummyData.toString().isEmpty()) return null;
             result.add("[" + dummyData.toString().substring(0, dummyData.length() - 1) + "]");
         }
         closeAll();

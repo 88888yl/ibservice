@@ -22,6 +22,7 @@ public class UpdateComplaintsServlet extends HttpServlet {
                 && password != null && password.equals(GlobalVariables.defaultPassword)) {
             ImportDBfromAllSheets importDBfromAllSheets = new ImportDBfromAllSheets(
                     GlobalVariables.oracleUrl, GlobalVariables.oracleUserName, GlobalVariables.oraclePassword);
+            importDBfromAllSheets.insertTables();
             response.getWriter().print("Updating...");
         } else {
             response.getWriter().print("User/Pwd error");

@@ -376,9 +376,9 @@ public class CSOReportToDB {
                     String desc = rs.getString("PSI Description");
                     String num = rs.getString("CSO Number");
 
-                    if (code != null) code = code.replaceAll("\n", "").replaceAll("\"", "");
-                    if (desc != null) desc = desc.replaceAll("\n", "").replaceAll("\"", "");
-                    if (num != null) num = num.replaceAll("\n", "").replaceAll("\"", "");
+                    if (code != null) code = code.replaceAll("\\n", "").replaceAll("\"", "");
+                    if (desc != null) desc = desc.replaceAll("\\n", "").replaceAll("\"", "");
+                    if (num != null) num = num.replaceAll("\\n", "").replaceAll("\"", "");
 
                     if (treeMapList.get(code) == null) {
                         treeMapList.put(code, new HashMap<String, List<String>>());

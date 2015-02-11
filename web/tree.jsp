@@ -33,7 +33,7 @@
     </table>
 </div>
 
-<script language=JavaScript>
+<script type="text/javascript">
     buildTree();
     var searchKeys = parent.document.getElementById("tmpValue").innerText;
 
@@ -63,7 +63,7 @@
         }
         if (!searchMap.isEmpty()) {
             for (Map.Entry<String, String> str : searchMap.entrySet()) {
-                if (str.getKey().equals("Name")) {
+                if (str.getKey().equals("Part Number")) {
                     partNumber = str.getValue();
                 }
                 if (str.getKey().equals("Description")) {

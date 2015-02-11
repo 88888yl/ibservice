@@ -212,7 +212,23 @@
         <servlet-name>UnSubscribeServlet</servlet-name>
         <servlet-class>report.servlet.UnSubscribeServlet</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>DispatchReportCatalogueServlet</servlet-name>
+        <servlet-class>dispatch.servlet.DispatchReportCatalogueServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>DispatchReportServlet</servlet-name>
+        <servlet-class>dispatch.servlet.DispatchReportServlet</servlet-class>
+    </servlet>
 
+    <servlet-mapping>
+        <servlet-name>DispatchReportServlet</servlet-name>
+        <url-pattern>/dispatchReport.action</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>DispatchReportCatalogueServlet</servlet-name>
+        <url-pattern>/dispatchReportCatalogue.action</url-pattern>
+    </servlet-mapping>
     <servlet-mapping>
         <servlet-name>UnSubscribeServlet</servlet-name>
         <url-pattern>/unSubscribe.action</url-pattern>

@@ -48,6 +48,7 @@
                 <li id="tab9" onclick="changeTab9(this);"><a href="#">Complaints</a></li>
                 <li id="tab10" onclick="changeTab10(this);"><a href="#">Dispatch</a></li>
 
+                <li id="tab11" onclick="changeTab11(this);"><a href="#">Dispatch Report</a></li>
                 <li id="tab5" onclick="changeTab5(this);"><a href="#">CSO Report</a></li>
                 <li id="tab6" onclick="changeTab6(this);"><a href="#">SCR Report</a></li>
                 <li id="tab8" onclick="changeTab8(this);"><a href="#">Report Service</a></li>
@@ -111,6 +112,12 @@
         $("#tab").load("dispatch.jsp");
         changeTabColor(elem);
     }
+    function changeTab11(elem) {
+        document.getElementById("tab").innerHTML =
+                '<iframe name="file_frame" width="100%" height="95%" src="dispatch_report.jsp" ' +
+                'style="margin: 0; padding:0; background-color: darkgray; border: 0"></iframe>';
+        changeTabColor(elem);
+    }
     function changeTabColor(elem) {
         var className = 'active';
         var tab1 = document.getElementById('tab1');
@@ -123,6 +130,7 @@
         var tab8 = document.getElementById('tab8');
         var tab9 = document.getElementById('tab9');
         var tab10 = document.getElementById('tab10');
+        var tab11 = document.getElementById('tab11');
 
         tab1.removeAttribute('class');
         tab2.removeAttribute('class');
@@ -134,6 +142,7 @@
         tab8.removeAttribute('class');
         tab9.removeAttribute('class');
         tab10.removeAttribute('class');
+        tab11.removeAttribute('class');
 
         elem.setAttribute('class', className);
     }

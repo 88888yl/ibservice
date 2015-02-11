@@ -101,7 +101,58 @@ public class TotalSCRtoDB {
 
     public List<String> scrSearch(Map<String, String> stringMap) {
         if (stringMap.isEmpty()) {
-            return null;
+            getConnect();
+            List<String> result = new ArrayList<String>();
+            StringBuilder subSqlBuider = new StringBuilder();
+            StringBuilder ageSqlBuider = new StringBuilder();
+            String search_sql;
+            search_sql = "select * from \"TOTAL_SCR\"";
+
+            try {
+                stmt = con.createStatement();
+                rs = stmt.executeQuery(search_sql);
+                ResultSetMetaData rsmd = rs.getMetaData();
+                int size = rsmd.getColumnCount();
+                StringBuilder subFields = new StringBuilder();
+                StringBuilder subColumns = new StringBuilder();
+                subFields.append("[");
+                subColumns.append("[");
+                for (int i = 1; i < size + 1; i++) {
+                    subFields.append("{name: \'").append(rsmd.getColumnLabel(i).replaceAll("\'", " ")).append("\'},");
+                    subColumns.append("{text: \'")
+                            .append(rsmd.getColumnLabel(i).replaceAll("\'", " "))
+                            .append("\', sortable: true, dataIndex: \'")
+                            .append(rsmd.getColumnLabel(i).replaceAll("\'", " ")).append("\'},");
+                }
+                String fields = (subFields.substring(0, subFields.length() - 1) + "]")
+                        .replaceAll("\"", " ").replaceAll("\\n", "");
+                String columns = (subColumns.substring(0, subColumns.length() - 1) + "]")
+                        .replaceAll("\"", " ").replaceAll("\\n", "");
+                result.add(fields);
+                result.add(columns);
+
+                StringBuilder subDummyData = new StringBuilder();
+                subDummyData.append("[");
+                while (rs.next()) {
+                    StringBuilder subDummyData2 = new StringBuilder();
+                    subDummyData2.append("[");
+                    for (int i = 1; i < size + 1; i++) {
+                        String value = rs.getString(rsmd.getColumnLabel(i));
+                        subDummyData2.append("\'").append(value == null ? "" : value.replaceAll("\'", " ")).append("\',");
+                    }
+                    subDummyData.append(subDummyData2.substring(0, subDummyData2.length() - 1)).append("],");
+                }
+                String dummyData = (subDummyData.substring(0, subDummyData.length() - 1) + "]")
+                        .replaceAll("\"", " ").replaceAll("\\n", "");
+                if (dummyData.equals("]")) return null;
+                result.add(dummyData);
+                rs.close();
+                stmt.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+            closeAll();
+            return  result;
         }
         getConnect();
         List<String> result = new ArrayList<String>();
@@ -113,7 +164,7 @@ public class TotalSCRtoDB {
             } else if (str.getKey().equals("Age (to)")) {
                 ageSqlBuider.append(" and \"SCR_AGE\"<=\'").append(str.getValue()).append("\'");
             } else {
-                subSqlBuider.append("\"").append(str.getKey()).append("\" like \'%").append(str.getValue()).append("%\' and ");
+                subSqlBuider.append("upper(\"").append(str.getKey()).append("\") like \'%").append(str.getValue().toUpperCase()).append("%\' and ");
             }
         }
         String sub_sql = subSqlBuider.toString();
@@ -159,6 +210,7 @@ public class TotalSCRtoDB {
             }
             String dummyData = (subDummyData.substring(0, subDummyData.length() - 1) + "]")
                     .replaceAll("\"", " ").replaceAll("\\n", "");
+            if (dummyData.equals("]")) return null;
             result.add(dummyData);
             rs.close();
             stmt.close();

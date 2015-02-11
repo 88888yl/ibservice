@@ -23,7 +23,7 @@
 <link rel="stylesheet" type="text/css" href="ext_js/resources/css/ext-all-neptune.css"/>
 <script type="text/javascript" src="ext_js/bootstrap.js"></script>
 <script type="text/javascript" src="ext_js/locale/ext-lang-en.js"></script>
-<script type="text/javascript" src="ext_js/exporter/Exporter.js"></script>
+<script type="text/javascript" src="ext_js/myExporter/export-all.js"></script>
 <script type="text/javascript">
     Ext.Loader.setConfig({
         enabled: true
@@ -142,7 +142,10 @@
     }
 
     function getGridStore() {
+//        console.log(Ext.getCmp('myDispatchGrid').getStore().getProxy().getReader().rawData);
+//        console.log(totalResult);
         return totalResult;
+//        return Ext.getCmp('myDispatchGrid').getStore().getProxy().getReader().rawData;
     }
 
     Ext.onReady(getDispatchTable);

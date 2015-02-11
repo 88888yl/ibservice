@@ -1,6 +1,8 @@
 package dispatch.database;
 
+import dispatch.utils.ProductInfo;
 import org.apache.poi.ss.usermodel.*;
+import org.omg.PortableInterceptor.INACTIVE;
 import utils.FindExcels;
 import utils.GlobalVariables;
 
@@ -9,9 +11,7 @@ import java.io.FileInputStream;
 import java.io.InputStream;
 import java.sql.*;
 import java.text.DateFormat;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by myl
@@ -109,13 +109,63 @@ public class ImportDBfromDispatch {
 
     public List<String> dispatchSearch(Map<String, String> stringMap) {
         if (stringMap.isEmpty()) {
-            return null;
+            getConnect();
+            List<String> result = new ArrayList<String>();
+            StringBuilder subSqlBuider = new StringBuilder();
+            String search_sql = "select * from \"Dispatch-All\"";
+            try {
+                stmt = con.createStatement();
+                rs = stmt.executeQuery(search_sql);
+                ResultSetMetaData rsmd = rs.getMetaData();
+                int size = rsmd.getColumnCount();
+                List<String> tmpRows = new ArrayList<String>();
+                StringBuilder subFields = new StringBuilder();
+                StringBuilder subColumns = new StringBuilder();
+                subFields.append("[");
+                subColumns.append("[");
+                for (int i = 1; i < size + 1; i++) {
+                    subFields.append("{name: \'").append(rsmd.getColumnLabel(i).replaceAll("'", " ")).append("\'},");
+                    subColumns.append("{text: \'")
+                            .append(rsmd.getColumnLabel(i).replaceAll("'", " "))
+                            .append("\', sortable: true, dataIndex: \'")
+                            .append(rsmd.getColumnLabel(i).replaceAll("'", " ")).append("\'},");
+                }
+                String fields = (subFields.substring(0, subFields.length() - 1) + "]")
+                        .replaceAll("\"", " ").replaceAll("\\n", "");
+                String columns = (subColumns.substring(0, subColumns.length() - 1) + "]")
+                        .replaceAll("\"", " ").replaceAll("\\n", "");
+                result.add(fields);
+                result.add(columns);
+
+                StringBuilder subDummyData = new StringBuilder();
+                subDummyData.append("[");
+
+                while (rs.next()) {
+                    StringBuilder subDummyData2 = new StringBuilder();
+                    subDummyData2.append("[");
+                    for (int i = 1; i < size + 1; i++) {
+                        String value = rs.getString(rsmd.getColumnLabel(i));
+                        subDummyData2.append("\'").append(value == null ? "" : value.replaceAll("\'", " ")).append("\',");
+                    }
+                    subDummyData.append(subDummyData2.substring(0, subDummyData2.length() - 1)).append("],");
+                }
+                String dummyData = (subDummyData.substring(0, subDummyData.length() - 1) + "]")
+                        .replaceAll("\"", " ").replaceAll("\\n", "");
+                if (dummyData.equals("]")) return null;
+                result.add(dummyData);
+                rs.close();
+                stmt.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+            closeAll();
+            return result;
         }
         getConnect();
         List<String> result = new ArrayList<String>();
         StringBuilder subSqlBuider = new StringBuilder();
         for (Map.Entry<String, String> str : stringMap.entrySet()) {
-            subSqlBuider.append("\"").append(str.getKey()).append("\" like \'%").append(str.getValue()).append("%\' and ");
+            subSqlBuider.append("upper(\"").append(str.getKey()).append("\") like \'%").append(str.getValue().toUpperCase()).append("%\' and ");
         }
         String sub_sql = subSqlBuider.substring(0, subSqlBuider.length() - 4);
         String search_sql = "select * from \"Dispatch-All\" where " + sub_sql;
@@ -130,11 +180,11 @@ public class ImportDBfromDispatch {
             subFields.append("[");
             subColumns.append("[");
             for (int i = 1; i < size + 1; i++) {
-                subFields.append("{name: \'").append(rsmd.getColumnLabel(i).replaceAll("\'", " ")).append("\'},");
+                subFields.append("{name: \'").append(rsmd.getColumnLabel(i).replaceAll("'", " ")).append("\'},");
                 subColumns.append("{text: \'")
-                        .append(rsmd.getColumnLabel(i).replaceAll("\'", " "))
+                        .append(rsmd.getColumnLabel(i).replaceAll("'", " "))
                         .append("\', sortable: true, dataIndex: \'")
-                        .append(rsmd.getColumnLabel(i).replaceAll("\'", " ")).append("\'},");
+                        .append(rsmd.getColumnLabel(i).replaceAll("'", " ")).append("\'},");
             }
             String fields = (subFields.substring(0, subFields.length() - 1) + "]")
                     .replaceAll("\"", " ").replaceAll("\\n", "");
@@ -145,6 +195,7 @@ public class ImportDBfromDispatch {
 
             StringBuilder subDummyData = new StringBuilder();
             subDummyData.append("[");
+
             while (rs.next()) {
                 StringBuilder subDummyData2 = new StringBuilder();
                 subDummyData2.append("[");
@@ -156,6 +207,7 @@ public class ImportDBfromDispatch {
             }
             String dummyData = (subDummyData.substring(0, subDummyData.length() - 1) + "]")
                     .replaceAll("\"", " ").replaceAll("\\n", "");
+            if (dummyData.equals("]")) return null;
             result.add(dummyData);
             rs.close();
             stmt.close();
@@ -343,12 +395,119 @@ public class ImportDBfromDispatch {
             }
             pst.executeBatch();
             con.commit();
-            System.out.println("Dispatch-All: insert success!");
+            System.out.println("Dispatch-All: update success!");
             fileRename(path);
             pst.close();
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+
+    public List<List<String>> getReport(String[] dispatchNumbers) {
+        getConnect();
+        List<List<String>> reportList = new ArrayList<List<String>>();
+
+        Map<String, Integer> productMap = new HashMap<String, Integer>();
+
+        for (String dispatchNumber : dispatchNumbers) {
+            String search_sql = "select \"Psi Code\", \"Process Date\" " +
+                    "from \"Dispatch-All\" where \"Dispatch Number\"=\'" +
+                    dispatchNumber + "\' and \"Cost Category Name\"=\'INSTALL\'";
+            try {
+                stmt = con.createStatement();
+                rs = stmt.executeQuery(search_sql);
+                if (rs.next()) {
+                    String year = rs.getString("Process Date").substring(0, 4);
+                    String psiCode = rs.getString("Psi Code");
+                    String productKey = year + "@" + psiCode;
+                    if (productMap.get(productKey) == null) {
+                        productMap.put(productKey, 1);
+                    } else {
+                        int tmpSum = productMap.get(productKey) + 1;
+                        productMap.put(productKey, tmpSum);
+                    }
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            } finally {
+                try {
+                    rs.close();
+                    stmt.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
+        for (Map.Entry<String, Integer> entry : productMap.entrySet()) {
+            List<String> row = new ArrayList<String>();
+            String[] info = entry.getKey().split("@");
+            row.add(info[0]);
+            row.add(info[1]);
+            row.add(entry.getValue().toString());
+            reportList.add(row);
+        }
+        System.out.println(reportList);
+        closeAll();
+        return reportList;
+    }
+
+    public String getTree() {
+        getConnect();
+        Map<String, Map<String, List<String>>> treeMapList = new HashMap<String, Map<String, List<String>>>();
+        String sql = "select \"Dispatch Number\", \"Psi Code\",\"Psi Description\" from \"Dispatch-All\"";
+        try {
+            stmt = con.createStatement();
+            rs = stmt.executeQuery(sql);
+            while (rs.next()) {
+                if (rs.getString("Psi Code") != null) {
+                    String code = rs.getString("Psi Code");
+                    String desc = rs.getString("Psi Description");
+                    String num = rs.getString("Dispatch Number");
+
+                    if (code != null) code = code.replaceAll("\\n", "").replaceAll("\"", "");
+                    if (desc != null) desc = desc.replaceAll("\\n", "").replaceAll("\"", "");
+                    if (num != null) num = num.replaceAll("\\n", "").replaceAll("\"", "");
+
+                    if (treeMapList.get(code) == null) {
+                        treeMapList.put(code, new HashMap<String, List<String>>());
+                    }
+                    if (treeMapList.get(code).get(desc) == null) {
+                        treeMapList.get(code).put(desc, new ArrayList<String>());
+                    }
+                    treeMapList.get(code)
+                            .get(desc)
+                            .add(num);
+                }
+            }
+            rs.close();
+            stmt.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        StringBuilder sb = new StringBuilder();
+        for (Map.Entry<String, Map<String, List<String>>> subMap : treeMapList.entrySet()) {
+            if (subMap != null) {
+                sb.append("{\"text\": \"").append(subMap.getKey())
+                        .append("\",\"checked\": false,\"expanded\": false,\"children\": [");
+                StringBuilder subSb = new StringBuilder();
+                for (Map.Entry<String, List<String>> list : subMap.getValue().entrySet()) {
+                    subSb.append("{\"text\": \"").append(list.getKey())
+                            .append("\",\"checked\": false,\"expanded\": false,\"children\": [");
+                    StringBuilder subSubSb = new StringBuilder();
+                    for (String numberStr : list.getValue()) {
+                        subSubSb.append("{\"text\": \"")
+                                .append(numberStr)
+                                .append("\",\"checked\": false,\"leaf\": true},");
+                    }
+                    subSb.append(subSubSb.substring(0, subSubSb.length() - 1)).append("]},");
+                }
+                sb.append(subSb.substring(0, subSb.length() - 1)).append("]},");
+            }
+        }
+        closeAll();
+        return "[" + sb.substring(0, sb.length() - 1) + "]";
     }
 
     private void fileRename(String path) {
@@ -418,7 +577,7 @@ public class ImportDBfromDispatch {
     public static void main(String[] args) {
         ImportDBfromDispatch importDBfromDispatch = new ImportDBfromDispatch(
                 GlobalVariables.oracleUrl, GlobalVariables.oracleUserName, GlobalVariables.oraclePassword);
-//        importDBfromDispatch.dispatchSearch("5386098853");
-        importDBfromDispatch.dispatchCatalogue();
+//        importDBfromDispatch.createTablesFromSheets();
+        importDBfromDispatch.insertTables();
     }
 }

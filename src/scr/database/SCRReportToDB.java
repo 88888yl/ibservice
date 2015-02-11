@@ -253,9 +253,9 @@ public class SCRReportToDB {
                     String sat = rs.getString("SCR Assigned To");
                     String num = rs.getString("Number");
 
-                    if (bpoc != null) bpoc = bpoc.replaceAll("\n", "").replaceAll("\"", "");
-                    if (sat != null) sat = sat.replaceAll("\n", "").replaceAll("\"", "");
-                    if (num != null) num = num.replaceAll("\n", "").replaceAll("\"", "");
+                    if (bpoc != null) bpoc = bpoc.replaceAll("\\n", "").replaceAll("\"", "");
+                    if (sat != null) sat = sat.replaceAll("\\n", "").replaceAll("\"", "");
+                    if (num != null) num = num.replaceAll("\\n", "").replaceAll("\"", "");
 
                     if (treeMapList.get(bpoc) == null) {
                         treeMapList.put(bpoc, new HashMap<String, List<String>>());
