@@ -87,33 +87,17 @@
     </div>
 
     <div class="container pull-left">
-        <%--<div style="margin: 5px 10px 5px 0; width: 110px; float: left" class="input-group">--%>
-            <%--<span class="input-group-addon">PN#</span>--%>
-            <%--<input type="text" class="form-control" id="partnumber" name="partnumber">--%>
-        <%--</div>--%>
-        <%--<div style="margin: 5px 10px 5px 0; width: 240px; float: left" class="input-group">--%>
-            <%--<span class="input-group-addon">Description</span>--%>
-            <%--<input type="text" class="form-control" id="description" name="description">--%>
-        <%--</div>--%>
-        <%--<div style="margin: 5px 10px 5px 0; width: 110px; float: left" class="input-group">--%>
-            <%--<span class="input-group-addon">MEP#</span>--%>
-            <%--<input type="text" class="form-control" id="mep" name="mep">--%>
-        <%--</div>--%>
-        <%--<div style="margin: 5px 10px 5px 0; width: 110px; float: left" class="input-group">--%>
-            <%--<span class="input-group-addon">RDO</span>--%>
-            <%--<input type="text" class="form-control" id="rdo" name="rdo">--%>
-        <%--</div>--%>
         <div style="margin: 5px 10px 5px 0; float: left" class="input-group">
             <div style="margin: 5px 10px 5px 0; float: left" class="input-group">
                 <input type="button" class="btn btn-primary" id="search_table" name="search_table" value="Grid Search"
                        onclick="showGridResult();">
             </div>
             <div style="margin: 5px 10px 5px 0; float: left" class="input-group">
-                <input type="button" class="btn btn-primary" id="searchSubmit" name="searchSubmit" value="TreeList Search"
+                <input type="button" class="btn btn-primary" id="searchSubmit" name="searchSubmit" value="Tree Search"
                        onclick="Click();"/>
             </div>
             <div style="margin: 5px 10px 5px 0; float: left" class="input-group">
-                <input type="button" id="export" value="Grid Export" class="btn btn-primary" onclick="getExport()">
+                <input type="button" id="export" value="Export" class="btn btn-primary" onclick="getExport()">
             </div>
         </div>
     </div>

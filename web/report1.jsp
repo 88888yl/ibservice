@@ -27,7 +27,7 @@
     #content-wrapper {
         margin: 0;
         width: 100%;
-        height: 88%;
+        height: 87.5%;
         overflow: hidden;
     }
 

@@ -42,6 +42,7 @@
 
     var winWidth;
     var winHeight;
+    var totalResult = [];
     var searchKeys = parent.document.getElementById("tmpValue").innerText;
     var searchTable = parent.document.getElementById("searchSelect");
     var index = searchTable.selectedIndex;
@@ -92,6 +93,7 @@
                     Ext.MessageBox.alert("Error info", "SearchKeys is empty or keywords are not found!");
                 } else {
                     result = eval("(" + result + ")");
+                    totalResult = result[2];
                     initTable(result);
                 }
             }
@@ -99,52 +101,55 @@
     }
 
     function initTable(result) {
-
-        Ext.define('PartFinder', {
-            extend: 'Ext.data.Model',
-            fields: result[0]
-        });
-
-        Ext.grid.myData = result[2];
-
-        var getLocalStore = function () {
-            return Ext.create('Ext.data.ArrayStore', {
-                model: 'PartFinder',
-                data: Ext.grid.myData
+        if (result[2].length > 200) {
+            Ext.MessageBox.alert("Warning", "Result table is too large, please export to excel!");
+        } else {
+            Ext.define('PartFinder', {
+                extend: 'Ext.data.Model',
+                fields: result[0]
             });
-        };
 
-        var myGrid = Ext.create('Ext.grid.Panel', {
-            id: 'myPartFinderGrid',
-            store: getLocalStore(),
-            columns: result[1],
-            columnLines: true,
-            enableLocking: true,
-            x: 0,
-            y: '165px',
-            width: '100%',
-            height: winHeight - 165,
-            collapsible: false,
-            animCollapse: false,
-            title: 'PartFinder grid info',
-            iconCls: 'icon-grid',
-            margin: '0 0 0 0',
-            viewConfig: {
-                getRowClass: changeRowClass,
-                stripeRows: true,
-                enableTextSelection: true
-            },
-            listeners: {
-                celldblclick: function (view, cell, cellIndex, record, row, rowIndex, e) {
-                    var clickedDataIndex = view.panel.headerCt.getHeaderAtIndex(cellIndex).dataIndex;
-                    var clickedColumnName = view.panel.headerCt.getHeaderAtIndex(cellIndex).text;
-                    var clickedCellValue = record.get(clickedDataIndex);
-                    Ext.MessageBox.alert('Detailed', clickedCellValue);
-                }
-            },
-            selModel: Ext.create('Ext.selection.Model', {listeners: {}}),
-            renderTo: Ext.getBody()
-        });
+            Ext.grid.myData = result[2];
+
+            var getLocalStore = function () {
+                return Ext.create('Ext.data.ArrayStore', {
+                    model: 'PartFinder',
+                    data: Ext.grid.myData
+                });
+            };
+
+            var myGrid = Ext.create('Ext.grid.Panel', {
+                id: 'myPartFinderGrid',
+                store: getLocalStore(),
+                columns: result[1],
+                columnLines: true,
+                enableLocking: true,
+                x: 0,
+                y: '165px',
+                width: '100%',
+                height: winHeight - 165,
+                collapsible: false,
+                animCollapse: false,
+                title: 'PartFinder grid info',
+                iconCls: 'icon-grid',
+                margin: '0 0 0 0',
+                viewConfig: {
+                    getRowClass: changeRowClass,
+                    stripeRows: true,
+                    enableTextSelection: true
+                },
+                listeners: {
+                    celldblclick: function (view, cell, cellIndex, record, row, rowIndex, e) {
+                        var clickedDataIndex = view.panel.headerCt.getHeaderAtIndex(cellIndex).dataIndex;
+                        var clickedColumnName = view.panel.headerCt.getHeaderAtIndex(cellIndex).text;
+                        var clickedCellValue = record.get(clickedDataIndex);
+                        Ext.MessageBox.alert('Detailed', clickedCellValue);
+                    }
+                },
+                selModel: Ext.create('Ext.selection.Model', {listeners: {}}),
+                renderTo: Ext.getBody()
+            });
+        }
     }
 
     function changeRowClass(record, rowIndex, rowParams, store) {
@@ -154,7 +159,7 @@
     }
 
     function getGridStore() {
-        return Ext.getCmp('myPartFinderGrid').getStore().getProxy().getReader().rawData;
+        return totalResult;
     }
 
     Ext.onReady(getPartFinderTable);

@@ -239,7 +239,7 @@
             ],
             series: [
                 {
-                    title: 'access times',
+                    title: 'last 30 days access',
                     type: 'line',
                     xField: '0',
                     yField: '1',
@@ -342,20 +342,22 @@
             ],
             series: [
                 {
-                    title: 'access times',
-                    highlight: false,
-                    type: 'area',
+                    title: 'all access',
+                    type: 'line',
                     xField: '0',
                     yField: '1',
                     style: {
-                        lineWidth: 1,
-                        stroke: '#666',
-                        opacity: 0.8,
-                        renderer: function (sprite, record, curAttr, index, store) {
-                            return Ext.apply(curAttr, {
-                                fill: 'red'
-                            });
-                        }
+                        fill: '#A28339',
+                        stroke: '#A28339',
+                        'stroke-width': 2
+                    },
+                    markerConfig: {
+                        type: 'circle',
+                        size: 3,
+                        radius: 3,
+                        'stroke-width': 0,
+                        fill: '#A28339',
+                        stroke: '#A28339'
                     }
                 }]
         });
