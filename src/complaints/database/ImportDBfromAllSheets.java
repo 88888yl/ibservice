@@ -576,6 +576,7 @@ public class ImportDBfromAllSheets {
     public static void main(String[] args) {
         ImportDBfromAllSheets importDBfromAllSheets = new ImportDBfromAllSheets(
                 GlobalVariables.oracleUrl, GlobalVariables.oracleUserName, GlobalVariables.oraclePassword);
+        importDBfromAllSheets.createTablesFromSheets();
         importDBfromAllSheets.insertTables();
     }
 }

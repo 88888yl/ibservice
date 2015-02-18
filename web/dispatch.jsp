@@ -70,7 +70,16 @@
         <div style="margin: 5px 10px 5px 0; float: left" class="input-group">
             <input type="button" id="export" value="Export" class="btn btn-primary" onclick="getExport()">
         </div>
+        <div style="margin: 5px 10px 5px 0; width: 500px; float: left" class="input-group">
+            <span class="input-group-addon">Products Install Search</span>
+            <input type="text" class="form-control" id="sys_id" placeholder="Sited System Local Identifier">
+
+        </div>
+        <div style="margin: 5px 10px 5px 0; float: left" class="input-group">
+            <input type="button" id="sys_search" value="Search" class="btn btn-primary" onclick="searchSYS()">
+        </div>
     </div>
+
 </div>
 
 <div id='content-wrapper'>
@@ -105,6 +114,11 @@
     frameBody.style.height = winHeight - 48;
 
     window.frames["treePage"].location.href = "/dispatch_catalogue.jsp";
+
+    function searchSYS() {
+        var sysId = document.getElementById("sys_id").value;
+        window.frames["resultPage"].location.href = "/dispatch_sys_table.jsp?sysId=" + sysId;
+    }
 
     function showResult() {
         document.getElementById("tmpValue").innerText = window.frames["treePage"].getSearchValues();

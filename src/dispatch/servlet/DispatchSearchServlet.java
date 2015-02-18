@@ -22,6 +22,7 @@ import java.util.Map;
 public class DispatchSearchServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String searchKeys = request.getParameter("searchKeys");
+
         Map<String, String> searchMap = new HashMap<String, String>();
         JSONObject searchObj = JSONObject.fromObject(searchKeys);
         for (Object o : searchObj.entrySet()) {

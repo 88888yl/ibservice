@@ -17,7 +17,8 @@ import java.util.List;
  * on 2015/2/11.
  */
 public class DispatchReportServlet extends HttpServlet {
-    List<List<String>> reportList;
+//    List<List<String>> reportList;
+    Object[] result;
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String searchKeys = request.getParameter("searchKeys");
@@ -25,8 +26,8 @@ public class DispatchReportServlet extends HttpServlet {
 
         ImportDBfromDispatch importDBfromDispatch = new ImportDBfromDispatch(
                 GlobalVariables.oracleUrl, GlobalVariables.oracleUserName, GlobalVariables.oraclePassword);
-        if ((reportList = importDBfromDispatch.getReport(dispatchNumbers)) != null) {
-            JSONArray jsonArray = JSONArray.fromObject(reportList);
+        if ((result = importDBfromDispatch.getReport2(dispatchNumbers)) != null) {
+            JSONArray jsonArray = JSONArray.fromObject(result);
             response.getWriter().write(jsonArray.toString());
         } else {
             response.getWriter().write("fail");

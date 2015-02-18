@@ -17,7 +17,7 @@
 
 <body id="body" style="margin: 185px 0 0 30px; padding:0; border: 0">
 
-<div style="position: fixed; right: 60px; top: 30px;" class="input-group">
+<div style="position: fixed; right: 60px; top: 180px;" class="input-group">
     <input type="button" style="box-shadow: 0 3px 6px grey" class="btn btn-danger" value="ExpandAll"
            onclick="expand();">
     &nbsp;&nbsp;&nbsp;

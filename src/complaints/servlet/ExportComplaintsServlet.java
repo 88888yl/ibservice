@@ -36,7 +36,7 @@ public class ExportComplaintsServlet extends HttpServlet {
         ExportToExcel exportToExcel = new ExportToExcel(
                 GlobalVariables.oracleUrl, GlobalVariables.oracleUserName, GlobalVariables.oraclePassword);
         exportToExcel.setStore(store);
-        List<List<String>> rows = exportToExcel.getRowsFromStr("Comp-BI Export Modified");
+        List<List<String>> rows = exportToExcel.getRowsFromStr("Complaints-All");
         HSSFWorkbook workbook = new HSSFWorkbook();
         HSSFSheet sheet = workbook.createSheet("Search Result");
 

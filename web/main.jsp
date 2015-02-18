@@ -126,7 +126,7 @@
         //var tab4 = document.getElementById('tab4');
         var tab5 = document.getElementById('tab5');
         var tab6 = document.getElementById('tab6');
-        //var tab7 = document.getElementById('tab7');
+        var tab7 = document.getElementById('tab7');
         var tab8 = document.getElementById('tab8');
         var tab9 = document.getElementById('tab9');
         var tab10 = document.getElementById('tab10');
@@ -138,7 +138,7 @@
         //tab4.removeAttribute('class');
         tab5.removeAttribute('class');
         tab6.removeAttribute('class');
-        //tab7.removeAttribute('class');
+        tab7.removeAttribute('class');
         tab8.removeAttribute('class');
         tab9.removeAttribute('class');
         tab10.removeAttribute('class');

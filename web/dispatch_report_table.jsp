@@ -60,8 +60,9 @@
                     alert("Report is not found!");
                 } else {
                     result = eval("(" + result + ")");
-                    initTable(result);
+//                    initTable(result);
                     createChart(result);
+//                    createChart2(result);
                 }
             },
             error: function () {
@@ -70,7 +71,101 @@
         });
     }
 
-    function createChart(result) {
+    function createChart(obj) {
+        var result = obj[1];
+        var psiCodeList = obj[0];
+
+        console.log(result);
+        console.log(psiCodeList);
+
+//        var max = 0;
+//        for (var i = 0; i < result.length; i++) {
+//            for (var j = 1; j < result[i].length; j++) {
+//                max = max < result[i][j] ? result[i][j] : max;
+//            }
+//        }
+//        max = Math.ceil(max * 1.1);
+//
+//        var myStore = Ext.create('Ext.data.JsonStore', {
+//            fields: ['0', '1', '2'],
+//            data: result
+//        });
+//
+//        var chart = Ext.create('Ext.chart.Chart', {
+//            id: 'dispatch_chart',
+//            style: 'background:#fff',
+//            animate: true,
+//            store: myStore,
+//            shadow: true,
+//            theme: 'Category1',
+//            legend: {
+//                position: 'right'
+//            },
+//            axes: [
+//                {
+//                    title: 'dispatch report',
+//                    type: 'Numeric',
+//                    position: 'left',
+//                    minimum: 0,
+//                    maximum: max,
+//                    label: {
+//                        renderer: Ext.util.Format.numberRenderer('0,0'),
+//                        font: '10px Arial'
+//                    }
+//                },
+//                {
+//                    title: 'Products',
+//                    type: 'Category',
+//                    position: 'bottom',
+//                    fields: ['0'],
+//                    grid: true,
+//                    label: {
+//                        font: '11px Arial',
+//                        renderer: function (name) {
+//                            return name;
+//                        },
+//                        rotate: {
+//                            degrees: -45
+//                        }
+//                    }
+//                }
+//            ],
+//            series: [
+//                {
+//                    title: 'XRA',
+//                    type: 'column',
+//                    axis: 'left',
+//                    highlight: true,
+////                    smooth: true,
+//                    xField: '0',
+//                    yField: '2',
+//                    style: {
+//                        fill: '#A9413B',
+//                        stroke: '#A9413B',
+//                        'stroke-width': 2
+//                    }
+//                }
+//            ]
+//        });
+//
+//        Ext.create('Ext.Window', {
+//            x: 0,
+//            y: winHeight * 0.38,
+//            width: '50%',
+//            height: '62%',
+//            hidden: false,
+//            maximizable: true,
+//            title: 'Trend',
+//            constrain: true,
+//            renderTo: Ext.getBody(),
+//            layout: 'fit',
+//            items: chart,
+//            closable: false,
+//            draggable: false
+//        });
+    }
+
+    function createChart2(result) {
         var max = 0;
         for (var i = 0; i < result.length; i++) {
             max = max < result[i][2] ? result[i][2] : max;
@@ -83,7 +178,7 @@
         });
 
         var chart = Ext.create('Ext.chart.Chart', {
-            id: 'cso_chart',
+            id: 'dispatch_chart2',
             style: 'background:#fff',
             animate: true,
             store: myStore,
@@ -108,7 +203,7 @@
                     title: 'Years',
                     type: 'Category',
                     position: 'bottom',
-                    fields: ['0'],
+                    fields: ['1'],
                     grid: true,
                     label: {
                         font: '11px Arial',
@@ -123,32 +218,26 @@
             ],
             series: [
                 {
-                    title: 'aaa',
-                    type: 'line',
+                    title: 'XRA',
+                    type: 'column',
+                    axis: 'left',
+                    highlight: true,
 //                    smooth: true,
-                    xField: '2',
-                    yField: '0',
+                    xField: '1',
+                    yField: '2',
                     style: {
                         fill: '#A9413B',
                         stroke: '#A9413B',
                         'stroke-width': 2
-                    },
-                    markerConfig: {
-                        type: 'circle',
-                        size: 3,
-                        radius: 3,
-                        'stroke-width': 0,
-                        fill: '#A9413B',
-                        stroke: '#A9413B'
                     }
                 }
             ]
         });
 
         Ext.create('Ext.Window', {
-            x: winWidth * 0.02,
+            x: winWidth * 0.5,
             y: winHeight * 0.38,
-            width: '96%',
+            width: '50%',
             height: '62%',
             hidden: false,
             maximizable: true,

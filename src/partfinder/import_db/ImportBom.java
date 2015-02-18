@@ -58,9 +58,9 @@ public class ImportBom {
                 findFather.insertFatherNumber();
                 findFather.closeAll();
 
-//                String excel = GlobalVariables.bomPath + files[i];
-//                File excelFile = new File(excel);
-//                excelFile.renameTo(new File(GlobalVariables.bomPath + "(Up to date)" + files[i]));
+                String excel = GlobalVariables.bomPath + files[i];
+                File excelFile = new File(excel);
+                excelFile.renameTo(new File(GlobalVariables.bomPath + "(Up to date)" + files[i]));
 //            }
         }
     }

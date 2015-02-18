@@ -41,9 +41,9 @@ public class IPAddressInfoServlet extends HttpServlet {
 
         List<String> result = new ArrayList<String>();
         String fields = "[{name: \'IP (except localhost)\'},{name: \'Date\'},{name: \'Time\'}]";
-        String columns = "[{text: \'IP (except localhost)\', sortable: false, resizable: false, width: 180, flex: 0, dataIndex: \'IP (except localhost)\'}," +
-                "{text: \'Date\', sortable: false, resizable: false, width: 100, flex: 0, dataIndex: \'Date\'}," +
-                "{text: \'Time\', sortable: false, resizable: false, width: 100, flex: 0, dataIndex: \'Time\'}]";
+        String columns = "[{text: \'IP (except localhost)\', sortable: false, resizable: false, width: 140, flex: 0, dataIndex: \'IP (except localhost)\'}," +
+                "{text: \'Date\', sortable: false, resizable: false, width: 90, flex: 0, dataIndex: \'Date\'}," +
+                "{text: \'Time\', sortable: false, resizable: false, width: 80, flex: 0, dataIndex: \'Time\'}]";
         result.add(fields);
         result.add(columns);
 

@@ -218,6 +218,64 @@ public class ImportDBfromDispatch {
         return result;
     }
 
+    public List<String> dispatchSysSearch(String sysId) {
+
+        getConnect();
+        List<String> result = new ArrayList<String>();
+        StringBuilder subSqlBuider = new StringBuilder();
+        String search_sql = "select * from \"Dispatch-All\" where \"Sited System Local Identifier\" like \'%"
+                + sysId + "%\' and \"Cost Category Name\"=\'INSTALL\'";
+        try {
+            stmt = con.createStatement();
+            rs = stmt.executeQuery(search_sql);
+            ResultSetMetaData rsmd = rs.getMetaData();
+            int size = rsmd.getColumnCount();
+            List<String> tmpRows = new ArrayList<String>();
+            StringBuilder subFields = new StringBuilder();
+            StringBuilder subColumns = new StringBuilder();
+            subFields.append("[");
+            subColumns.append("[");
+            for (int i = 1; i < size + 1; i++) {
+                subFields.append("{name: \'").append(rsmd.getColumnLabel(i).replaceAll("'", " ")).append("\'},");
+                subColumns.append("{text: \'")
+                        .append(rsmd.getColumnLabel(i).replaceAll("'", " "))
+                        .append("\', sortable: true, dataIndex: \'")
+                        .append(rsmd.getColumnLabel(i).replaceAll("'", " ")).append("\'},");
+            }
+            String fields = (subFields.substring(0, subFields.length() - 1) + "]")
+                    .replaceAll("\"", " ").replaceAll("\\n", "");
+            String columns = (subColumns.substring(0, subColumns.length() - 1) + "]")
+                    .replaceAll("\"", " ").replaceAll("\\n", "");
+            result.add(fields);
+            result.add(columns);
+
+            StringBuilder subDummyData = new StringBuilder();
+            subDummyData.append("[");
+
+            while (rs.next()) {
+                StringBuilder subDummyData2 = new StringBuilder();
+                subDummyData2.append("[");
+                for (int i = 1; i < size + 1; i++) {
+                    String value = rs.getString(rsmd.getColumnLabel(i));
+                    subDummyData2.append("\'").append(value == null ? "" : value.replaceAll("\'", " ")).append("\',");
+                }
+                subDummyData.append(subDummyData2.substring(0, subDummyData2.length() - 1)).append("],");
+            }
+            String dummyData = (subDummyData.substring(0, subDummyData.length() - 1) + "]")
+                    .replaceAll("\"", " ").replaceAll("\\n", "");
+            if (dummyData.equals("]")) return null;
+            result.add(dummyData);
+            rs.close();
+            stmt.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        closeAll();
+        return result;
+
+
+    }
+
     private List<String> getColumnNames() {
         List<String> columnNames = new ArrayList<String>();
 
@@ -403,6 +461,77 @@ public class ImportDBfromDispatch {
         }
     }
 
+    public Object[] getReport2(String[] dispatchNumbers) {
+        getConnect();
+        Object[] result = new Object[2];
+        List<List<Integer>> reportList = new ArrayList<List<Integer>>();
+        List<String> psiCodeList = new ArrayList<String>();
+
+        Map<String, List<String>> productMap = new HashMap<String, List<String>>();
+
+        for (String dispatchNumber : dispatchNumbers) {
+            String search_sql = "select \"Psi Code\", \"Process Date\" " +
+                    "from \"Dispatch-All\" where \"Dispatch Number\"=\'" +
+                    dispatchNumber + "\' and \"Cost Category Name\"=\'INSTALL\'";
+            try {
+                stmt = con.createStatement();
+                rs = stmt.executeQuery(search_sql);
+                if (rs.next()) {
+                    String year = rs.getString("Process Date").substring(0, 4);
+                    String psiCode = rs.getString("Psi Code");
+                    if (!psiCodeList.contains(psiCode)) {
+                        psiCodeList.add(psiCode);
+                    }
+                    if (productMap.get(year) == null) {
+                        productMap.put(year, new ArrayList<String>());
+                    }
+                    if (productMap.get(year).isEmpty()) {
+                        productMap.get(year).add(psiCode + "@" + 1);
+                    } else {
+                        int index;
+                        if ((index = isContainPsiCode(productMap.get(year), psiCode)) != -1) {
+                            int num = Integer.parseInt(productMap.get(year).get(index).split("@")[1]) + 1;
+                            productMap.get(year).set(index, psiCode + "@" + num);
+                        } else {
+                            productMap.get(year).add(psiCode + "@" + 1);
+                        }
+                    }
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            } finally {
+                try {
+                    rs.close();
+                    stmt.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        for (Map.Entry<String, List<String>> entry : productMap.entrySet()) {
+            List<Integer> row = new ArrayList<Integer>();
+            row.add(Integer.parseInt(entry.getKey()));
+            for (String tmp : entry.getValue()) {
+                row.add(Integer.parseInt(tmp.split("@")[1]));
+            }
+            reportList.add(row);
+        }
+        closeAll();
+
+        result[0] = psiCodeList;
+        result[1] = reportList;
+        return result;
+    }
+
+    private int isContainPsiCode(List<String> list, String psiCode) {
+        for (int i = 0; i < list.size(); i++) {
+            if (list.get(i).contains(psiCode)) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
     public List<List<String>> getReport(String[] dispatchNumbers) {
         getConnect();
         List<List<String>> reportList = new ArrayList<List<String>>();
@@ -447,7 +576,6 @@ public class ImportDBfromDispatch {
             row.add(entry.getValue().toString());
             reportList.add(row);
         }
-        System.out.println(reportList);
         closeAll();
         return reportList;
     }

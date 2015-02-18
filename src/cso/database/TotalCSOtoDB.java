@@ -155,7 +155,7 @@ public class TotalCSOtoDB {
         StringBuilder ageSqlBuider = new StringBuilder();
         for (Map.Entry<String, String> str : stringMap.entrySet()) {
             if (str.getKey().equals("Age (from)")) {
-                ageSqlBuider.append("\"CSO_AGE\">=\'").append(str.getValue()).append("\'");
+                ageSqlBuider.append(" and \"CSO_AGE\">=\'").append(str.getValue()).append("\'");
             } else if (str.getKey().equals("Age (to)")) {
                 ageSqlBuider.append(" and \"CSO_AGE\"<=\'").append(str.getValue()).append("\'");
             } else {
@@ -167,7 +167,7 @@ public class TotalCSOtoDB {
         if (ageSqlBuider.toString().isEmpty()) {
             search_sql = "select * from \"TOTAL_CSO\" where " + sub_sql.substring(0, sub_sql.length() - 4);
         } else {
-            search_sql = "select * from \"TOTAL_CSO\" where " + sub_sql + ageSqlBuider;
+            search_sql = "select * from \"TOTAL_CSO\" where " + sub_sql + ageSqlBuider.substring(4, ageSqlBuider.length());
         }
         try {
             stmt = con.createStatement();

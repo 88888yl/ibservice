@@ -8,7 +8,7 @@ package utils;
 /** modify this path when deploy on a new server */
 public class GlobalVariables {
     /** absolute file path */
-    private static final String resourcePath = "D:\\JavaProject\\resource\\";
+    private static final String resourcePath = "D:\\workspace\\resource\\";
 
     /** related resource file path */
     public static final String csoPath = resourcePath + "CSO/";
@@ -24,7 +24,7 @@ public class GlobalVariables {
 
     /** login user/password */
     public static final String defaultUserName = "pgh";
-    public static final String defaultPassword = "pgh800pgh";
+    public static final String defaultPassword = "pgh";
 
     /** oracle connection information */
     public static final String oracleUserName = "root";
@@ -33,10 +33,10 @@ public class GlobalVariables {
     public static final String oracleUrl = "jdbc:oracle:thin:@127.0.0.1:1521:orcl";
 
     /** report chart image path url, always need to change when deploy on a new server */
-    public static final String csoReportChartImageUrl = "D:\\JavaProject\\resource\\Report\\cso\\cso_chart.jpg";
-    public static final String scrReportChartImageUrl = "D:\\JavaProject\\resource\\Report\\scr\\scr_chart.jpg";
+    public static final String csoReportChartImageUrl = resourcePath + "Report\\cso\\cso_chart.jpg";
+    public static final String scrReportChartImageUrl = resourcePath + "Report\\scr\\scr_chart.jpg";
 
     /** report ppt path url, always need to change when deploy on a new server */
-    public static final String csoReportPPT = "D:\\JavaProject\\resource\\Report\\cso\\cso_ppt.pptx";
-    public static final String scrReportPPT = "D:\\JavaProject\\resource\\Report\\scr\\scr_ppt.pptx";
+    public static final String csoReportPPT = "Report\\cso\\cso_ppt.pptx";
+    public static final String scrReportPPT = resourcePath + "Report\\scr\\scr_ppt.pptx";
 }
