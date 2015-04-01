@@ -2,7 +2,6 @@ package partfinder.database;
 
 import org.apache.poi.ss.usermodel.*;
 import utils.ExcelLoader;
-import utils.FindExcels;
 import utils.GlobalVariables;
 
 import java.io.FileInputStream;

@@ -22,8 +22,8 @@ public class UpdateCSO {
     private List<List<String>> resultList = null;
     private String tableName = GlobalVariables.totalCSOTable;
 
-    private String openCSOPath = GlobalVariables.csoPath + "Open_CSO.xlsx";
-    private String closeCSOPath = GlobalVariables.csoPath + "Closed_CSO.xlsx";
+    private String openCSOPath = GlobalVariables.csoPath + GlobalVariables.csoTableName;
+//    private String closeCSOPath = GlobalVariables.csoPath + "Closed_CSO.xlsx";
 
     public UpdateCSO(String URL, String USER, String PWD) {
         this.URL = URL;
@@ -41,7 +41,8 @@ public class UpdateCSO {
                     stmt = con.createStatement();
                     stmt.executeQuery(add_sql);
                     stmt.close();
-                } catch (SQLException ignored) {}
+                } catch (SQLException ignored) {
+                }
             }
         }
 
@@ -97,7 +98,7 @@ public class UpdateCSO {
         closeAll();
     }
 
-    public void updateFromOpenCSO() {
+    public String updateFromOpenCSO() {
         ExcelLoader loader = new ExcelLoader(openCSOPath);
         List<List<String>> rows = loader.loadData(0);
         List<String> csoNumberList = new ArrayList<String>();
@@ -108,37 +109,33 @@ public class UpdateCSO {
 
         getConnect();
 
+        int[] changes = {0, 0};
         String find_sql = "select \"CSO Number\" from total_cso";
         try {
             stmt = con.createStatement();
             rs = stmt.executeQuery(find_sql);
+
             while (rs.next()) {
                 for (int i = 0; i < csoNumberList.size(); i++) {
                     if (rs.getString("CSO Number").equals(csoNumberList.get(i))) {
-                        StringBuilder update_sql = new StringBuilder();
-                        StringBuilder sub_update_sql = new StringBuilder();
-                        update_sql.append("update total_cso set ");
-                        for (int j = 0; j < csoTitle.size(); j++) {
-                            sub_update_sql.append("\"").append(csoTitle.get(j)).append("\"=\'").append(rows.get(i + 1).get(j)).append("\',");
-                        }
-                        update_sql.append(sub_update_sql.substring(0, sub_update_sql.length() - 1))
-                                .append(" where \"CSO Number\"=\'").append(rs.getString("CSO Number")).append("\'");
-                        Statement statement = con.createStatement();
-                        statement.executeUpdate(update_sql.toString());
-                        statement.close();
+//                        StringBuilder update_sql = new StringBuilder();
+//                        StringBuilder sub_update_sql = new StringBuilder();
+//                        update_sql.append("update total_cso set ");
+//                        for (int j = 0; j < csoTitle.size(); j++) {
+//                            sub_update_sql.append("\"").append(csoTitle.get(j)).append("\"=\'").append(rows.get(i + 1).get(j)).append("\',");
+//                        }
+//                        update_sql.append(sub_update_sql.substring(0, sub_update_sql.length() - 1))
+//                                .append(" where \"CSO Number\"=\'").append(rs.getString("CSO Number")).append("\'");
+//                        Statement statement = con.createStatement();
+//                        statement.executeUpdate(update_sql.toString());
+//                        statement.close();
                         csoNumberList.set(i, "none");
+                        changes[0]++;
                     }
                 }
             }
             rs.close();
             stmt.close();
-            System.out.println("------: update exist from open_cso.xlsx cso success!");
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-
-        try {
-            stmt = con.createStatement();
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -161,6 +158,7 @@ public class UpdateCSO {
                             pst.setString(j + 1, rows.get(i + 1).get(j));
                     }
                     pst.addBatch();
+                    changes[1]++;
                 }
             }
             pst.executeBatch();
@@ -170,106 +168,108 @@ public class UpdateCSO {
             e.printStackTrace();
         }
 
-        System.out.println("-------: update new cso from open_cso.xlsx success!");
+        System.out.println("-------: update new cso from open_cso.xls success!");
 
         TotalCSOtoDB totalCSOtoDB = new TotalCSOtoDB(
                 GlobalVariables.oracleUrl, GlobalVariables.oracleUserName, GlobalVariables.oraclePassword);
         totalCSOtoDB.initYearFW();
 
         closeAll();
+
+        return "update " + changes[1] + " rows cso from CSO.xls.";
     }
 
-    public void updateFromCloseCSO() {
-        ExcelLoader loader = new ExcelLoader(closeCSOPath);
-        List<List<String>> rows = loader.loadData(0);
-        List<String> csoNumberList = new ArrayList<String>();
-        List<String> csoTitle = rows.get(0);
-        for (int i = 0; i < csoTitle.size(); i++) {
-            if (csoTitle.get(i).equals("Milestone"))
-                csoTitle.set(i, "Milestone Status");
-            if (csoTitle.get(i).equals("SR Status"))
-                csoTitle.set(i, "Status");
-            if (csoTitle.get(i).equals("Owner Last Name"))
-                csoTitle.set(i, "Owner Name");
-            if (csoTitle.get(i).equals("Root Cause"))
-                csoTitle.set(i, "Root Cause Family");
-        }
-        for (int i = 1; i < rows.size(); i++) {
-            csoNumberList.add(rows.get(i).get(8));
-        }
-
-        getConnect();
-
-        String find_sql = "select \"CSO Number\" from total_cso";
-        try {
-            stmt = con.createStatement();
-            rs = stmt.executeQuery(find_sql);
-            while (rs.next()) {
-                for (int i = 0; i < csoNumberList.size(); i++) {
-                    if (rs.getString("CSO Number").equals(csoNumberList.get(i))) {
-                        StringBuilder update_sql = new StringBuilder();
-                        StringBuilder sub_update_sql = new StringBuilder();
-                        update_sql.append("update total_cso set ");
-                        for (int j = 0; j < csoTitle.size(); j++) {
-                            sub_update_sql.append("\"").append(csoTitle.get(j)).append("\"=\'").append(rows.get(i + 1).get(j)).append("\',");
-                        }
-                        update_sql.append(sub_update_sql.substring(0, sub_update_sql.length() - 1))
-                                .append(" where \"CSO Number\"=\'").append(rs.getString("CSO Number")).append("\'");
-                        Statement statement = con.createStatement();
-                        statement.executeUpdate(update_sql.toString());
-                        statement.close();
-                        csoNumberList.set(i, "none");
-                    }
-                }
-            }
-            rs.close();
-            stmt.close();
-            System.out.println("------: update exist cso from close_cso.xlsx success!");
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-
-        try {
-            stmt = con.createStatement();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-
-        try {
-            StringBuilder sub_insert_sql1 = new StringBuilder();
-            StringBuilder sub_insert_sql2 = new StringBuilder();
-            for (String aCsoTitle : csoTitle) {
-                sub_insert_sql1.append("\"").append(aCsoTitle).append("\",");
-                sub_insert_sql2.append("?,");
-            }
-            con.setAutoCommit(false);
-            PreparedStatement pst = con.prepareStatement("insert into total_cso (" + sub_insert_sql1.substring(0, sub_insert_sql1.length() - 1) + ") values (" + sub_insert_sql2.substring(0, sub_insert_sql2.length() - 1) + ")");
-            for (int i = 0; i < csoNumberList.size(); i++) {
-                if (!csoNumberList.get(i).equals("none")) {
-                    for (int j = 0; j < csoTitle.size(); j++) {
-                        if (rows.get(i + 1).get(j).isEmpty())
-                            pst.setNull(j + 1, Types.VARCHAR);
-                        else
-                            pst.setString(j + 1, rows.get(i + 1).get(j));
-                    }
-                    pst.addBatch();
-                }
-            }
-            pst.executeBatch();
-            con.commit();
-            pst.close();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-
-        System.out.println("-------: update new cso from close_cso.xlsx success!");
-
-        TotalCSOtoDB totalCSOtoDB = new TotalCSOtoDB(
-                GlobalVariables.oracleUrl, GlobalVariables.oracleUserName, GlobalVariables.oraclePassword);
-        totalCSOtoDB.initYearFW();
-
-        closeAll();
-    }
+//    public void updateFromCloseCSO() {
+//        ExcelLoader loader = new ExcelLoader(closeCSOPath);
+//        List<List<String>> rows = loader.loadData(0);
+//        List<String> csoNumberList = new ArrayList<String>();
+//        List<String> csoTitle = rows.get(0);
+//        for (int i = 0; i < csoTitle.size(); i++) {
+//            if (csoTitle.get(i).equals("Milestone"))
+//                csoTitle.set(i, "Milestone Status");
+//            if (csoTitle.get(i).equals("SR Status"))
+//                csoTitle.set(i, "Status");
+//            if (csoTitle.get(i).equals("Owner Last Name"))
+//                csoTitle.set(i, "Owner Name");
+//            if (csoTitle.get(i).equals("Root Cause"))
+//                csoTitle.set(i, "Root Cause Family");
+//        }
+//        for (int i = 1; i < rows.size(); i++) {
+//            csoNumberList.add(rows.get(i).get(8));
+//        }
+//
+//        getConnect();
+//
+//        String find_sql = "select \"CSO Number\" from total_cso";
+//        try {
+//            stmt = con.createStatement();
+//            rs = stmt.executeQuery(find_sql);
+//            while (rs.next()) {
+//                for (int i = 0; i < csoNumberList.size(); i++) {
+//                    if (rs.getString("CSO Number").equals(csoNumberList.get(i))) {
+//                        StringBuilder update_sql = new StringBuilder();
+//                        StringBuilder sub_update_sql = new StringBuilder();
+//                        update_sql.append("update total_cso set ");
+//                        for (int j = 0; j < csoTitle.size(); j++) {
+//                            sub_update_sql.append("\"").append(csoTitle.get(j)).append("\"=\'").append(rows.get(i + 1).get(j)).append("\',");
+//                        }
+//                        update_sql.append(sub_update_sql.substring(0, sub_update_sql.length() - 1))
+//                                .append(" where \"CSO Number\"=\'").append(rs.getString("CSO Number")).append("\'");
+//                        Statement statement = con.createStatement();
+//                        statement.executeUpdate(update_sql.toString());
+//                        statement.close();
+//                        csoNumberList.set(i, "none");
+//                    }
+//                }
+//            }
+//            rs.close();
+//            stmt.close();
+//            System.out.println("------: update exist cso from close_cso.xlsx success!");
+//        } catch (SQLException e) {
+//            e.printStackTrace();
+//        }
+//
+//        try {
+//            stmt = con.createStatement();
+//        } catch (SQLException e) {
+//            e.printStackTrace();
+//        }
+//
+//        try {
+//            StringBuilder sub_insert_sql1 = new StringBuilder();
+//            StringBuilder sub_insert_sql2 = new StringBuilder();
+//            for (String aCsoTitle : csoTitle) {
+//                sub_insert_sql1.append("\"").append(aCsoTitle).append("\",");
+//                sub_insert_sql2.append("?,");
+//            }
+//            con.setAutoCommit(false);
+//            PreparedStatement pst = con.prepareStatement("insert into total_cso (" + sub_insert_sql1.substring(0, sub_insert_sql1.length() - 1) + ") values (" + sub_insert_sql2.substring(0, sub_insert_sql2.length() - 1) + ")");
+//            for (int i = 0; i < csoNumberList.size(); i++) {
+//                if (!csoNumberList.get(i).equals("none")) {
+//                    for (int j = 0; j < csoTitle.size(); j++) {
+//                        if (rows.get(i + 1).get(j).isEmpty())
+//                            pst.setNull(j + 1, Types.VARCHAR);
+//                        else
+//                            pst.setString(j + 1, rows.get(i + 1).get(j));
+//                    }
+//                    pst.addBatch();
+//                }
+//            }
+//            pst.executeBatch();
+//            con.commit();
+//            pst.close();
+//        } catch (SQLException e) {
+//            e.printStackTrace();
+//        }
+//
+//        System.out.println("-------: update new cso from close_cso.xlsx success!");
+//
+//        TotalCSOtoDB totalCSOtoDB = new TotalCSOtoDB(
+//                GlobalVariables.oracleUrl, GlobalVariables.oracleUserName, GlobalVariables.oraclePassword);
+//        totalCSOtoDB.initYearFW();
+//
+//        closeAll();
+//    }
 
     private void getConnect() {
         try {

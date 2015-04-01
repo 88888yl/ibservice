@@ -224,7 +224,31 @@
         <servlet-name>DispatchSysServlet</servlet-name>
         <servlet-class>dispatch.servlet.DispatchSysServlet</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>DeleteSCRServlet</servlet-name>
+        <servlet-class>scr.servlet.DeleteSCRServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>DeleteDispatchServlet</servlet-name>
+        <servlet-class>dispatch.servlet.DeleteDispatchServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>DeleteComplaintsServlet</servlet-name>
+        <servlet-class>complaints.servlet.DeleteComplaintsServlet</servlet-class>
+    </servlet>
 
+    <servlet-mapping>
+        <servlet-name>DeleteComplaintsServlet</servlet-name>
+        <url-pattern>/deleteComplaints.action</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>DeleteDispatchServlet</servlet-name>
+        <url-pattern>/deleteDispatch.action</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>DeleteSCRServlet</servlet-name>
+        <url-pattern>/deleteSCR.action</url-pattern>
+    </servlet-mapping>
     <servlet-mapping>
         <servlet-name>DispatchSysServlet</servlet-name>
         <url-pattern>/dispatchSys.action</url-pattern>

@@ -8,7 +8,8 @@ package utils;
 /** modify this path when deploy on a new server */
 public class GlobalVariables {
     /** absolute file path */
-    private static final String resourcePath = "D:\\workspace\\resource\\";
+    //private static final String resourcePath = "D:\\workspace\\resource\\";
+    private static final String resourcePath = "D:\\JavaProject\\resource\\";
 
     /** related resource file path */
     public static final String csoPath = resourcePath + "CSO/";
@@ -17,6 +18,12 @@ public class GlobalVariables {
     public static final String scrPath = resourcePath + "SCR/";
     public static final String complaintsPath = resourcePath + "Complaints/";
     public static final String dispatchPath = resourcePath + "Dispatch/";
+
+    /**  update file name */
+    public static final String csoTableName = "CSO.xls";
+    public static final String scrTableName = "SCR.xls";
+    public static final String dispatchTableName = "Dispatch.xls";
+    public static final String complaintsTableName = "Complaints.xls";
 
     /** oracle table name */
     public static final String totalCSOTable = "total_cso";

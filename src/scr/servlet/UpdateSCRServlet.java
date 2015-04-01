@@ -17,6 +17,7 @@ public class UpdateSCRServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String username = " ";
         String password = " ";
+        String retval = "";
 
         username = request.getParameter("username");
         password = request.getParameter("password");
@@ -25,10 +26,10 @@ public class UpdateSCRServlet extends HttpServlet {
         UpdateSCR updateSCR = new UpdateSCR(
                 GlobalVariables.oracleUrl, GlobalVariables.oracleUserName, GlobalVariables.oraclePassword);
         if (username.equals(GlobalVariables.defaultUserName) && password.equals(GlobalVariables.defaultPassword)) {
-            updateSCR.updateSCRfromExcel();
-            response.getWriter().print("Success!");
+            retval = updateSCR.updateSCRfromExcel();
+            response.getWriter().print(retval);
         } else {
-            response.getWriter().print("Failed!");
+            response.getWriter().print("Username/password is empty or error.");
         }
     }
 

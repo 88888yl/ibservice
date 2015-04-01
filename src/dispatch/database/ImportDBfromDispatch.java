@@ -1,9 +1,7 @@
 package dispatch.database;
 
-import dispatch.utils.ProductInfo;
 import org.apache.poi.ss.usermodel.*;
-import org.omg.PortableInterceptor.INACTIVE;
-import utils.FindExcels;
+import utils.ExcelsUtils;
 import utils.GlobalVariables;
 
 import java.io.File;
@@ -19,6 +17,7 @@ import java.util.*;
  */
 public class ImportDBfromDispatch {
     private String path = GlobalVariables.dispatchPath;
+    private String tableName = GlobalVariables.dispatchTableName;
 
     private String URL;
     private String USER;
@@ -56,11 +55,12 @@ public class ImportDBfromDispatch {
         closeAll();
     }
 
-    public void insertTables() {
+    public String insertTables() {
         List<List<String>> rows;
         getConnect();
-        FindExcels findExcels = new FindExcels();
-        String[] excels = findExcels.getExcelsName(path);
+        ExcelsUtils excelsUtils = new ExcelsUtils();
+        String[] excels = excelsUtils.getExcelsName(path);
+        int n = 0;
         for (String excel : excels) {
             if (!excel.contains("(Up to date)")) {
                 rows = addRows(excel);
@@ -69,9 +69,9 @@ public class ImportDBfromDispatch {
                     stmt = con.createStatement();
                     ResultSet rs = stmt.executeQuery(hasData_sql);
                     if (!rs.next()) {
-                        firstInsert(rows);
+                        n += firstInsert(rows);
                     } else {
-                        updateInsert(rows);
+                        n += updateInsert(rows);
                     }
                     rs.close();
                     stmt.close();
@@ -81,6 +81,7 @@ public class ImportDBfromDispatch {
             }
         }
         closeAll();
+        return "update " + n + " rows from Dispatch";
     }
 
     public List<String> dispatchCatalogue() {
@@ -279,11 +280,11 @@ public class ImportDBfromDispatch {
     private List<String> getColumnNames() {
         List<String> columnNames = new ArrayList<String>();
 
-        FindExcels findExcels = new FindExcels();
-        String[] excels = findExcels.getExcelsName(path);
+//        ExcelsUtils excelsUtils = new ExcelsUtils();
+//        String[] excels = excelsUtils.getExcelsName(path);
         InputStream inputStream;
         try {
-            inputStream = new FileInputStream(path + excels[0]);
+            inputStream = new FileInputStream(path + tableName);
             Workbook workbook = WorkbookFactory.create(inputStream);
             Sheet sheet = workbook.getSheetAt(0);
             for (int j = 0; j < sheet.getRow(0).getLastCellNum(); j++) {
@@ -389,7 +390,8 @@ public class ImportDBfromDispatch {
         return rows;
     }
 
-    private void firstInsert(List<List<String>> rows) {
+    private int firstInsert(List<List<String>> rows) {
+        int n = 0;
         StringBuilder insert_sql = new StringBuilder();
         StringBuilder subSql1 = new StringBuilder();
         StringBuilder subSql2 = new StringBuilder();
@@ -413,6 +415,7 @@ public class ImportDBfromDispatch {
                         pst.setString(j + 1, row.get(j));
                 }
                 pst.addBatch();
+                n++;
             }
             pst.executeBatch();
             con.commit();
@@ -422,9 +425,11 @@ public class ImportDBfromDispatch {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        return n;
     }
 
-    private void updateInsert(List<List<String>> rows) {
+    private int updateInsert(List<List<String>> rows) {
+        int n = 0;
         StringBuilder insert_sql = new StringBuilder();
         StringBuilder subSql1 = new StringBuilder();
         StringBuilder subSql2 = new StringBuilder();
@@ -450,6 +455,7 @@ public class ImportDBfromDispatch {
                 }
                 pst.setString(columnNames.size() + 1, row.get(22));
                 pst.addBatch();
+                n++;
             }
             pst.executeBatch();
             con.commit();
@@ -459,6 +465,7 @@ public class ImportDBfromDispatch {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        return n;
     }
 
     public Object[] getReport2(String[] dispatchNumbers) {
@@ -639,11 +646,13 @@ public class ImportDBfromDispatch {
     }
 
     private void fileRename(String path) {
-        String[] excels = new FindExcels().getExcelsName(path);
+        String[] excels = new ExcelsUtils().getExcelsName(path);
         for (String excel : excels) {
             if (!excel.contains("(Up to date)")) {
                 File excelFile = new File(path + excel);
-                excelFile.renameTo(new File(path + "(Up to date)" + excel));
+                if (!excelFile.renameTo(new File(path + "(Up to date)" + excel))) {
+                    System.out.println("Rename the excel \"" + excel + "\" failed.");
+                }
             }
         }
     }

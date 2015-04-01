@@ -40,6 +40,15 @@
         float: right;
         overflow-y: hidden;
     }
+
+    #myLoadingModal
+    {
+        top: 35%;
+    }
+    #myLoadingModal2
+    {
+        top: 35%;
+    }
 </style>
 
 <div class="container-fluid panel"
@@ -53,11 +62,13 @@
             <input type="password" class="form-control" id="password">
         </div>
 
-        <div style="margin: 5px 10px 5px 0; width: 260px; float: left" class="input-group">
+        <div style="margin: 5px 10px 5px 0; width: 420px; float: left" class="input-group">
             <input type="button" style="float: left; margin-right: 10px" id="uploadBtn" value="Select File..."
                    class="btn btn-primary">
-            <input type="button" style="float: left" id="updateComplaints" value="UpdateComplaints"
+            <input type="button" style="float: left; margin-right: 10px" id="updateComplaints" value="UpdateComplaints"
                    class="btn btn-warning" onclick="updateComplaints()">
+            <input type="button" style="float: left; margin-right: 10px" id="deleteComplaints" value="deleteComplaints"
+                   class="btn btn-danger" onclick="deleteComplaints()">
         </div>
     </div>
     <div class="container pull-left">
@@ -66,6 +77,47 @@
         </div>
         <div style="margin: 5px 10px 5px 0; float: left" class="input-group">
             <input type="button" id="export" value="Export" class="btn btn-primary" onclick="getExport()">
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="myLoadingModal" tabindex="-1" role="dialog"
+     aria-labelledby="myModalLabel" aria-hidden="true" >
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="myModalLabel">
+                    Update database
+                </h4>
+            </div>
+            <div id="loadingText" class="modal-body">
+                loading...
+            </div>
+            <div class="modal-footer">
+                <button id="loadingButton" type="button" class="btn btn-default"
+                        data-dismiss="modal" disabled>ok
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="myLoadingModal2" tabindex="-1" role="dialog"
+     aria-labelledby="myModalLabel" aria-hidden="true" >
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="myModalLabel2">
+                    Delete database
+                </h4>
+            </div>
+            <div id="loadingText2" class="modal-body">
+                loading...
+            </div>
+            <div class="modal-footer">
+                <button id="loadingButton2" type="button" class="btn btn-default"
+                        data-dismiss="modal" disabled>ok
+                </button>
+            </div>
         </div>
     </div>
 </div>
@@ -170,31 +222,52 @@
             url: 'updateComplaints.action',
             data: {username: $("#username").val(), password: $("#password").val()},
             beforeSend: function () {
-                var btn = document.getElementById("updateComplaints");
-                btn.value = "Starting update...";
+                $("#myLoadingModal").modal('show');
+                $("#loadingButton").attr("disabled", "disabled");
+                $("#loadingText").text("loading...");
             },
             success: function (data) {
-                var btn = document.getElementById("updateComplaints");
-                btn.value = data;
-                btn.disabled = true;
-                var me = btn;
-                setTimeout(function () {
-                    me.disabled = false;
-                    me.value = "UpdateComplaints";
-                }, 2000);
+                $("#updateComplaints").removeAttr("disabled");
+                $("#loadingButton").removeAttr("disabled");
+                $("#loadingText").text(data);
             },
             error: function () {
-                var btn = document.getElementById("updateComplaints");
-                btn.value = "Fail to update";
-                btn.disabled = true;
-                var me = btn;
-                setTimeout(function () {
-                    me.disabled = false;
-                    me.value = "UpdateComplaints";
-                }, 2000);
+                $("#updateComplaints").removeAttr("disabled");
+                $("#loadingButton2").removeAttr("disabled");
+                $("#loadingText2").text("update failed");
             }
         })
     }
+    function deleteComplaints() {
+        var cur_btn = window.event.srcElement;
+        var id = cur_btn.id;
+        $("#deleteComplaints").attr("disabled", "disabled");
+        $.ajax({
+            type: 'post',
+            dataType: 'text',
+            async: true,
+            url: 'deleteComplaints.action',
+            data: {username: $("#username").val(), password: $("#password").val(), id: id},
+            beforeSend: function () {
+                $("#myLoadingModal2").modal('show');
+                $("#loadingButton2").attr("disabled", "disabled");
+                $("#loadingText2").text("loading...");
+            },
+            success: function (data) {
+                $("#deleteComplaints").removeAttr("disabled");
+                $("#loadingButton2").removeAttr("disabled");
+                $("#loadingText2").text(data);
+            },
+            error: function () {
+                $("#deleteComplaints").removeAttr("disabled");
+                $("#loadingButton2").removeAttr("disabled");
+                $("#loadingText2").text("delete failed");
+            }
+        })
+    }
+
+    $('#myLoadingModal').modal({backdrop: 'static', keyboard: false, show: false});
+    $('#myLoadingModal2').modal({backdrop: 'static', keyboard: false, show: false});
 </script>
 </body>
 </html>

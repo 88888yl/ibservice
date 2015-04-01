@@ -88,53 +88,54 @@
     function initTable(result) {
         if (result[2].length > 200) {
             Ext.MessageBox.alert("Warning", "Result table is too large, please export to excel!");
-        } else {
-            Ext.define('CSO', {
-                extend: 'Ext.data.Model',
-                fields: result[0]
-            });
-
-            Ext.grid.myData = result[2];
-
-            var getLocalStore = function () {
-                return Ext.create('Ext.data.ArrayStore', {
-                    model: 'CSO',
-                    data: Ext.grid.myData
-                });
-            };
-
-            var myGrid = Ext.create('Ext.grid.Panel', {
-                id: 'myCSOGrid',
-                store: getLocalStore(),
-                columns: result[1],
-                columnLines: true,
-                enableLocking: true,
-                x: 0,
-                y: '95px',
-                width: '100%',
-                height: winHeight - 95,
-                collapsible: false,
-                animCollapse: false,
-                title: 'CSO grid info',
-                iconCls: 'icon-grid',
-                margin: '0 0 0 0',
-                viewConfig: {
-                    getRowClass: changeRowClass,
-                    stripeRows: true,
-                    enableTextSelection: true
-                },
-                listeners: {
-                    celldblclick: function (view, cell, cellIndex, record, row, rowIndex, e) {
-                        var clickedDataIndex = view.panel.headerCt.getHeaderAtIndex(cellIndex).dataIndex;
-                        var clickedColumnName = view.panel.headerCt.getHeaderAtIndex(cellIndex).text;
-                        var clickedCellValue = record.get(clickedDataIndex);
-                        Ext.MessageBox.alert('Detailed', clickedCellValue);
-                    }
-                },
-                selModel: Ext.create('Ext.selection.Model', {listeners: {}}),
-                renderTo: Ext.getBody()
-            });
+            result[2] = result[2].slice(0, 199);
         }
+
+        Ext.define('CSO', {
+            extend: 'Ext.data.Model',
+            fields: result[0]
+        });
+
+        Ext.grid.myData = result[2];
+
+        var getLocalStore = function () {
+            return Ext.create('Ext.data.ArrayStore', {
+                model: 'CSO',
+                data: Ext.grid.myData
+            });
+        };
+
+        var myGrid = Ext.create('Ext.grid.Panel', {
+            id: 'myCSOGrid',
+            store: getLocalStore(),
+            columns: result[1],
+            columnLines: true,
+            enableLocking: true,
+            x: 0,
+            y: '95px',
+            width: '100%',
+            height: winHeight - 95,
+            collapsible: false,
+            animCollapse: false,
+            title: 'CSO grid info',
+            iconCls: 'icon-grid',
+            margin: '0 0 0 0',
+            viewConfig: {
+                getRowClass: changeRowClass,
+                stripeRows: true,
+                enableTextSelection: true
+            },
+            listeners: {
+                celldblclick: function (view, cell, cellIndex, record, row, rowIndex, e) {
+                    var clickedDataIndex = view.panel.headerCt.getHeaderAtIndex(cellIndex).dataIndex;
+                    var clickedColumnName = view.panel.headerCt.getHeaderAtIndex(cellIndex).text;
+                    var clickedCellValue = record.get(clickedDataIndex);
+                    Ext.MessageBox.alert('Detailed', clickedCellValue);
+                }
+            },
+            selModel: Ext.create('Ext.selection.Model', {listeners: {}}),
+            renderTo: Ext.getBody()
+        });
     }
 
     function changeRowClass(record, rowIndex, rowParams, store) {

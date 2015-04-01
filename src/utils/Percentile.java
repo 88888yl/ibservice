@@ -2,6 +2,7 @@ package utils;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by myl on 2014/12/14.
@@ -39,6 +40,7 @@ public class Percentile {
     }
 
     public static void main(String[] args) {
+        String s="sssss";
         List<Integer> list = new ArrayList<Integer>();
         list.add(1);
 //        list.add(2);

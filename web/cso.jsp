@@ -39,6 +39,15 @@
         float: right;
         overflow-y: hidden;
     }
+
+    #myLoadingModal
+    {
+        top: 35%;
+    }
+    #myLoadingModal2
+    {
+        top: 35%;
+    }
 </style>
 
 <div class="container-fluid panel" style="background-image: url('image/background1.jpg'); position: fixed; top: 45px; box-shadow: 0 3px 6px black">
@@ -49,13 +58,11 @@
             <span class="input-group-addon">Password</span>
             <input type="password" class="form-control" id="password">
         </div>
-        <div style="margin: 5px 10px 5px 0; width: 220px; float: left" class="input-group">
+        <div style="margin: 5px 10px 5px 0; width: 360px; float: left" class="input-group">
             <input type="button" style="float: left; margin-right: 10px" id="uploadBtn" value="Select File..."
                    class="btn btn-primary">
-            <input type="button" style="float: left" id="updateCSO" value="UpdateCSO" class="btn btn-warning" onclick="updateCSO()">
-        </div>
-        <div style="margin: 5px 10px 5px 0; width: 220px; float: left" class="input-group">
-            <span class="label label-default" id="information" style=" width: 30px; margin-top: 10px"></span>
+            <input type="button" style="float: left; margin-right: 10px" id="updateCSO" value="UpdateCSO" class="btn btn-warning" onclick="updateCSO()">
+            <input type="button" style="float: left; margin-right: 10px" id="deleteSCR" value="DeleteCSO" class="btn btn-danger" onclick="deleteCSO()">
         </div>
     </div>
 
@@ -65,6 +72,51 @@
         </div>
         <div style="margin: 5px 10px 5px 0; float: left" class="input-group">
             <input type="button" id="export" value="Export" class="btn btn-primary" onclick="getExport()">
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="myLoadingModal" tabindex="-1" role="dialog"
+           aria-labelledby="myModalLabel" aria-hidden="true" >
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <%--<button type="button" class="close"--%>
+                <%--data-dismiss="modal" aria-hidden="true">--%>
+                <%--&times;--%>
+                <%--</button>--%>
+                <h4 class="modal-title" id="myModalLabel">
+                    Update database
+                </h4>
+            </div>
+            <div id="loadingText" class="modal-body">
+                loading...
+            </div>
+            <div class="modal-footer">
+                <button id="loadingButton" type="button" class="btn btn-default"
+                        data-dismiss="modal" disabled>ok
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="myLoadingModal2" tabindex="-1" role="dialog"
+     aria-labelledby="myModalLabel" aria-hidden="true" >
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="myModalLabel2">
+                    Delete database
+                </h4>
+            </div>
+            <div id="loadingText2" class="modal-body">
+                loading...
+            </div>
+            <div class="modal-footer">
+                <button id="loadingButton2" type="button" class="btn btn-default"
+                        data-dismiss="modal" disabled>ok
+                </button>
+            </div>
         </div>
     </div>
 </div>
@@ -87,77 +139,76 @@
     var winHeight;
     var winWidth;
 
-    if (window.innerWidth)
-        winWidth = window.innerWidth;
-    else if ((document.body) && (document.body.clientWidth))
-        winWidth = document.body.clientWidth;
+        if (window.innerWidth)
+            winWidth = window.innerWidth;
+        else if ((document.body) && (document.body.clientWidth))
+            winWidth = document.body.clientWidth;
 
-    if (window.innerHeight)
-        winHeight = window.innerHeight;
-    else if ((document.body) && (document.body.clientHeight))
-        winHeight = document.body.clientHeight;
+        if (window.innerHeight)
+            winHeight = window.innerHeight;
+        else if ((document.body) && (document.body.clientHeight))
+            winHeight = document.body.clientHeight;
 
-    var frameBody = document.getElementById("content-wrapper");
-    frameBody.style.height = winHeight - 48;
+        var frameBody = document.getElementById("content-wrapper");
+        frameBody.style.height = winHeight - 48;
 
-    window.frames["treePage"].location.href = "/cso_catalogue.jsp";
+        window.frames["treePage"].location.href = "/cso_catalogue.jsp";
 
-    function showResult() {
-        document.getElementById("tmpValue").innerText = window.frames["treePage"].getSearchValues();
+        function showResult() {
+            document.getElementById("tmpValue").innerText = window.frames["treePage"].getSearchValues();
 
-        var btn = document.getElementById("search");
-        btn.disabled = true;
-        var me = btn;
-        setTimeout(function () {
-            me.disabled = false;
-        }, 3000);
+            var btn = document.getElementById("search");
+            btn.disabled = true;
+            var me = btn;
+            setTimeout(function () {
+                me.disabled = false;
+            }, 3000);
 
-        window.frames["resultPage"].location.href = "/cso_table.jsp";
-    }
+            window.frames["resultPage"].location.href = "/cso_table.jsp";
+        }
 
-    function getExport() {
-        var store = window.frames["resultPage"].getGridStore();
+        function getExport() {
+            var store = window.frames["resultPage"].getGridStore();
 
-        var btn = document.getElementById("export");
-        btn.disabled = true;
-        var me = btn;
-        setTimeout(function () {
-            me.disabled = false;
-        }, 2000);
+            var btn = document.getElementById("export");
+            btn.disabled = true;
+            var me = btn;
+            setTimeout(function () {
+                me.disabled = false;
+            }, 2000);
 
-        var form = document.createElement("form");
-        var element1 = document.createElement("input");
-        form.method = "POST";
-        form.action = "exportCSO.action";
+            var form = document.createElement("form");
+            var element1 = document.createElement("input");
+            form.method = "POST";
+            form.action = "exportCSO.action";
 
-        element1.value = JSON.stringify(store);
-        element1.name = "store";
-        element1.type = 'hidden';
-        form.appendChild(element1);
+            element1.value = JSON.stringify(store);
+            element1.name = "store";
+            element1.type = 'hidden';
+            form.appendChild(element1);
 
-        document.body.appendChild(form);
+            document.body.appendChild(form);
 
-        form.submit();
-    }
+            form.submit();
+        }
 
-    $(function () {
-        var $uploadBtn = $("#uploadBtn");
-        new AjaxUpload($uploadBtn, {
-            action: 'uploadCSO.action',
-            name: 'uploadfile',
-            onSubmit: function (file) {
-                $("#upload").html("Starting upload file...");
-            },
-            onComplete: function (file, response) {
-                $("#upload").html(response);
-            }
+        $(function () {
+            var $uploadBtn = $("#uploadBtn");
+            new AjaxUpload($uploadBtn, {
+                action: 'uploadCSO.action',
+                name: 'uploadfile',
+                onSubmit: function (file) {
+                    $("#upload").html("Starting upload file...");
+                },
+                onComplete: function (file, response) {
+                    $("#upload").html(response);
+                }
+            });
         });
-    });
 
-    function updateCSO() {
-        var cur_btn = window.event.srcElement;
-        var id = cur_btn.id;
-        $("#update").attr("disabled", "disabled");
+        function updateCSO() {
+            var id = "fromOpenCSO";
+            $("#update").attr("disabled", "disabled");
         $.ajax({
             type: 'post',
             dataType: 'text',
@@ -165,18 +216,51 @@
             url: 'updateCSO.action',
             data: {username: $("#username").val(), password: $("#password").val(), id: id},
             beforeSend: function () {
-                $("#information").html("Running...");
+                $("#myLoadingModal").modal('show');
+                $("#loadingButton").attr("disabled", "disabled");
+                $("#loadingText").text("loading...");
             },
             success: function (data) {
-                $("#information").html(data);
                 $("#update").removeAttr("disabled");
+                $("#loadingButton").removeAttr("disabled");
+                $("#loadingText").text(data);
             },
             error: function () {
-                $("#information").html("Update database failed!");
                 $("#update").removeAttr("disabled");
+                $("#loadingButton").removeAttr("disabled");
+                $("#loadingText").text("update failed");
             }
         })
     }
+    function deleteCSO() {
+        var cur_btn = window.event.srcElement;
+        var id = cur_btn.id;
+        $("#deleteCSO").attr("disabled", "disabled");
+        $.ajax({
+            type: 'post',
+            dataType: 'text',
+            async: true,
+            url: 'deleteCSO.action',
+            data: {username: $("#username").val(), password: $("#password").val(), id: id},
+            beforeSend: function () {
+                $("#myLoadingModal2").modal('show');
+                $("#loadingButton2").attr("disabled", "disabled");
+                $("#loadingText2").text("loading...");
+            },
+            success: function (data) {
+                $("#deleteSCR").removeAttr("disabled");
+                $("#loadingButton2").removeAttr("disabled");
+                $("#loadingText2").text(data);
+            },
+            error: function () {
+                $("#deleteSCR").removeAttr("disabled");
+                $("#loadingButton2").removeAttr("disabled");
+                $("#loadingText2").text("update failed");
+            }
+        })
+    }
+    $('#myLoadingModal').modal({backdrop: 'static', keyboard: false, show: false});
+    $('#myLoadingModal2').modal({backdrop: 'static', keyboard: false, show: false});
 </script>
 </body>
 </html>

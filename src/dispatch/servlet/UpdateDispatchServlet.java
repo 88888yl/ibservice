@@ -22,10 +22,10 @@ public class UpdateDispatchServlet extends HttpServlet {
                 && password != null && password.equals(GlobalVariables.defaultPassword)) {
             ImportDBfromDispatch importDBfromDispatch = new ImportDBfromDispatch(
                     GlobalVariables.oracleUrl, GlobalVariables.oracleUserName, GlobalVariables.oraclePassword);
-            importDBfromDispatch.insertTables();
-            response.getWriter().print("Updating...");
+            String retval = importDBfromDispatch.insertTables();
+            response.getWriter().print(retval);
         } else {
-            response.getWriter().print("User/Pwd error");
+            response.getWriter().print("Username/Password is empty or error.");
         }
     }
 

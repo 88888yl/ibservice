@@ -22,7 +22,7 @@ public class UpdateSCR {
     private List<List<String>> resultList = null;
     private String tableName = GlobalVariables.totalSCRTable;
 
-    private String srcFilePath = GlobalVariables.scrPath + "SCR.xlsx";
+    private String srcFilePath = GlobalVariables.scrPath + GlobalVariables.scrTableName;
 
     public UpdateSCR(String URL, String USER, String PWD) {
         this.URL = URL;
@@ -40,7 +40,8 @@ public class UpdateSCR {
                     stmt = con.createStatement();
                     stmt.executeQuery(add_sql);
                     stmt.close();
-                } catch (SQLException ignored) {}
+                } catch (SQLException ignored) {
+                }
             }
         }
 
@@ -96,7 +97,7 @@ public class UpdateSCR {
         closeAll();
     }
 
-    public void updateSCRfromExcel() {
+    public String updateSCRfromExcel() {
         ExcelLoader loader = new ExcelLoader(srcFilePath);
         List<List<String>> rows = loader.loadData(0);
         List<String> scrNumberList = new ArrayList<String>();
@@ -126,35 +127,30 @@ public class UpdateSCR {
             while (rs.next()) {
                 for (int i = 0; i < scrNumberList.size(); i++) {
                     if (rs.getString("Number").equals(scrNumberList.get(i))) {
-                        StringBuilder update_sql = new StringBuilder();
-                        StringBuilder sub_update_sql = new StringBuilder();
-                        update_sql.append("update total_scr set ");
-                        for (int j = 0; j < scrTitle.size(); j++) {
-                            String aScrTitle = scrTitle.get(j);
-                            sub_update_sql.append("\"").append(aScrTitle).append("\"=\'").append(rows.get(i + 1).get(j)).append("\',");
-                        }
-                        update_sql.append(sub_update_sql.substring(0, sub_update_sql.length() - 1))
-                                .append(" where \"Number\"=\'").append(rs.getString("Number")).append("\'");
-
-                        Statement statement = con.createStatement();
-                        statement.executeUpdate(update_sql.toString());
-                        statement.close();
-
+//                        StringBuilder update_sql = new StringBuilder();
+//                        StringBuilder sub_update_sql = new StringBuilder();
+//                        update_sql.append("update total_scr set ");
+//                        for (int j = 0; j < scrTitle.size(); j++) {
+//                            String aScrTitle = scrTitle.get(j);
+//                            sub_update_sql.append("\"").append(aScrTitle).append("\"=\'").append(rows.get(i + 1).get(j)).append("\',");
+//                        }
+//                        update_sql.append(sub_update_sql.substring(0, sub_update_sql.length() - 1))
+//                                .append(" where \"Number\"=\'").append(rs.getString("Number")).append("\'");
+//
+//                        Statement statement = con.createStatement();
+//                        statement.executeUpdate(update_sql.toString());
+//                        statement.close();
                         scrNumberList.set(i, "none");
                     }
                 }
             }
             rs.close();
             stmt.close();
-            System.out.println("------: update exist from SCR.xlsx cso success!");
-        } catch (SQLException ignored) {}
-
-        try {
-            stmt = con.createStatement();
-        } catch (SQLException e) {
-            e.printStackTrace();
+//            System.out.println("------: update exist from SCR.xls success!");
+        } catch (SQLException ignored) {
         }
 
+        int n = 0;
         try {
             StringBuilder sub_insert_sql1 = new StringBuilder();
             StringBuilder sub_insert_sql2 = new StringBuilder();
@@ -163,9 +159,11 @@ public class UpdateSCR {
                 sub_insert_sql2.append("?,");
             }
             con.setAutoCommit(false);
-            PreparedStatement pst = con.prepareStatement("insert into total_cso (" + sub_insert_sql1.substring(0, sub_insert_sql1.length() - 1) + ") values (" + sub_insert_sql2.substring(0, sub_insert_sql2.length() - 1) + ")");
+            PreparedStatement pst = con.prepareStatement("insert into total_scr (" + sub_insert_sql1.substring(0, sub_insert_sql1.length() - 1) + ") values (" + sub_insert_sql2.substring(0, sub_insert_sql2.length() - 1) + ")");
+
             for (int i = 0; i < scrNumberList.size(); i++) {
                 if (!scrNumberList.get(i).equals("none")) {
+                    n++;
                     for (int j = 0; j < scrTitle.size(); j++) {
                         if (rows.get(i + 1).get(j).isEmpty())
                             pst.setNull(j + 1, Types.VARCHAR);
@@ -178,15 +176,19 @@ public class UpdateSCR {
             pst.executeBatch();
             con.commit();
             pst.close();
-        } catch (SQLException ignored) {}
-        System.out.println("-------: update new scr from SCR.xlsx success!");
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        System.out.println("-------: update new scr from SCR.xls success!");
 
         TotalSCRtoDB totalSCRtoDB = new TotalSCRtoDB(
                 GlobalVariables.oracleUrl, GlobalVariables.oracleUserName, GlobalVariables.oraclePassword);
         totalSCRtoDB.initYearFW();
 
         closeAll();
+        return "update " + n + " rows scr from SCR.xls.";
     }
+
     private void getConnect() {
         try {
             Class.forName(GlobalVariables.oracleDriver);

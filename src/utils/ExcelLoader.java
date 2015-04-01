@@ -9,9 +9,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-/**
- * Created by yigli on 14-6-23.
- */
 public class ExcelLoader {
 
     private Workbook workbook = null;
@@ -45,13 +42,22 @@ public class ExcelLoader {
 
         List<List<String>> ret = new ArrayList<List<String>>(sheet.getTopRow());
 
-        for (Row row : sheet) {
+
+        for (int i = 0; i < sheet.getLastRowNum(); i++) {
             List<String> rowlist = new ArrayList<String>();
-            for (Cell cell : row) {
-                rowlist.add(cell.toString());
+            for (int j = 0; j < sheet.getRow(i).getLastCellNum(); j++) {
+                rowlist.add(sheet.getRow(i).getCell(j) == null ? "" : sheet.getRow(i).getCell(j).toString());
             }
             ret.add(rowlist);
         }
+
+//        for (Row row : sheet) {
+//            List<String> rowlist = new ArrayList<String>();
+//            for (Cell cell : row) {
+//                rowlist.add(cell.toString());
+//            }
+//            ret.add(rowlist);
+//        }
         return ret;
     }
 }

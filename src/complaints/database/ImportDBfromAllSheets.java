@@ -1,7 +1,7 @@
 package complaints.database;
 
 import org.apache.poi.ss.usermodel.*;
-import utils.FindExcels;
+import utils.ExcelsUtils;
 import utils.GetExcelTableInfo;
 import utils.GlobalVariables;
 
@@ -20,6 +20,7 @@ import java.util.Map;
  */
 public class ImportDBfromAllSheets {
     private String path = GlobalVariables.complaintsPath;
+    private String tableName = GlobalVariables.complaintsTableName;
 
     private String URL;
     private String USER;
@@ -74,6 +75,7 @@ public class ImportDBfromAllSheets {
     }
 
     public void createTablesFromSheets() {
+
         getConnect();
         deleteAllSheetsTable();
         List<String> columnNames = getColumnNames();
@@ -152,8 +154,8 @@ public class ImportDBfromAllSheets {
     public void insertTables() {
         List<List<String>> rows;
         getConnect();
-        FindExcels findExcels = new FindExcels();
-        String[] excels = findExcels.getExcelsName(path);
+        ExcelsUtils excelsUtils = new ExcelsUtils();
+        String[] excels = excelsUtils.getExcelsName(path);
         for (String excel : excels) {
             if (!excel.contains("(Up to date)")) {
                 rows = addRows(excel);
@@ -239,11 +241,11 @@ public class ImportDBfromAllSheets {
     private List<String> getColumnNames() {
         List<String> columnNames = new ArrayList<String>();
 
-        FindExcels findExcels = new FindExcels();
-        String[] excels = findExcels.getExcelsName(path);
+//        ExcelsUtils excelsUtils = new ExcelsUtils();
+//        String[] excels = excelsUtils.getExcelsName(path);
         InputStream inputStream;
         try {
-            inputStream = new FileInputStream(path + excels[0]);
+            inputStream = new FileInputStream(path + tableName);
             Workbook workbook = WorkbookFactory.create(inputStream);
             Sheet sheet = workbook.getSheetAt(1);
             for (int j = 0; j < sheet.getRow(0).getLastCellNum(); j++) {
@@ -510,7 +512,7 @@ public class ImportDBfromAllSheets {
     }
 
     private void fileRename(String path) {
-        String[] excels = new FindExcels().getExcelsName(path);
+        String[] excels = new ExcelsUtils().getExcelsName(path);
         for (String excel : excels) {
             if (!excel.contains("(Up to date)")) {
                 File excelFile = new File(path + excel);
@@ -577,6 +579,6 @@ public class ImportDBfromAllSheets {
         ImportDBfromAllSheets importDBfromAllSheets = new ImportDBfromAllSheets(
                 GlobalVariables.oracleUrl, GlobalVariables.oracleUserName, GlobalVariables.oraclePassword);
         importDBfromAllSheets.createTablesFromSheets();
-        importDBfromAllSheets.insertTables();
+//        importDBfromAllSheets.insertTables();
     }
 }

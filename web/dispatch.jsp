@@ -43,6 +43,15 @@
         overflow-y: hidden;
         margin: 0;
     }
+
+    #myLoadingModal
+    {
+        top: 35%;
+    }
+    #myLoadingModal2
+    {
+        top: 35%;
+    }
 </style>
 
 <div class="container-fluid panel"
@@ -56,11 +65,13 @@
             <input type="password" class="form-control" id="password">
         </div>
 
-        <div style="margin: 5px 10px 5px 0; width: 280px; float: left" class="input-group">
+        <div style="margin: 5px 10px 5px 0; width: 400px; float: left" class="input-group">
             <input type="button" style="float: left; margin-right: 10px" id="uploadBtn" value="Select File..."
                    class="btn btn-primary">
-            <input type="button" style="float: left" id="updateDispatch" value="UpdateDispatch"
+            <input type="button" style="float: left; margin-right: 10px" id="updateDispatch" value="UpdateDispatch"
                    class="btn btn-warning" onclick="updateDispatch()">
+            <input type="button" style="float: left; margin-right: 10px" id="deleteDispatch" value="deleteDispatch"
+                   class="btn btn-danger" onclick="deleteDispatch()">
         </div>
     </div>
     <div class="container pull-left">
@@ -73,13 +84,53 @@
         <div style="margin: 5px 10px 5px 0; width: 500px; float: left" class="input-group">
             <span class="input-group-addon">Products Install Search</span>
             <input type="text" class="form-control" id="sys_id" placeholder="Sited System Local Identifier">
-
         </div>
         <div style="margin: 5px 10px 5px 0; float: left" class="input-group">
             <input type="button" id="sys_search" value="Search" class="btn btn-primary" onclick="searchSYS()">
         </div>
     </div>
 
+</div>
+
+<div class="modal fade" id="myLoadingModal" tabindex="-1" role="dialog"
+     aria-labelledby="myModalLabel" aria-hidden="true" >
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="myModalLabel">
+                    Update database
+                </h4>
+            </div>
+            <div id="loadingText" class="modal-body">
+                loading...
+            </div>
+            <div class="modal-footer">
+                <button id="loadingButton" type="button" class="btn btn-default"
+                        data-dismiss="modal" disabled>ok
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="myLoadingModal2" tabindex="-1" role="dialog"
+     aria-labelledby="myModalLabel" aria-hidden="true" >
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="myModalLabel2">
+                    Delete database
+                </h4>
+            </div>
+            <div id="loadingText2" class="modal-body">
+                loading...
+            </div>
+            <div class="modal-footer">
+                <button id="loadingButton2" type="button" class="btn btn-default"
+                        data-dismiss="modal" disabled>ok
+                </button>
+            </div>
+        </div>
+    </div>
 </div>
 
 <div id='content-wrapper'>
@@ -186,31 +237,51 @@
             url: 'updateDispatch.action',
             data: {username: $("#username").val(), password: $("#password").val()},
             beforeSend: function () {
-                var btn = document.getElementById("updateDispatch");
-                btn.value = "Starting update...";
+                $("#myLoadingModal").modal('show');
+                $("#loadingButton").attr("disabled", "disabled");
+                $("#loadingText").text("loading...");
             },
             success: function (data) {
-                var btn = document.getElementById("updateDispatch");
-                btn.value = data;
-                btn.disabled = true;
-                var me = btn;
-                setTimeout(function () {
-                    me.disabled = false;
-                    me.value = "UpdateDispatch";
-                }, 2000);
+                $("#updateDispatch").removeAttr("disabled");
+                $("#loadingButton").removeAttr("disabled");
+                $("#loadingText").text(data);
             },
             error: function () {
-                var btn = document.getElementById("updateDispatch");
-                btn.value = "Fail to update";
-                btn.disabled = true;
-                var me = btn;
-                setTimeout(function () {
-                    me.disabled = false;
-                    me.value = "UpdateDispatch";
-                }, 2000);
+                $("#updateDispatch").removeAttr("disabled");
+                $("#loadingButton2").removeAttr("disabled");
+                $("#loadingText2").text("update failed");
             }
         })
     }
+    function deleteDispatch() {
+        var cur_btn = window.event.srcElement;
+        var id = cur_btn.id;
+        $("#deleteDispatch").attr("disabled", "disabled");
+        $.ajax({
+            type: 'post',
+            dataType: 'text',
+            async: true,
+            url: 'deleteDispatch.action',
+            data: {username: $("#username").val(), password: $("#password").val(), id: id},
+            beforeSend: function () {
+                $("#myLoadingModal2").modal('show');
+                $("#loadingButton2").attr("disabled", "disabled");
+                $("#loadingText2").text("loading...");
+            },
+            success: function (data) {
+                $("#deleteDispatch").removeAttr("disabled");
+                $("#loadingButton2").removeAttr("disabled");
+                $("#loadingText2").text(data);
+            },
+            error: function () {
+                $("#deleteDispatch").removeAttr("disabled");
+                $("#loadingButton2").removeAttr("disabled");
+                $("#loadingText2").text("delete failed");
+            }
+        })
+    }
+    $('#myLoadingModal').modal({backdrop: 'static', keyboard: false, show: false});
+    $('#myLoadingModal2').modal({backdrop: 'static', keyboard: false, show: false});
 </script>
 </body>
 </html>

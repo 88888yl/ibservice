@@ -26,18 +26,16 @@ public class UpdateCSOServlet extends HttpServlet {
         id = request.getParameter("id");
 
         System.out.println("User: " + username + ", Pwd: " + password);
+        String changes = "";
         UpdateCSO updateCSO = new UpdateCSO(
                 GlobalVariables.oracleUrl, GlobalVariables.oracleUserName, GlobalVariables.oraclePassword);
         if (username.equals(GlobalVariables.defaultUserName) && password.equals(GlobalVariables.defaultPassword)) {
             if ("fromOpenCSO".equals(id)) {
-                updateCSO.updateFromOpenCSO();
+                changes = updateCSO.updateFromOpenCSO();
+                response.getWriter().print(changes);
             }
-            if ("fromClosedCSO".equals(id)) {
-                updateCSO.updateFromCloseCSO();
-            }
-            response.getWriter().print("Success!");
         } else {
-            response.getWriter().print("Failed!");
+            response.getWriter().print("Username/password is empty or error");
         }
     }
 

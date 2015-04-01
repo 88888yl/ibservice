@@ -39,6 +39,15 @@
         float: right;
         overflow-y: hidden;
     }
+
+    #myLoadingModal
+    {
+        top: 35%;
+    }
+    #myLoadingModal2
+    {
+        top: 35%;
+    }
 </style>
 
 <div class="container-fluid panel" style="background-image: url('image/background1.jpg'); position: fixed; top: 45px; box-shadow: 0 3px 6px black">
@@ -49,13 +58,11 @@
             <span class="input-group-addon">Password</span>
             <input type="password" class="form-control" id="password">
         </div>
-        <div style="margin: 5px 10px 5px 0; width: 220px; float: left" class="input-group">
+        <div style="margin: 5px 10px 5px 0; width: 360px; float: left" class="input-group">
             <input type="button" style="float: left; margin-right: 10px" id="uploadBtn" value="Select File..."
                    class="btn btn-primary">
-            <input type="button" style="float: left" id="updateSCR" value="UpdateSCR" class="btn btn-warning" onclick="updateSCR()">
-        </div>
-        <div style="margin: 5px 10px 5px 0; width: 220px; float: left" class="input-group">
-            <span class="label label-default" id="information" style=" width: 30px; margin-top: 10px"></span>
+            <input type="button" style="float: left; margin-right: 10px" id="updateSCR" value="UpdateSCR" class="btn btn-warning" onclick="updateSCR()">
+            <input type="button" style="float: left; margin-right: 10px" id="deleteSCR" value="DeleteSCR" class="btn btn-danger" onclick="deleteSCR()">
         </div>
     </div>
 
@@ -65,6 +72,48 @@
         </div>
         <div style="margin: 5px 10px 5px 0; float: left" class="input-group">
             <input type="button" id="export" value="Export" class="btn btn-primary" onclick="getExport()">
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="myLoadingModal" tabindex="-1" role="dialog"
+     aria-labelledby="myModalLabel" aria-hidden="true" >
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="myModalLabel">
+                    Update database
+                </h4>
+            </div>
+            <div id="loadingText" class="modal-body">
+                loading...
+            </div>
+            <div class="modal-footer">
+                <button id="loadingButton" type="button" class="btn btn-default"
+                        data-dismiss="modal" disabled>ok
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="myLoadingModal2" tabindex="-1" role="dialog"
+     aria-labelledby="myModalLabel" aria-hidden="true" >
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="myModalLabel2">
+                    Delete database
+                </h4>
+            </div>
+            <div id="loadingText2" class="modal-body">
+                loading...
+            </div>
+            <div class="modal-footer">
+                <button id="loadingButton2" type="button" class="btn btn-default"
+                        data-dismiss="modal" disabled>ok
+                </button>
+            </div>
         </div>
     </div>
 </div>
@@ -110,7 +159,7 @@
         var me = btn;
         setTimeout(function () {
             me.disabled = false;
-        }, 3000);
+        }, 5000);
 
         window.frames["resultPage"].location.href = "/scr_table.jsp";
     }
@@ -157,7 +206,7 @@
     function updateSCR() {
         var cur_btn = window.event.srcElement;
         var id = cur_btn.id;
-        $("#update").attr("disabled", "disabled");
+        $("#updateSCR").attr("disabled", "disabled");
         $.ajax({
             type: 'post',
             dataType: 'text',
@@ -165,18 +214,52 @@
             url: 'updateSCR.action',
             data: {username: $("#username").val(), password: $("#password").val(), id: id},
             beforeSend: function () {
-                $("#information").html("Running...");
+                $("#myLoadingModal").modal('show');
+                $("#loadingButton").attr("disabled", "disabled");
+                $("#loadingText").text("loading...");
             },
             success: function (data) {
-                $("#information").html(data);
-                $("#update").removeAttr("disabled");
+                $("#updateSCR").removeAttr("disabled");
+                $("#loadingButton").removeAttr("disabled");
+                $("#loadingText").text(data);
             },
             error: function () {
-                $("#information").html("Update database failed!");
-                $("#update").removeAttr("disabled");
+                $("#updateSCR").removeAttr("disabled");
+                $("#loadingButton").removeAttr("disabled");
+                $("#loadingText").text("update failed");
             }
         })
     }
+
+    function deleteSCR() {
+        var cur_btn = window.event.srcElement;
+        var id = cur_btn.id;
+        $("#deleteSCR").attr("disabled", "disabled");
+        $.ajax({
+            type: 'post',
+            dataType: 'text',
+            async: true,
+            url: 'deleteSCR.action',
+            data: {username: $("#username").val(), password: $("#password").val(), id: id},
+            beforeSend: function () {
+                $("#myLoadingModal2").modal('show');
+                $("#loadingButton2").attr("disabled", "disabled");
+                $("#loadingText2").text("loading...");
+            },
+            success: function (data) {
+                $("#deleteSCR").removeAttr("disabled");
+                $("#loadingButton2").removeAttr("disabled");
+                $("#loadingText2").text(data);
+            },
+            error: function () {
+                $("#deleteSCR").removeAttr("disabled");
+                $("#loadingButton2").removeAttr("disabled");
+                $("#loadingText2").text("update failed");
+            }
+        })
+    }
+    $('#myLoadingModal').modal({backdrop: 'static', keyboard: false, show: false});
+    $('#myLoadingModal2').modal({backdrop: 'static', keyboard: false, show: false});
 </script>
 </body>
 </html>

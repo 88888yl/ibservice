@@ -10,11 +10,12 @@ import java.util.*;
 import java.util.Date;
 
 /**
- * Created by myl on 2014/12/13.
+ * Created by myl
+ * on 2014/12/13.
  */
 public class TotalCSOtoDB {
-    private static final String openFilePath = GlobalVariables.csoPath + "Open_CSO.xlsx";
-    private static final String closeFilePath = GlobalVariables.csoPath + "Closed_CSO.xlsx";
+    private static final String openFilePath = GlobalVariables.csoPath + GlobalVariables.csoTableName;
+//    private static final String closeFilePath = GlobalVariables.csoPath + "CSO.xls";
 
     private String URL;
     private String USER;
@@ -41,7 +42,7 @@ public class TotalCSOtoDB {
         deleteTotalCSO();
 
         for (String columnName : columnNames) {
-            subSql.append("\"").append(columnName).append("\"").append(" varchar2(500),");
+            subSql.append("\"").append(columnName).append("\"").append(" varchar2(2000),");
         }
         String substring = subSql.substring(0, subSql.length() - 1);
 
@@ -258,54 +259,54 @@ public class TotalCSOtoDB {
         closeAll();
     }
 
-    public void insertClosedCSOtoTable() {
-        List<String> columnNames = getClosedCSOColName();
-        StringBuilder insert_sqls = new StringBuilder();
-        StringBuilder subSql1 = new StringBuilder();
-        StringBuilder subSql2 = new StringBuilder();
-
-        getConnect();
-
-        for (String columnName : columnNames) {
-            if (columnName.equals("Milestone"))
-                columnName = "Milestone Status";
-            if (columnName.equals("SR Status"))
-                columnName = "Status";
-            if (columnName.equals("Owner Last Name"))
-                columnName = "Owner Name";
-            if (columnName.equals("Root Cause"))
-                columnName = "Root Cause Family";
-            subSql1.append("\"").append(columnName).append("\",");
-        }
-        String substring = subSql1.substring(0, subSql1.length() - 1);
-        for (int i = 0; i < columnNames.size(); i++) {
-            subSql2.append("?,");
-        }
-        String substring2 = subSql2.substring(0, subSql2.length() - 1);
-        insert_sqls.append("insert into total_cso (").append(substring).append(") values (").append(substring2).append(")");
-
-        try {
-            con.setAutoCommit(false);
-            PreparedStatement pst = con.prepareStatement(insert_sqls.toString());
-            for (List<String> row : rows.subList(1, rows.size())) {
-                for (int j = 0; j < columnNames.size(); j++) {
-                    if (row.get(j).isEmpty())
-                        pst.setNull(j + 1, Types.VARCHAR);
-                    else
-                        pst.setString(j + 1, row.get(j));
-                }
-                pst.addBatch();
-            }
-            pst.executeBatch();
-            con.commit();
-            System.out.println("ClosedCSO----------------: " + rows.size() + " rows insert success!");
-            pst.close();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-
-        closeAll();
-    }
+//    public void insertClosedCSOtoTable() {
+//        List<String> columnNames = getClosedCSOColName();
+//        StringBuilder insert_sqls = new StringBuilder();
+//        StringBuilder subSql1 = new StringBuilder();
+//        StringBuilder subSql2 = new StringBuilder();
+//
+//        getConnect();
+//
+//        for (String columnName : columnNames) {
+//            if (columnName.equals("Milestone"))
+//                columnName = "Milestone Status";
+//            if (columnName.equals("SR Status"))
+//                columnName = "Status";
+//            if (columnName.equals("Owner Last Name"))
+//                columnName = "Owner Name";
+//            if (columnName.equals("Root Cause"))
+//                columnName = "Root Cause Family";
+//            subSql1.append("\"").append(columnName).append("\",");
+//        }
+//        String substring = subSql1.substring(0, subSql1.length() - 1);
+//        for (int i = 0; i < columnNames.size(); i++) {
+//            subSql2.append("?,");
+//        }
+//        String substring2 = subSql2.substring(0, subSql2.length() - 1);
+//        insert_sqls.append("insert into total_cso (").append(substring).append(") values (").append(substring2).append(")");
+//
+//        try {
+//            con.setAutoCommit(false);
+//            PreparedStatement pst = con.prepareStatement(insert_sqls.toString());
+//            for (List<String> row : rows.subList(1, rows.size())) {
+//                for (int j = 0; j < columnNames.size(); j++) {
+//                    if (row.get(j).isEmpty())
+//                        pst.setNull(j + 1, Types.VARCHAR);
+//                    else
+//                        pst.setString(j + 1, row.get(j));
+//                }
+//                pst.addBatch();
+//            }
+//            pst.executeBatch();
+//            con.commit();
+//            System.out.println("ClosedCSO----------------: " + rows.size() + " rows insert success!");
+//            pst.close();
+//        } catch (SQLException e) {
+//            e.printStackTrace();
+//        }
+//
+//        closeAll();
+//    }
 
     @SuppressWarnings("ConstantConditions")
     public void initYearFW() {
@@ -549,11 +550,11 @@ public class TotalCSOtoDB {
         return rows.get(0);
     }
 
-    private List<String> getClosedCSOColName() {
-        ExcelLoader loader = new ExcelLoader(closeFilePath);
-        rows = loader.loadData(0);
-        return rows.get(0);
-    }
+//    private List<String> getClosedCSOColName() {
+//        ExcelLoader loader = new ExcelLoader(closeFilePath);
+//        rows = loader.loadData(0);
+//        return rows.get(0);
+//    }
 
     private void getConnect() {
         try {
@@ -602,7 +603,7 @@ public class TotalCSOtoDB {
                 GlobalVariables.oracleUrl, GlobalVariables.oracleUserName, GlobalVariables.oraclePassword);
         totalCSOtoDB.createTotalCSO();
         totalCSOtoDB.insertOpenCSOtoTable();
-        totalCSOtoDB.insertClosedCSOtoTable();
+//        totalCSOtoDB.insertClosedCSOtoTable();
         totalCSOtoDB.initYearFW();
     }
 }

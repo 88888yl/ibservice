@@ -1,6 +1,7 @@
 package scr.database;
 
 import utils.ExcelLoader;
+import utils.ExcelsUtils;
 import utils.GlobalVariables;
 
 import java.sql.*;
@@ -12,7 +13,7 @@ import java.util.*;
  * Created by myl on 2014/12/14.
  */
 public class TotalSCRtoDB {
-    private String scrFilePath = GlobalVariables.scrPath + "SCR.xlsx";
+    private String scrFileName = GlobalVariables.scrTableName;
 
     private String URL;
     private String USER;
@@ -31,7 +32,7 @@ public class TotalSCRtoDB {
     }
 
     public void createTotalSCR() {
-        List<String> columnNames = getSCRColName();
+        List<String> columnNames = getSCRColName(scrFileName);
         StringBuilder create_sql = new StringBuilder();
         StringBuilder subSql = new StringBuilder();
 
@@ -222,7 +223,12 @@ public class TotalSCRtoDB {
     }
 
     public void insertSCRtoTable() {
-        List<String> columnNames = getSCRColName();
+        List<String> columnNames = getSCRColName(scrFileName);
+//        ExcelsUtils excelsUtils = new ExcelsUtils();
+//        List<String> columnNames = excelsUtils.getColumnNames(GlobalVariables.scrPath, "SCR_bak.xlsx", 0);
+
+        System.out.println(columnNames);
+        System.out.println(columnNames.size());
         StringBuilder insert_sqls = new StringBuilder();
         StringBuilder subSql1 = new StringBuilder();
         StringBuilder subSql2 = new StringBuilder();
@@ -440,8 +446,8 @@ public class TotalSCRtoDB {
         System.out.println("scr age count success!");
     }
 
-    private List<String> getSCRColName() {
-        ExcelLoader loader = new ExcelLoader(scrFilePath);
+    private List<String> getSCRColName(String excelName) {
+        ExcelLoader loader = new ExcelLoader(GlobalVariables.scrPath + excelName);
         rows = loader.loadData(0);
         return rows.get(0);
     }
@@ -481,7 +487,7 @@ public class TotalSCRtoDB {
         }
     }
 
-    private void deleteTotalSCR() {
+    public void deleteTotalSCR() {
         String delete_sql = "drop table total_scr";
         try {
             stmt = con.createStatement();
